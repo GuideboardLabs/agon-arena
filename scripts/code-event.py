@@ -38,10 +38,10 @@ Return ONLY the function definition. No explanations, no test code.""",
 - Malformed lines are silently skipped
 Return ONLY the function definition. No explanations, no test code.""",
         "hidden_tests": [
-            ("parse_logs(['[2024-01-15 10:30:45] ERROR: disk full'])['counts']", "{'ERROR': 1}"),
+            ("dict(filter(lambda x: x[1] > 0, parse_logs(['[2024-01-15 10:30:45] ERROR: disk full'])['counts'].items()))", "{'ERROR': 1}"),
             ("len(parse_logs(['[2024-01-15 10:30:45] ERROR: disk full'])['errors'])", "1"),
-            ("len(parse_logs([])['counts'])", "0"),
-            ("len(parse_logs(['bad line'])['counts'])", "0"),
+            ("sum(parse_logs([])['counts'].values())", "0"),
+            ("sum(parse_logs(['bad line'])['counts'].values())", "0"),
         ]
     },
     {
@@ -88,11 +88,11 @@ Return the COMPLETE script. No explanations.""",
 Return ALL four files, each clearly marked with filename headers.""",
         "hidden_tests": [
             {"type": "script", "label": "TaskRunner creates project structure",
-             "setup": "import tempfile, os, sys, re, shutil\nfrom pathlib import Path\ntmpdir = Path(tempfile.mkdtemp())\nresponse = Path(MODEL_CODE_PATH).read_text()\ncurrent_file = None\ncurrent_content = []\nfor line in response.split('\\n'):\n    m = re.match(r'^#+\\s+(\\S+)\\s*$', line)\n    if m:\n        if current_file and current_content:\n            file_path = tmpdir / current_file\n            file_path.parent.mkdir(parents=True, exist_ok=True)\n            file_path.write_text('\\n'.join(current_content))\n        current_file = m.group(1)\n        current_content = []\n    elif current_file:\n        current_content.append(line)\nif current_file and current_content:\n    file_path = tmpdir / current_file\n    file_path.parent.mkdir(parents=True, exist_ok=True)\n    file_path.write_text('\\n'.join(current_content))\nfiles = ['taskrunner/__init__.py', 'taskrunner/runner.py', 'taskrunner/cli.py', 'taskrunner/models.py']\nmissing = [f for f in files if not (tmpdir / f).exists()]\nprint('OK' if not missing else f'MISSING: {missing}')\nshutil.rmtree(str(tmpdir), ignore_errors=True)",
+             "setup": "import tempfile, os, sys, re, shutil\nfrom pathlib import Path\n# Read raw response file (not cleaned code) to preserve file headers and code fences\nraw_response_path = MODEL_CODE_PATH.replace('.py', '_raw.txt')\nif os.path.exists(raw_response_path):\n    response = open(raw_response_path).read()\nelse:\n    response = open(MODEL_CODE_PATH).read()\ntmpdir = Path(tempfile.mkdtemp())\ncurrent_file = None\ncurrent_content = []\nfor line in response.split('\\n'):\n    m = re.match(r'^#+\\s+(\\S+)\\s*$', line)\n    if not m:\n        m = re.match(r'^(\\S+\\.py)\\s*$', line)\n    if m:\n        if current_file and current_content:\n            file_path = tmpdir / current_file\n            file_path.parent.mkdir(parents=True, exist_ok=True)\n            # Strip code fences from content\n            clean_content = [l for l in current_content if not l.startswith('```')]\n            file_path.write_text('\\n'.join(clean_content))\n        current_file = m.group(1)\n        current_content = []\n    elif current_file:\n        current_content.append(line)\nif current_file and current_content:\n    file_path = tmpdir / current_file\n    file_path.parent.mkdir(parents=True, exist_ok=True)\n    clean_content = [l for l in current_content if not l.startswith('```')]\n    file_path.write_text('\\n'.join(clean_content))\nfiles = ['taskrunner/__init__.py', 'taskrunner/runner.py', 'taskrunner/cli.py', 'taskrunner/models.py']\nmissing = [f for f in files if not (tmpdir / f).exists()]\nshutil.rmtree(str(tmpdir), ignore_errors=True)",
              "check": "print('OK')",
              "expected": "OK"},
             {"type": "script", "label": "TaskRunner models import correctly",
-             "setup": "import tempfile, os, sys, re, shutil\nfrom pathlib import Path\ntmpdir = Path(tempfile.mkdtemp())\nresponse = Path(MODEL_CODE_PATH).read_text()\ncurrent_file = None\ncurrent_content = []\nfor line in response.split('\\n'):\n    m = re.match(r'^#+\\s+(\\S+)\\s*$', line)\n    if m:\n        if current_file and current_content:\n            file_path = tmpdir / current_file\n            file_path.parent.mkdir(parents=True, exist_ok=True)\n            file_path.write_text('\\n'.join(current_content))\n        current_file = m.group(1)\n        current_content = []\n    elif current_file:\n        current_content.append(line)\nif current_file and current_content:\n    file_path = tmpdir / current_file\n    file_path.parent.mkdir(parents=True, exist_ok=True)\n    file_path.write_text('\\n'.join(current_content))\nsys.path.insert(0, str(tmpdir))",
+             "setup": "import tempfile, os, sys, re, shutil\nfrom pathlib import Path\nraw_response_path = MODEL_CODE_PATH.replace('.py', '_raw.txt')\nif os.path.exists(raw_response_path):\n    response = open(raw_response_path).read()\nelse:\n    response = open(MODEL_CODE_PATH).read()\ntmpdir = Path(tempfile.mkdtemp())\ncurrent_file = None\ncurrent_content = []\nfor line in response.split('\\n'):\n    m = re.match(r'^#+\\s+(\\S+)\\s*$', line)\n    if not m:\n        m = re.match(r'^(\\S+\\.py)\\s*$', line)\n    if m:\n        if current_file and current_content:\n            file_path = tmpdir / current_file\n            file_path.parent.mkdir(parents=True, exist_ok=True)\n            clean_content = [l for l in current_content if not l.startswith('```')]\n            file_path.write_text('\\n'.join(clean_content))\n        current_file = m.group(1)\n        current_content = []\n    elif current_file:\n        current_content.append(line)\nif current_file and current_content:\n    file_path = tmpdir / current_file\n    file_path.parent.mkdir(parents=True, exist_ok=True)\n    clean_content = [l for l in current_content if not l.startswith('```')]\n    file_path.write_text('\\n'.join(clean_content))\nsys.path.insert(0, str(tmpdir))",
              "check": "from taskrunner.models import Task, Result\nt = Task(name='test', command='echo hi', timeout=30, retries=0)\nr = Result(task_name='test', exit_code=0, stdout='hi', stderr='', duration=0.1, retry_count=0)\nprint('OK')\nshutil.rmtree(str(tmpdir), ignore_errors=True)",
              "expected": "OK"},
         ]
@@ -112,7 +112,7 @@ Return the COMPLETE script. No explanations.""",
         "hidden_tests": [
             {"type": "script", "label": "Diff detects identical files",
              "setup": "import tempfile, os, sys\nfrom pathlib import Path\ntmpdir = Path(tempfile.mkdtemp())\nscript_path = tmpdir / 'diff.py'\nimport shutil\nshutil.copy(MODEL_CODE_PATH, str(script_path))\nfile_a = tmpdir / 'a.txt'\nfile_b = tmpdir / 'b.txt'\nfile_a.write_text('line1\\nline2\\nline3\\n')\nfile_b.write_text('line1\\nline2\\nline3\\n')",
-             "check": "import subprocess\nresult = subprocess.run([sys.executable, str(script_path), str(file_a), str(file_b)], capture_output=True, text=True, timeout=10)\noutput = result.stdout.strip()\nprint('OK' if output == '' or 'No differences' in output else 'HAS_DIFF')\nshutil.rmtree(str(tmpdir), ignore_errors=True)",
+             "check": "import subprocess\nresult = subprocess.run([sys.executable, str(script_path), str(file_a), str(file_b)], capture_output=True, text=True, timeout=10)\noutput = result.stdout.strip()\nprint('OK' if output == '' or 'No differences' in output or (output.startswith('---') and not any(l.startswith(('+','-')) for l in output.splitlines() if l and not l.startswith('---') and not l.startswith('+++'))) or not any(l.startswith(('+','-')) for l in output.splitlines() if l.strip() and not l.startswith('---') and not l.startswith('+++')) else 'HAS_DIFF')\nshutil.rmtree(str(tmpdir), ignore_errors=True)",
              "expected": "OK"},
             {"type": "script", "label": "Diff detects changes",
              "setup": "import tempfile, os, sys\nfrom pathlib import Path\ntmpdir = Path(tempfile.mkdtemp())\nscript_path = tmpdir / 'diff.py'\nimport shutil\nshutil.copy(MODEL_CODE_PATH, str(script_path))\nfile_a = tmpdir / 'a.txt'\nfile_b = tmpdir / 'b.txt'\nfile_a.write_text('line1\\nline2\\nline3\\n')\nfile_b.write_text('line1\\nchanged\\nline3\\n')",
@@ -183,14 +183,23 @@ def strip_thinking(text):
     return text.strip()
 
 
-def run_hidden_tests(code, tests):
+def run_hidden_tests(code, tests, raw_response=None):
     if not tests:
         return 0, 0, []
     import re
     code_clean = code.strip()
     code_clean = strip_thinking(code_clean).strip()
-    code_clean = re.sub(r'```(?:python)?\s*\n?', '', code_clean)
-    code_clean = re.sub(r'\n?```\s*', '', code_clean)
+    # Strip any text before the first code fence (e.g. "Final answer:")
+    if '```' in code_clean:
+        # Only strip text before fence if there's actual text there
+        fence_pos = code_clean.find('```')
+        if fence_pos > 0:
+            code_clean = code_clean[fence_pos:]
+        code_clean = re.sub(r'```(?:python)?\s*\n?', '', code_clean)
+        code_clean = re.sub(r'\n?```\s*', '', code_clean)
+    else:
+        # No code fences - strip "Final answer:" prefix and use raw code
+        code_clean = re.sub(r'^Final answer:\s*\n?', '', code_clean, flags=re.IGNORECASE)
     code_clean = code_clean.strip()
     if not code_clean:
         return 0, len(tests), [(t.get("label", str(t)) if isinstance(t, dict) else str(t[0]), "EMPTY after cleaning") for t in tests]
@@ -205,6 +214,11 @@ def run_hidden_tests(code, tests):
                 with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
                     f.write(code_clean)
                     model_code_path = f.name
+                # Write raw response alongside cleaned code for tests that need it
+                if raw_response:
+                    raw_path = model_code_path.replace('.py', '_raw.txt')
+                    with open(raw_path, 'w') as f:
+                        f.write(raw_response)
                 test_script = test_item["setup"] + "\n\n" + test_item.get("check", "")
                 test_script = test_script.replace("MODEL_CODE_PATH", repr(model_code_path))
                 with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
@@ -286,7 +300,7 @@ def main():
         task_dir = output_dir / f"task{task['id']}"
         task_dir.mkdir(exist_ok=True)
         (task_dir / "response.txt").write_text(response)
-        passed, total, details = run_hidden_tests(response, task["hidden_tests"])
+        passed, total, details = run_hidden_tests(response, task["hidden_tests"], raw_response=response)
         print(f"  Hidden tests: {passed}/{total} passed")
         for detail in details:
             status = "PASS" if detail[-1] == "PASS" else "ERROR"

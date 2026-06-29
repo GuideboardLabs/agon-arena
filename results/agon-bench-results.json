@@ -1,122 +1,83 @@
 {
-  "benchmark": "Agon-Bench",
-  "version": "1.0",
-  "date": "2026-06-26",
-  "description": "3-event benchmark: Agent (tool calling, orchestration, error handling, planning, parsing, decision-making), Reason (logical deduction, math, constraint satisfaction, counterfactual reasoning, analytical explanation, multi-hop synthesis), Code (string cleaner, log parser, LRU cache, file indexer, task runner CLI, constrained diff tool)",
-  "hardware": {
-    "gpu": "AMD Radeon RX 5700 XT (8GB VRAM)",
-    "backend": "Vulkan via radv/mesa",
-    "llama_cpp_build": "custom Vulkan build",
-    "quantization": "Q4_K_M or Q4_K_XL"
-  },
-  "models": [
-    {
-      "name": "Gemma4-12B",
-      "file": "gemma-4-12B-it-qat-UD-Q4_K_XL.gguf",
-      "size_gb": 6.3,
-      "params_b": 12,
-      "quant": "Q4_K_XL",
+  "classes": {
+    "8gb": {
+      "label": "8GB VRAM Class",
+      "models": ["Holo-3.1-9B-Coder", "Gemma4-12B", "Qwen3.5-9B", "Ornith-1.0-9B", "VibeThinker-3B", "LFM2.5-8B", "Holo-3.1-9B"],
       "scores": {
-        "agent": {"mean": 15.0, "runs": [16, 13, 16], "max": 18},
-        "reason": {"mean": 16.7, "runs": [17, 17, 16], "max": 17},
-        "code": {"mean": 13.3, "runs": [13, 13, 14], "max": 19},
-        "total": {"mean": 45.0, "max": 54}
-      },
-      "timing": {
-        "agent_avg_seconds": 12.3,
-        "reason_avg_seconds": 45.2,
-        "code_avg_seconds": 220.7,
-        "total_avg_seconds": 278.2
+        "overall": [43.1, 42.0, 40.3, 40.0, 39.0, 36.2, 27.3],
+        "agent": [15.7, 15.0, 14.0, 11.7, 15.3, 10.7, 5.3],
+        "reason": [14.7, 16.7, 16.0, 16.3, 17.0, 16.7, 15.0],
+        "code": [12.7, 10.3, 10.3, 12.0, 7.0, 8.8, 7.0],
+        "efficiency": [36.6, 21.6, 41.9, 45.4, 82.7, 91.1, 36.6]
       }
     },
-    {
-      "name": "Ornith-1.0-9B",
-      "file": "ornith-1.0-9b-Q4_K_M.gguf",
-      "size_gb": 5.3,
-      "params_b": 9,
-      "quant": "Q4_K_M",
+    "4gb": {
+      "label": "4GB VRAM Class",
+      "models": ["VibeThinker-3B"],
       "scores": {
-        "agent": {"mean": 11.7, "runs": [11, 11, 13], "max": 18},
-        "reason": {"mean": 16.3, "runs": [16, 16, 17], "max": 17},
-        "code": {"mean": 12.0, "runs": [12, 12, 12], "max": 19},
-        "total": {"mean": 40.0, "max": 54}
-      },
-      "timing": {
-        "agent_avg_seconds": 10.5,
-        "reason_avg_seconds": 38.1,
-        "code_avg_seconds": 207.7,
-        "total_avg_seconds": 256.3
+        "overall": [39.0],
+        "agent": [15.3],
+        "reason": [17.0],
+        "code": [7.0],
+        "efficiency": [82.7]
       }
     },
-    {
-      "name": "LFM2.5-8B",
-      "file": "lfm2.5-8b-Q4_K_XL.gguf",
-      "size_gb": 5.0,
-      "params_b": 8,
-      "quant": "Q4_K_XL",
+    "24gb": {
+      "label": "24GB VRAM Class (VRAM split: 6-7GB GPU, rest system RAM)",
+      "models": ["SuperQwen-35B-A3B"],
       "scores": {
-        "agent": {"mean": 10.7, "runs": [11, 7, 14], "max": 18},
-        "reason": {"mean": 16.7, "runs": [17, 16, 17], "max": 17},
-        "code": {"mean": 9.5, "runs": [6, 11, 12, 9], "max": 19},
-        "total": {"mean": 36.9, "max": 54}
-      },
-      "timing": {
-        "agent_avg_seconds": 9.8,
-        "reason_avg_seconds": 35.5,
-        "code_avg_seconds": 260.3,
-        "total_avg_seconds": 305.6
-      }
-    },
-    {
-      "name": "Jackrong (Qwen3.5-9B-V4)",
-      "file": "Qwen3.5-9B-DeepSeek-V4-Flash-Q4_K_M.gguf",
-      "size_gb": 5.3,
-      "params_b": 9,
-      "quant": "Q4_K_M",
-      "notes": "DeepSeek-V4-Flash architecture has inherent thinking loop that --reasoning off cannot suppress in llama.cpp. Scores reflect this config limitation, not pure model ability. Works correctly in Pi (official API with reasoning_content/content split).",
-      "scores": {
-        "agent": {"mean": 9.0, "runs": [7, 8, 12], "max": 18},
-        "reason": {"mean": 16.3, "runs": [15, 17, 17], "max": 17},
-        "code": {"mean": 2.7, "runs": [4, 4, 0], "max": 19},
-        "total": {"mean": 28.0, "max": 54}
-      },
-      "timing": {
-        "agent_avg_seconds": 15.2,
-        "reason_avg_seconds": 42.8,
-        "code_avg_seconds": 749.3,
-        "total_avg_seconds": 807.3
+        "overall": [48.3],
+        "agent": [18.0],
+        "reason": [12.0],
+        "code": [18.3],
+        "efficiency": [10.1]
       }
     }
-  ],
-  "per_task_breakdown": {
-    "agent": {
-      "tasks": ["Tool Calling", "Orchestration", "Error Handling", "Planning", "Parsing", "Decision-Making"],
-      "gemma4-12b": {"mean": [2.0, 3.0, 4.0, 1.3, 1.7, 3.0], "max": [3, 3, 4, 2, 3, 3]},
-      "ornith-1.0-9b": {"mean": [2.0, 2.3, 4.0, 0.7, 0.0, 2.7], "max": [3, 3, 4, 2, 3, 3]},
-      "lfm2.5-8b": {"mean": [2.0, 2.0, 2.3, 0.7, 1.0, 2.7], "max": [3, 3, 4, 2, 3, 3]},
-      "jackrong": {"mean": [1.3, 1.0, 4.0, 0.7, 0.0, 2.0], "max": [3, 3, 4, 2, 3, 3]}
-    },
-    "reason": {
-      "tasks": ["Logical Deduction", "Math Word Problem", "Constraint Satisfaction", "Counterfactual Reasoning", "Analytical Explanation", "Multi-Hop Synthesis"],
-      "gemma4-12b": {"mean": [2.0, 3.0, 3.0, 2.7, 3.0, 3.0], "max": [2, 3, 3, 3, 3, 3]},
-      "ornith-1.0-9b": {"mean": [2.0, 3.0, 3.0, 3.0, 2.3, 3.0], "max": [2, 3, 3, 3, 3, 3]},
-      "lfm2.5-8b": {"mean": [2.0, 2.7, 3.0, 3.0, 3.0, 3.0], "max": [2, 3, 3, 3, 3, 3]},
-      "jackrong": {"mean": [1.7, 3.0, 3.0, 2.7, 3.0, 3.0], "max": [2, 3, 3, 3, 3, 3]}
-    },
-    "code": {
-      "tasks": ["String Cleaner", "Log Parser", "LRU Cache", "File Indexer", "Task Runner CLI", "Constrained Diff Tool"],
-      "gemma4-12b": {"mean": [5.0, 2.0, 3.0, 2.0, 0.0, 1.3], "max": [5, 4, 3, 2, 2, 3]},
-      "ornith-1.0-9b": {"mean": [5.0, 0.0, 3.0, 2.0, 0.0, 2.0], "max": [5, 4, 3, 2, 2, 3]},
-      "lfm2.5-8b": {"mean": [3.3, 1.0, 0.8, 1.8, 0.5, 1.3], "max": [5, 4, 3, 2, 2, 3]},
-      "jackrong": {"mean": [0.0, 1.3, 0.0, 0.7, 0.0, 0.0], "max": [5, 4, 3, 2, 2, 3]}
-    }
   },
-  "caveats": [
-    "Jackrong scores are deflated by a llama.cpp config issue: --reasoning off cannot suppress DeepSeek-V4-Flash's native thinking loop. In Pi (official API with reasoning_content/content split), Jackrong works correctly.",
-    "Task 2 (Log Parser) test accepts dicts with extra 0-count keys, but models that return all 4 levels with 0s for empty input still fail the 'len(counts)==0' test.",
-    "Task 5 (Task Runner CLI) requires multi-file project output — no model in this test suite produced the correct structure.",
-    "Task 6 (Constrained Diff Tool) requires a real diff algorithm — no model passed the 'detects changes' test.",
-    "Agent and Reason events were graded against existing response files (not re-run). The grading scripts were built after the model runs completed.",
-    "All models run on a single RX 5700 XT (8GB VRAM) with Vulkan backend. Results may vary on different hardware/configurations."
-  ]
+  "per_task": {
+    "8gb": {
+      "Holo-3.1-9B-Coder": {
+        "Tool Calling": 3.0, "Orchestration": 2.0, "Error Handling": 4.0, "Planning": 2.0, "Parsing": 1.7, "Decision-Making": 3.0,
+        "Logical Deduction": 2.0, "Math Word Problem": 3.0, "Constraint Sat.": 3.0, "Counterfactual": 3.0, "Analytical Expl.": 1.7, "Multi-Hop Synth.": 2.7,
+        "String Cleaner": 1.3, "Log Parser": 1.7, "LRU Cache": 3.0, "File Indexer": 1.7, "Task Runner CLI": 1.0, "Constrained Diff": 2.7
+      },
+      "Gemma4-12B": {
+        "Tool Calling": 2.0, "Orchestration": 3.0, "Error Handling": 4.0, "Planning": 1.3, "Parsing": 1.7, "Decision-Making": 3.0,
+        "Logical Deduction": 2.0, "Math Word Problem": 3.0, "Constraint Sat.": 3.0, "Counterfactual": 2.7, "Analytical Expl.": 3.0, "Multi-Hop Synth.": 3.0,
+        "String Cleaner": 5.0, "Log Parser": 2.0, "LRU Cache": 0.0, "File Indexer": 2.0, "Task Runner CLI": 0.0, "Constrained Diff": 1.3
+      },
+      "Qwen3.5-9B": {
+        "Tool Calling": 2.0, "Orchestration": 2.0, "Error Handling": 4.0, "Planning": 2.0, "Parsing": 1.0, "Decision-Making": 3.0,
+        "Logical Deduction": 2.0, "Math Word Problem": 3.0, "Constraint Sat.": 3.0, "Counterfactual": 3.0, "Analytical Expl.": 2.0, "Multi-Hop Synth.": 3.0,
+        "String Cleaner": 2.0, "Log Parser": 1.0, "LRU Cache": 3.0, "File Indexer": 2.0, "Task Runner CLI": 0.3, "Constrained Diff": 2.0
+      },
+      "Ornith-1.0-9B": {
+        "Tool Calling": 2.0, "Orchestration": 2.3, "Error Handling": 4.0, "Planning": 0.7, "Parsing": 0.0, "Decision-Making": 2.7,
+        "Logical Deduction": 2.0, "Math Word Problem": 3.0, "Constraint Sat.": 3.0, "Counterfactual": 3.0, "Analytical Expl.": 2.3, "Multi-Hop Synth.": 3.0,
+        "String Cleaner": 5.0, "Log Parser": 0.0, "LRU Cache": 3.0, "File Indexer": 2.0, "Task Runner CLI": 0.0, "Constrained Diff": 2.0
+      },
+      "VibeThinker-3B": {
+        "Tool Calling": 1.7, "Orchestration": 3.0, "Error Handling": 4.0, "Planning": 2.0, "Parsing": 1.7, "Decision-Making": 3.0,
+        "Logical Deduction": 2.0, "Math Word Problem": 3.0, "Constraint Sat.": 3.0, "Counterfactual": 3.0, "Analytical Expl.": 3.0, "Multi-Hop Synth.": 3.0,
+        "String Cleaner": 3.7, "Log Parser": 0.7, "LRU Cache": 2.3, "File Indexer": 0.3, "Task Runner CLI": 0.0, "Constrained Diff": 0.0
+      },
+      "LFM2.5-8B": {
+        "Tool Calling": 2.0, "Orchestration": 2.0, "Error Handling": 2.3, "Planning": 0.7, "Parsing": 1.0, "Decision-Making": 2.7,
+        "Logical Deduction": 2.0, "Math Word Problem": 2.7, "Constraint Sat.": 3.0, "Counterfactual": 3.0, "Analytical Expl.": 3.0, "Multi-Hop Synth.": 3.0,
+        "String Cleaner": 3.2, "Log Parser": 1.5, "LRU Cache": 0.8, "File Indexer": 1.8, "Task Runner CLI": 0.0, "Constrained Diff": 1.5
+      },
+      "Holo-3.1-9B": {
+        "Tool Calling": 2.3, "Orchestration": 0.0, "Error Handling": 0.0, "Planning": 2.0, "Parsing": 0.0, "Decision-Making": 1.0,
+        "Logical Deduction": 2.0, "Math Word Problem": 3.0, "Constraint Sat.": 3.0, "Counterfactual": 3.0, "Analytical Expl.": 1.0, "Multi-Hop Synth.": 3.0,
+        "String Cleaner": 1.3, "Log Parser": 2.0, "LRU Cache": 0.0, "File Indexer": 2.0, "Task Runner CLI": 0.0, "Constrained Diff": 1.7
+      }
+    },
+    "24gb": {
+      "SuperQwen-35B-A3B": {
+        "Tool Calling": 3.0, "Orchestration": 3.0, "Error Handling": 4.0, "Planning": 2.0, "Parsing": 3.0, "Decision-Making": 3.0,
+        "Logical Deduction": 1.7, "Math Word Problem": 0.0, "Constraint Sat.": 3.0, "Counterfactual": 2.7, "Analytical Expl.": 1.7, "Multi-Hop Synth.": 3.0,
+        "String Cleaner": 4.7, "Log Parser": 4.0, "LRU Cache": 3.0, "File Indexer": 2.0, "Task Runner CLI": 2.0, "Constrained Diff": 2.7
+      }
+    }
+  }
 }

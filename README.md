@@ -18,16 +18,35 @@ Every task uses hidden test cases. Models never see the grading criteria. No par
 
 ## Results (June 2026)
 
-First weight class: **8GB VRAM** on an AMD RX 5700 XT via llama.cpp + Vulkan.
+### 8GB VRAM Class (7 models)
 
-| Model | Size | Agent (18) | Reason (17) | Code (19) | Total (54) | % |
-|-------|------|:----------:|:-----------:|:---------:|:----------:|:-:|
-| Gemma4-12B | 6.3GB | 15.0 | 16.7 | 10.3 | **42.0** | **78%** |
-| Qwen3.5-9B | 6.3GB | 14.0 | 16.0 | 10.3 | **40.3** | **75%** |
-| Ornith-1.0-9B | 5.3GB | 11.7 | 16.3 | 12.0 | **40.0** | **74%** |
-| LFM2.5-8B | 5.0GB | 10.7 | 16.7 | 8.8 | **36.2** | **67%** |
+Hardware: AMD RX 5700 XT via llama.cpp + Vulkan. All models Q4_K_M.
 
-Full writeup: [Agon-Bench: Finding the Best Local LLM for 8GB VRAM](https://guideboardlabs.substack.com/p/agon-bench-finding-the-best-local)
+| Model | Size | Agent (18) | Reason (17) | Code (19) | Total (54) | % | tok/s |
+|-------|------|:----------:|:-----------:|:---------:|:----------:|:-:|:----:|
+| **Holo-3.1-9B-Coder** | 5.3GB | 15.7 | 14.7 | 12.7 | **43.1** | **80%** | 36.6 |
+| **Gemma4-12B** | 6.3GB | 15.0 | 16.7 | 10.3 | **42.0** | **78%** | 21.6 |
+| **Qwen3.5-9B** | 6.3GB | 14.0 | 16.0 | 10.3 | **40.3** | **75%** | 41.9 |
+| **Ornith-1.0-9B** | 5.3GB | 11.7 | 16.3 | 12.0 | **40.0** | **74%** | 45.4 |
+| **VibeThinker-3B** | 1.8GB | 15.3 | 17.0 | 7.0 | **39.0** | **72%** | 82.7 |
+| **LFM2.5-8B** | 5.0GB | 10.7 | 16.7 | 8.8 | **36.2** | **67%** | 91.1 |
+| **Holo-3.1-9B** | 5.3GB | 5.3 | 15.0 | 7.0 | **27.3** | **51%** | 36.6 |
+
+### 4GB VRAM Class (1 model)
+
+| Model | Size | Agent (18) | Reason (17) | Code (19) | Total (54) | % | tok/s |
+|-------|------|:----------:|:-----------:|:---------:|:----------:|:-:|:----:|
+| **VibeThinker-3B** | 1.8GB | 15.3 | 17.0 | 7.0 | **39.0** | **72%** | 82.7 |
+
+### 24GB VRAM Class (VRAM split: 6-7GB GPU, rest system RAM)
+
+| Model | Size | Agent (18) | Reason (17) | Code (19) | Total (54) | % | tok/s |
+|-------|------|:----------:|:-----------:|:---------:|:----------:|:-:|:----:|
+| **SuperQwen-35B-A3B** | 19.7GB | 18.0 | 12.0 | 18.3 | **48.3** | **89%** | 10.1 |
+
+### Interactive Dashboard
+
+Open `agon-dashboard.html` in a browser for interactive charts with class-switching tabs.
 
 ## Usage
 
@@ -78,16 +97,19 @@ agon-arena/
 │   └── run-agon-full.sh    # Full 3-run matrix runner
 ├── references/             # Benchmark design docs
 ├── results/                # Generated output (gitignored)
+│   ├── agon-bench-results.json
+│   └── AGON-BENCH-RESULTS.md
+├── agon-dashboard.html     # Interactive results dashboard
 ├── LICENSE                 # MIT
 └── README.md
 ```
 
 ## Roadmap
 
-- [x] 8GB VRAM class (RX 5700 XT)
-- [ ] 4GB VRAM class (GTX 1650 Mobile, 3-4B models)
+- [x] 8GB VRAM class (RX 5700 XT, 7 models)
+- [x] 4GB VRAM class (VibeThinker-3B)
+- [x] 24GB VRAM class (SuperQwen-35B-A3B, VRAM split)
 - [ ] 12GB VRAM class (RTX 3060/4070)
-- [ ] 24GB VRAM class (RTX 3090/4090)
 - [ ] Vision event
 - [ ] Tool-use event with real API calls
 

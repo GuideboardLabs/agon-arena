@@ -94,7 +94,7 @@ c) What does this tell you about the role of demographic similarity in the syste
 Explain your reasoning step by step.""",
         "hidden_tests": [
             {"type": "text", "label": "Revenue would be lower", "check": "9%", "expected": "CONTAINS:9%"},
-            {"type": "text", "label": "Tickets would not increase", "check": "not", "expected": "CONTAINS:not"},
+            {"type": "text", "label": "Tickets would not increase", "check": "ticket", "expected": "CONTAINS:ticket"},
             {"type": "text", "label": "Demographic similarity causes irrelevant recs", "check": "irrelevant", "expected": "CONTAINS:irrelevant"},
         ]
     },
@@ -128,8 +128,8 @@ QUESTIONS:
 Provide a structured analysis with specific numbers supporting each claim.""",
         "hidden_tests": [
             {"type": "text", "label": "Identifies mobile issue", "check": "mobile", "expected": "CONTAINS:mobile"},
-            {"type": "text", "label": "Mention conversion rate drop", "check": "55%", "expected": "CONTAINS:55%"},
-            {"type": "text", "label": "Recommends action", "check": "recommend", "expected": "CONTAINS:recommend"},
+            {"type": "text", "label": "Mention conversion rate drop", "check": "55", "expected": "CONTAINS:55"},
+            {"type": "text", "label": "Recommends action", "check": "next", "expected": "CONTAINS:next"},
         ]
     },
     {

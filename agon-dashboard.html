@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agon-Bench Results</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #fff; color: #333; padding: 40px; max-width: 1400px; margin: 0 auto;
+}
+h1 { font-size: 2rem; margin-bottom: 8px; color: #1a1a2e; }
+.subtitle { color: #666; margin-bottom: 32px; font-size: 0.95rem; line-height: 1.5; }
+h2 { font-size: 1.3rem; margin: 32px 0 16px; color: #1a1a2e; }
+.tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid #e0e0e0; }
+.tab {
+  padding: 10px 24px; cursor: pointer; font-size: 0.95rem; font-weight: 600;
+  color: #888; border: none; background: none; border-bottom: 3px solid transparent;
+  margin-bottom: -2px; transition: all 0.2s;
+}
+.tab:hover { color: #555; }
+.tab.active { color: #1a73e8; border-bottom-color: #1a73e8; }
+.tab-badge {
+  display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 1px 7px;
+  border-radius: 10px; margin-left: 6px; vertical-align: middle;
+}
+.tab-badge.g8 { background: #e8f0fe; color: #1a73e8; }
+.tab-badge.g4 { background: #f3e8ff; color: #8e44ad; }
+.card {
+  background: #f8f9fa; border-radius: 12px; padding: 24px;
+  margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.card h3 { font-size: 1rem; margin-bottom: 16px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.grid-1 { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.chart-container { position: relative; height: 300px; }
+.chart-container-sm { position: relative; height: 220px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+th { text-align: left; padding: 10px 12px; border-bottom: 2px solid #e0e0e0; color: #555; font-weight: 600; }
+td { padding: 10px 12px; border-bottom: 1px solid #eee; }
+tr:hover td { background: rgba(0,0,0,0.02); }
+.bar-cell { display: flex; align-items: center; gap: 8px; }
+.bar { height: 20px; border-radius: 4px; min-width: 4px; transition: width 0.3s; }
+.score { font-weight: 600; min-width: 50px; }
+.pct { color: #888; font-size: 0.85rem; }
+.legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #555; }
+.legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+.note { font-size: 0.85rem; color: #888; margin-top: 8px; font-style: italic; }
+.metric-row { display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #eee; }
+.metric { text-align: center; flex: 1; }
+.metric .val { font-size: 1.1rem; font-weight: 600; }
+.metric .lbl { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+.composite-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+.composite-bar .seg { height: 100%; transition: width 0.3s; }
+.class-label { font-size: 0.8rem; color: #888; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<h1>Agon-Bench</h1>
+<p class="subtitle">
+  Local LLM benchmark &mdash; Agent (18pts) &middot; Reason (17pts) &middot; Code (19pts) &middot; Total (54pts)<br>
+  3 runs per model per event, reported as mean across runs. All models Q4_K_M on AMD RX 5700 XT (8GB VRAM) via llama.cpp + Vulkan.
+  <strong>Efficiency</strong> (tokens/sec) is included as a 10% weight in the composite score.<br>
+  <strong>24GB class:</strong> Models larger than 8GB use VRAM split (6-7GB GPU, rest system RAM). Efficiency reflects the CPU/GPU split penalty.
+</p>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchClass('8gb')">
+    8GB VRAM Class <span class="tab-badge g8">7 models</span>
+  </button>
+  <button class="tab" onclick="switchClass('4gb')">
+    4GB VRAM Class <span class="tab-badge g4">1 model</span>
+  </button>
+  <button class="tab" onclick="switchClass('24gb')">
+    24GB VRAM Class <span class="tab-badge" style="background:#e0f2f1;color:#009688;">1 model</span>
+  </button>
+</div>
+
+<div id="classLabel" class="class-label"></div>
+
+<div id="summaryCards" class="grid-5"></div>
+
+<div class="card">
+  <h3>Overall Score (54pts) + Efficiency (tok/s)</h3>
+  <div class="chart-container">
+    <canvas id="overallChart"></canvas>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <h3>Agent Event (18pts)</h3>
+    <div class="chart-container-sm">
+      <canvas id="agentChart"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Reason Event (17pts)</h3>
+    <div class="chart-container-sm">
+      <canvas id="reasonChart"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Code Event (19pts)</h3>
+    <div class="chart-container-sm">
+      <canvas id="codeChart"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Efficiency (tokens/sec)</h3>
+    <div class="chart-container-sm">
+      <canvas id="efficiencyChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Per-Task Breakdown (mean across 3 runs)</h3>
+  <table>
+    <thead>
+      <tr id="taskHeader">
+        <th>Task</th>
+        <th>Max</th>
+      </tr>
+    </thead>
+    <tbody id="taskTable"></tbody>
+  </table>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <h3>Capability Radar</h3>
+    <div class="chart-container">
+      <canvas id="radarChart"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Score Distribution</h3>
+    <div class="chart-container">
+      <canvas id="distributionChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<p class="note">
+  Agon-Bench v1.0 &middot; 6 tasks per event &middot; 3 runs per model &middot; Hidden test grading &middot; All models run locally via llama.cpp with Vulkan (AMD RX 5700 XT, 8GB VRAM).<br>
+  <strong>Efficiency note:</strong> Tokens/sec is hardware-dependent. On 8GB VRAM, larger models (12B) are VRAM-constrained, reducing throughput. On 16GB+, all models would fit more comfortably and the speed gap would narrow, but the relative ordering (smaller = faster) would persist. The 10% efficiency weight is modest &mdash; benchmark performance dominates the composite score.
+</p>
+
+<script>
+const COLORS = {
+  gemma4:  { bg: 'rgba(26,115,232,0.85)',  border: '#1a73e8',  light: 'rgba(26,115,232,0.15)' },
+  qwen35:  { bg: 'rgba(230,126,34,0.85)',  border: '#e67e22',  light: 'rgba(230,126,34,0.15)' },
+  ornith:  { bg: 'rgba(192,57,43,0.85)',   border: '#c0392b',  light: 'rgba(192,57,43,0.15)' },
+  lfm:     { bg: 'rgba(39,174,96,0.85)',   border: '#27ae60',  light: 'rgba(39,174,96,0.15)' },
+  vibethinker: { bg: 'rgba(142,68,173,0.85)', border: '#8e44ad', light: 'rgba(142,68,173,0.15)' },
+  superqwen: { bg: 'rgba(0,150,136,0.85)', border: '#009688', light: 'rgba(0,150,136,0.15)' },
+  holo: { bg: 'rgba(233,30,99,0.85)', border: '#e91e63', light: 'rgba(233,30,99,0.15)' },
+  holocoder: { bg: 'rgba(156,39,176,0.85)', border: '#9c27b0', light: 'rgba(156,39,176,0.15)' },
+};
+
+const CLASSES = {
+  '8gb': {
+    label: '8GB VRAM Class &mdash; Models that fit entirely or partially in 8GB VRAM',
+    models: [
+      { key: 'holocoder', label: 'Holo-3.1-9B-Coder', color: COLORS.holocoder },
+      { key: 'gemma4',  label: 'Gemma4-12B',  color: COLORS.gemma4 },
+      { key: 'qwen35',  label: 'Qwen3.5-9B',  color: COLORS.qwen35 },
+      { key: 'ornith',  label: 'Ornith-1.0-9B', color: COLORS.ornith },
+      { key: 'vibethinker', label: 'VibeThinker-3B', color: COLORS.vibethinker },
+      { key: 'lfm',     label: 'LFM2.5-8B',   color: COLORS.lfm },
+      { key: 'holo', label: 'Holo-3.1-9B', color: COLORS.holo },
+    ],
+    data: {
+      overall: [43.1, 42.0, 40.3, 40.0, 39.0, 36.2, 27.3],
+      agent:   [15.7, 15.0, 14.0, 11.7, 15.3, 10.7, 5.3],
+      reason:  [14.7, 16.7, 16.0, 16.3, 17.0, 16.7, 15.0],
+      code:    [12.7, 10.3, 10.3, 12.0, 7.0, 8.8, 7.0],
+      efficiency: [36.6, 21.6, 41.9, 45.4, 82.7, 91.1, 36.6],
+    },
+    tasks: [
+      { name: 'Tool Calling',     max: 3, holocoder: 3.0, gemma4: 2.0, qwen35: 2.0, ornith: 2.0, vibethinker: 1.7, lfm: 2.0, holo: 2.3 },
+      { name: 'Orchestration',    max: 3, holocoder: 2.0, gemma4: 3.0, qwen35: 2.0, ornith: 2.3, vibethinker: 3.0, lfm: 2.0, holo: 0.0 },
+      { name: 'Error Handling',   max: 4, holocoder: 4.0, gemma4: 4.0, qwen35: 4.0, ornith: 4.0, vibethinker: 4.0, lfm: 2.3, holo: 0.0 },
+      { name: 'Planning',         max: 2, holocoder: 2.0, gemma4: 1.3, qwen35: 2.0, ornith: 0.7, vibethinker: 2.0, lfm: 0.7, holo: 2.0 },
+      { name: 'Parsing',          max: 3, holocoder: 1.7, gemma4: 1.7, qwen35: 1.0, ornith: 0.0, vibethinker: 1.7, lfm: 1.0, holo: 0.0 },
+      { name: 'Decision-Making',  max: 3, holocoder: 3.0, gemma4: 3.0, qwen35: 3.0, ornith: 2.7, vibethinker: 3.0, lfm: 2.7, holo: 1.0 },
+      { name: 'Logical Deduction',max: 2, holocoder: 2.0, gemma4: 2.0, qwen35: 2.0, ornith: 2.0, vibethinker: 2.0, lfm: 2.0, holo: 2.0 },
+      { name: 'Math Word Problem',max: 3, holocoder: 3.0, gemma4: 3.0, qwen35: 3.0, ornith: 3.0, vibethinker: 3.0, lfm: 2.7, holo: 3.0 },
+      { name: 'Constraint Sat.',  max: 3, holocoder: 3.0, gemma4: 3.0, qwen35: 3.0, ornith: 3.0, vibethinker: 3.0, lfm: 3.0, holo: 3.0 },
+      { name: 'Counterfactual',   max: 3, holocoder: 3.0, gemma4: 2.7, qwen35: 3.0, ornith: 3.0, vibethinker: 3.0, lfm: 3.0, holo: 3.0 },
+      { name: 'Analytical Expl.', max: 3, holocoder: 1.7, gemma4: 3.0, qwen35: 2.0, ornith: 2.3, vibethinker: 3.0, lfm: 3.0, holo: 1.0 },
+      { name: 'Multi-Hop Synth.', max: 3, holocoder: 2.7, gemma4: 3.0, qwen35: 3.0, ornith: 3.0, vibethinker: 3.0, lfm: 3.0, holo: 3.0 },
+      { name: 'String Cleaner',   max: 5, holocoder: 1.3, gemma4: 5.0, qwen35: 2.0, ornith: 5.0, vibethinker: 3.7, lfm: 3.2, holo: 1.3 },
+      { name: 'Log Parser',       max: 4, holocoder: 1.7, gemma4: 2.0, qwen35: 1.0, ornith: 0.0, vibethinker: 0.7, lfm: 1.5, holo: 2.0 },
+      { name: 'LRU Cache',        max: 3, holocoder: 3.0, gemma4: 0.0, qwen35: 3.0, ornith: 3.0, vibethinker: 2.3, lfm: 0.8, holo: 0.0 },
+      { name: 'File Indexer',     max: 2, holocoder: 1.7, gemma4: 2.0, qwen35: 2.0, ornith: 2.0, vibethinker: 0.3, lfm: 1.8, holo: 2.0 },
+      { name: 'Task Runner CLI',  max: 2, holocoder: 1.0, gemma4: 0.0, qwen35: 0.3, ornith: 0.0, vibethinker: 0.0, lfm: 0.0, holo: 0.0 },
+      { name: 'Constrained Diff', max: 3, holocoder: 2.7, gemma4: 1.3, qwen35: 2.0, ornith: 2.0, vibethinker: 0.0, lfm: 1.5, holo: 1.7 },
+    ],
+    medals: ['&#x1F947;', '&#x1F948;', '&#x1F949;', '', '', '', ''],
+  },
+  '4gb': {
+    label: '4GB VRAM Class &mdash; Models that fit entirely in 4GB VRAM (sub-4B params)',
+    models: [
+      { key: 'vibethinker', label: 'VibeThinker-3B', color: COLORS.vibethinker },
+    ],
+    data: {
+      overall: [39.0],
+      agent:   [15.3],
+      reason:  [17.0],
+      code:    [7.0],
+      efficiency: [82.7],
+    },
+    tasks: [
+      { name: 'Tool Calling',     max: 3, vibethinker: 1.7 },
+      { name: 'Orchestration',    max: 3, vibethinker: 3.0 },
+      { name: 'Error Handling',   max: 4, vibethinker: 4.0 },
+      { name: 'Planning',         max: 2, vibethinker: 2.0 },
+      { name: 'Parsing',          max: 3, vibethinker: 1.7 },
+      { name: 'Decision-Making',  max: 3, vibethinker: 3.0 },
+      { name: 'Logical Deduction',max: 2, vibethinker: 2.0 },
+      { name: 'Math Word Problem',max: 3, vibethinker: 3.0 },
+      { name: 'Constraint Sat.',  max: 3, vibethinker: 3.0 },
+      { name: 'Counterfactual',   max: 3, vibethinker: 3.0 },
+      { name: 'Analytical Expl.', max: 3, vibethinker: 3.0 },
+      { name: 'Multi-Hop Synth.', max: 3, vibethinker: 3.0 },
+      { name: 'String Cleaner',   max: 5, vibethinker: 3.7 },
+      { name: 'Log Parser',       max: 4, vibethinker: 0.7 },
+      { name: 'LRU Cache',        max: 3, vibethinker: 2.3 },
+      { name: 'File Indexer',     max: 2, vibethinker: 0.3 },
+      { name: 'Task Runner CLI',  max: 2, vibethinker: 0.0 },
+      { name: 'Constrained Diff', max: 3, vibethinker: 0.0 },
+    ],
+    medals: [''],
+  },
+  '24gb': {
+    label: '24GB VRAM Class &mdash; Models requiring VRAM split (6-7GB GPU, rest system RAM)',
+    models: [
+      { key: 'superqwen', label: 'SuperQwen-35B-A3B', color: COLORS.superqwen },
+    ],
+    data: {
+      overall: [48.3],
+      agent:   [18.0],
+      reason:  [12.0],
+      code:    [18.3],
+      efficiency: [10.1],
+    },
+    tasks: [
+      { name: 'Tool Calling',     max: 3, superqwen: 3.0 },
+      { name: 'Orchestration',    max: 3, superqwen: 3.0 },
+      { name: 'Error Handling',   max: 4, superqwen: 4.0 },
+      { name: 'Planning',         max: 2, superqwen: 2.0 },
+      { name: 'Parsing',          max: 3, superqwen: 3.0 },
+      { name: 'Decision-Making',  max: 3, superqwen: 3.0 },
+      { name: 'Logical Deduction',max: 2, superqwen: 1.7 },
+      { name: 'Math Word Problem',max: 3, superqwen: 0.0 },
+      { name: 'Constraint Sat.',  max: 3, superqwen: 3.0 },
+      { name: 'Counterfactual',   max: 3, superqwen: 2.7 },
+      { name: 'Analytical Expl.', max: 3, superqwen: 1.7 },
+      { name: 'Multi-Hop Synth.', max: 3, superqwen: 3.0 },
+      { name: 'String Cleaner',   max: 5, superqwen: 4.7 },
+      { name: 'Log Parser',       max: 4, superqwen: 4.0 },
+      { name: 'LRU Cache',        max: 3, superqwen: 3.0 },
+      { name: 'File Indexer',     max: 2, superqwen: 2.0 },
+      { name: 'Task Runner CLI',  max: 2, superqwen: 2.0 },
+      { name: 'Constrained Diff', max: 3, superqwen: 2.7 },
+    ],
+    medals: [''],
+  },
+};
+
+let chartInstances = {};
+let currentClass = '8gb';
+
+function getClass(name) {
+  return CLASSES[name];
+}
+
+function destroyCharts() {
+  Object.keys(chartInstances).forEach(key => {
+    if (chartInstances[key]) {
+      chartInstances[key].destroy();
+      delete chartInstances[key];
+    }
+  });
+}
+
+function buildSummaryCards(cls) {
+  const container = document.getElementById('summaryCards');
+  const n = cls.models.length;
+  container.className = n <= 1 ? 'grid-1' : 'grid-5';
+
+  const maxEff = Math.max(...cls.data.efficiency);
+  const maxOverall = Math.max(...cls.data.overall);
+
+  container.innerHTML = cls.models.map((m, i) => {
+    const score = cls.data.overall[i];
+    const pct = (score / 54 * 100).toFixed(0);
+    const agent = cls.data.agent[i];
+    const reason = cls.data.reason[i];
+    const code = cls.data.code[i];
+    const eff = cls.data.efficiency[i];
+    const effPct = (eff / maxEff * 100).toFixed(0);
+    const benchPct = (score / 54 * 100).toFixed(1);
+    const composite = (0.9 * score / 54 + 0.1 * eff / maxEff) * 100;
+    const medal = cls.medals[i] || '';
+    const color = m.color;
+
+    return '<div class="card">' +
+      '<h3>' + medal + ' ' + m.label + '</h3>' +
+      '<div style="font-size:2.2rem;font-weight:700;color:' + color.border + ';">' + score.toFixed(1) + '</div>' +
+      '<div style="color:#666;">/ 54 (' + pct + '%)</div>' +
+      '<div style="margin-top:8px;font-size:0.85rem;color:#888;">Agent ' + agent.toFixed(1) + ' &middot; Reason ' + reason.toFixed(1) + ' &middot; Code ' + code.toFixed(1) + '</div>' +
+      '<div class="metric-row">' +
+        '<div class="metric"><div class="val" style="color:' + color.border + ';">' + eff.toFixed(1) + '</div><div class="lbl">tok/s</div></div>' +
+        '<div class="metric"><div class="val">--</div><div class="lbl">tokens</div></div>' +
+        '<div class="metric"><div class="val">--</div><div class="lbl">runtime</div></div>' +
+      '</div>' +
+      '<div class="composite-bar">' +
+        '<div class="seg" style="width:' + (benchPct * 0.9).toFixed(1) + '%;background:' + color.border + ';" title="Benchmark ' + benchPct + '%"></div>' +
+        '<div class="seg" style="width:' + (effPct * 0.1).toFixed(1) + '%;background:' + color.light + ';" title="Efficiency ' + effPct + '%"></div>' +
+      '</div>' +
+      '<div style="font-size:0.8rem;color:#888;margin-top:4px;">Composite: ' + composite.toFixed(1) + '% (90% bench + 10% efficiency)</div>' +
+    '</div>';
+  }).join('');
+}
+
+function buildTaskTable(cls) {
+  const header = document.getElementById('taskHeader');
+  const body = document.getElementById('taskTable');
+
+  header.innerHTML = '<th>Task</th><th>Max</th>' +
+    cls.models.map(m => '<th>' + m.label + '</th>').join('');
+
+  body.innerHTML = cls.tasks.map(t => {
+    const vals = cls.models.map(m => t[m.key] || 0);
+    const maxVal = Math.max(...vals);
+    const td = vals.map((v, i) => {
+      const pct = v / t.max * 100;
+      const isMax = v === maxVal && v > 0;
+      const color = cls.models[i].color;
+      return '<td><div class="bar-cell"><div class="bar" style="width:' + (pct * 1.8) + 'px;background:' + color.bg + '"></div><span class="score" style="color:' + (isMax ? color.border : '#333') + '">' + v.toFixed(1) + '</span><span class="pct">(' + pct.toFixed(0) + '%)</span></div></td>';
+    }).join('');
+    return '<tr><td><strong>' + t.name + '</strong></td><td>' + t.max + '</td>' + td + '</tr>';
+  }).join('');
+}
+
+function renderCharts(cls) {
+  const labels = cls.models.map(m => m.label);
+  const colors = cls.models.map(m => m.color);
+  const data = cls.data;
+
+  chartInstances.overall = new Chart(document.getElementById('overallChart'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Benchmark Score (54pts)',
+          data: data.overall,
+          backgroundColor: colors.map(c => c.bg),
+          borderColor: colors.map(c => c.border),
+          borderWidth: 1,
+          borderRadius: 4,
+          yAxisID: 'y',
+        },
+        {
+          label: 'Efficiency (tok/s)',
+          data: data.efficiency,
+          type: 'line',
+          borderColor: '#333',
+          backgroundColor: 'rgba(0,0,0,0.05)',
+          borderWidth: 2,
+          pointBackgroundColor: '#333',
+          pointRadius: 5,
+          pointStyle: 'rectRot',
+          yAxisID: 'y1',
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { boxWidth: 12, padding: 12, font: { size: 11 } } }
+      },
+      scales: {
+        y: {
+          beginAtZero: true, max: 54,
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          title: { display: true, text: 'Score (pts)', color: '#888' }
+        },
+        y1: {
+          position: 'right',
+          beginAtZero: true, max: 100,
+          grid: { display: false },
+          title: { display: true, text: 'tok/s', color: '#888' }
+        },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  function barChart(id, chartData, maxVal) {
+    chartInstances[id] = new Chart(document.getElementById(id), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: chartData,
+          backgroundColor: colors.map(c => c.bg),
+          borderColor: colors.map(c => c.border),
+          borderWidth: 1,
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { max: maxVal, grid: { color: 'rgba(0,0,0,0.05)' } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  barChart('agentChart', data.agent, 18);
+  barChart('reasonChart', data.reason, 17);
+  barChart('codeChart', data.code, 19);
+  barChart('efficiencyChart', data.efficiency, 100);
+
+  chartInstances.radar = new Chart(document.getElementById('radarChart'), {
+    type: 'radar',
+    data: {
+      labels: ['Agent', 'Reason', 'Code'],
+      datasets: labels.map((label, i) => ({
+        label: label,
+        data: [data.agent[i], data.reason[i], data.code[i]],
+        backgroundColor: colors[i].light,
+        borderColor: colors[i].border,
+        borderWidth: 2,
+        pointBackgroundColor: colors[i].border,
+      }))
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'top', labels: { boxWidth: 12, padding: 8, font: { size: 11 } } } },
+      scales: {
+        r: {
+          min: 0, max: 18,
+          grid: { color: 'rgba(0,0,0,0.08)' },
+          angleLines: { color: 'rgba(0,0,0,0.08)' },
+          pointLabels: { font: { size: 12 } },
+          ticks: { stepSize: 3, font: { size: 10 } }
+        }
+      }
+    }
+  });
+
+  chartInstances.distribution = new Chart(document.getElementById('distributionChart'), {
+    type: 'radar',
+    data: {
+      labels: ['Tool Calling', 'Orchestration', 'Error Handling', 'Planning', 'Parsing', 'Decision-Making',
+               'Logical Deduction', 'Math Word', 'Constraint Sat.', 'Counterfactual', 'Analytical Expl.', 'Multi-Hop',
+               'String Cleaner', 'Log Parser', 'LRU Cache', 'File Indexer', 'Task Runner CLI', 'Constrained Diff'],
+      datasets: labels.map((label, i) => ({
+        label: label,
+        data: cls.tasks.map(t => (t[cls.models[i].key] || 0) / t.max * 100),
+        backgroundColor: colors[i].light,
+        borderColor: colors[i].border,
+        borderWidth: 1.5,
+        pointRadius: 2,
+        pointBackgroundColor: colors[i].border,
+      }))
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'top', labels: { boxWidth: 12, padding: 8, font: { size: 10 } } } },
+      scales: {
+        r: {
+          min: 0, max: 100,
+          grid: { color: 'rgba(0,0,0,0.06)' },
+          angleLines: { color: 'rgba(0,0,0,0.06)' },
+          pointLabels: { font: { size: 8 } },
+          ticks: { stepSize: 25, font: { size: 9 }, callback: v => v + '%' }
+        }
+      }
+    }
+  });
+}
+
+function switchClass(name) {
+  currentClass = name;
+  const cls = getClass(name);
+
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const tabIndex = name === '8gb' ? 0 : name === '4gb' ? 1 : 2;
+  document.querySelectorAll('.tab')[tabIndex].classList.add('active');
+
+  document.getElementById('classLabel').innerHTML = cls.label;
+
+  destroyCharts();
+
+  buildSummaryCards(cls);
+  buildTaskTable(cls);
+  renderCharts(cls);
+}
+
+switchClass('8gb');
+</script>
+</body>
+</html>

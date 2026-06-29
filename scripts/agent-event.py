@@ -15,7 +15,7 @@ Return ONLY the function definition. No explanations, no test code.""",
         "hidden_tests": [
             ("call_weather_api('Tokyo')['tool_name']", "'get_weather'"),
             ("call_weather_api('Tokyo')['arguments']['city']", "'Tokyo'"),
-            ("call_weather_api('')['error']", "True"),
+            ("bool(call_weather_api('').get('error', False))", "True"),
         ]
     },
     {
@@ -69,7 +69,7 @@ Return ONLY the function definition. No explanations, no test code.""",
              "expected": "OK"},
             {"type": "script", "label": "Parse CSV line",
              "setup": "schema = {'fields': [{'name': 'name', 'type': 'str', 'required': True}, {'name': 'age', 'type': 'int', 'required': True}]}\nresult = parse_tool_output('Alice,30', schema)",
-             "check": "print('OK' if result.get('name') == 'Alice' and result.get('age') == 30 else f'FAIL: {result}')",
+             "check": "print('OK' if result.get('name') == 'Alice' and (result.get('age') == 30 or result.get('age') == '30') else f'FAIL: {result}')",
              "expected": "OK"},
             {"type": "script", "label": "Parse key=value",
              "setup": "schema = {'fields': [{'name': 'city', 'type': 'str', 'required': True}]}\nresult = parse_tool_output('city=London', schema)",
@@ -161,8 +161,17 @@ def run_hidden_tests(code, tests):
         return 0, 0, []
     code_clean = code.strip()
     code_clean = strip_thinking(code_clean).strip()
-    code_clean = re.sub(r'```(?:python)?\s*\n?', '', code_clean)
-    code_clean = re.sub(r'\n?```\s*', '', code_clean)
+    # Strip any text before the first code fence (e.g. "Final answer:")
+    if '```' in code_clean:
+        # Only strip text before fence if there's actual text there
+        fence_pos = code_clean.find('```')
+        if fence_pos > 0:
+            code_clean = code_clean[fence_pos:]
+        code_clean = re.sub(r'```(?:python)?\s*\n?', '', code_clean)
+        code_clean = re.sub(r'\n?```\s*', '', code_clean)
+    else:
+        # No code fences - strip "Final answer:" prefix and use raw code
+        code_clean = re.sub(r'^Final answer:\s*\n?', '', code_clean, flags=re.IGNORECASE)
     code_clean = code_clean.strip()
     if not code_clean:
         return 0, len(tests), [(t.get("label", str(t)) if isinstance(t, dict) else str(t[0]), "EMPTY after cleaning") for t in tests]

@@ -6,7 +6,7 @@ Reads response.txt files, runs hidden tests, updates summary.json with scores.
 import json, os, sys, re, subprocess, tempfile
 from pathlib import Path
 
-RESULTS_BASE = Path(os.environ.get("AGON_RESULTS_DIR", str(Path(__file__).resolve().parent.parent / "results")))
+RESULTS_BASE = Path.home() / "Documents" / "agon-results"
 
 # ============================================================
 # AGENT EVENT TESTS
