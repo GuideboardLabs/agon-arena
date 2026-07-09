@@ -1,110 +1,92 @@
-# Agon-Bench Results
+# Agon-Bench Results (v2 — July 2026)
 
-## 8GB VRAM Class (7 models)
+## 8GB VRAM Class (8 models)
 
-| Model | Agent (18) | Reason (17) | Code (19) | Total (54) | % | tok/s |
-|-------|-----------|------------|----------|-----------|----|-------|
-| **Holo-3.1-9B-Coder** | 15.7 | 14.7 | 12.7 | **43.1** | 80% | 36.6 |
-| **Gemma4-12B** | 15.0 | 16.7 | 10.3 | **42.0** | 78% | 21.6 |
-| **Qwen3.5-9B** | 14.0 | 16.0 | 10.3 | **40.3** | 75% | 41.9 |
-| **Ornith-1.0-9B** | 11.7 | 16.3 | 12.0 | **40.0** | 74% | 45.4 |
-| **VibeThinker-3B** | 15.3 | 17.0 | 7.0 | **39.0** | 72% | 82.7 |
-| **LFM2.5-8B** | 10.7 | 16.7 | 8.8 | **36.2** | 67% | 91.1 |
-| **Holo-3.1-9B** | 5.3 | 15.0 | 7.0 | **27.3** | 51% | 36.6 |
+| Rank | Model | Size | Agent (24) | Reason (8) | Code (25) | Total (57) | % | tok/s |
+|------|-------|:----:|:----------:|:----------:|:---------:|:----------:|:-:|:----:|
+| 🥇 | **Gemma4-12B** | 6.3GB | 20.7 | 5.7 | 20.3 | **46.7** | 82% | 24 |
+| 🥈 | **Grug-12B** | 6.9GB | 20.0 | 5.0 | 20.0 | **45.0** | 79% | 34 |
+| 🥉 | **OmniCoder-9B** | 5.3GB | 20.3 | 5.0 | 18.0 | **43.3** | 76% | 52 |
+| 4 | **Qwen3.5-9B** | 6.3GB | 18.7 | 5.3 | 19.0 | **43.0** | 75% | 47 |
+| 5 | **Qwythos-9B** | 5.3GB | 18.7 | 4.3 | 19.7 | **42.7** | 75% | 48 |
+| 6 | **Ornith-1.0-9B** | 5.3GB | 17.7 | 5.7 | 16.7 | **40.0** | 70% | 48 |
+| 7 | **Holo-3.1-9B-Coder** | 5.3GB | 15.7 | 3.0 | 16.3 | **35.0** | 61% | 45 |
+| 8 | **LFM2.5-8B** | 5.0GB | 14.7 | 2.3 | 17.0 | **34.0** | 60% | 52 |
 
-## 4GB VRAM Class (1 model)
+## Grug-12B — Detailed Results
 
-| Model | Agent (18) | Reason (17) | Code (19) | Total (54) | % | tok/s |
-|-------|-----------|------------|----------|-----------|----|-------|
-| **VibeThinker-3B** | 15.3 | 17.0 | 7.0 | **39.0** | 72% | 82.7 |
+Grug-12B is a fine-tune of Gemma4-12B. Same architecture, same tokenizer, same `<|channel>thought` thinking format. The Q4_K_M is 6.9GB vs Gemma4's 6.3GB — 600MB larger for the same quantization level.
 
-## 24GB VRAM Class (VRAM split: 6-7GB GPU, rest system RAM)
+### Agent Event (24 pts) — Run 2 (clean VRAM)
 
-| Model | Agent (18) | Reason (17) | Code (19) | Total (54) | % | tok/s |
-|-------|-----------|------------|----------|-----------|----|-------|
-| **SuperQwen-35B-A3B** | 18.0 | 12.0 | 18.3 | **48.3** | 89% | 10.1 |
+| Task | Difficulty | Score | Time |
+|------|-----------|:-----:|:----:|
+| Tool Calling | Easy | **3/3** | 2.6s |
+| Orchestration | Easy-Medium | **3/3** | 4.3s |
+| Error Handling | Medium | **4/4** | 4.7s |
+| Planning | Medium-Hard | **2/2** | 9.1s |
+| Parsing | Medium | 2/3 | 9.4s |
+| Decision-Making | Hard | 2/3 | 3.9s |
+| Multi-Step Research | Hard | 2/3 | 22.4s |
+| Memory-Augmented Agent | Very Hard | 2/3 | 22.5s |
+| **Total** | | **20/24 (83%)** | **1.2 min** |
 
-## Holo-3.1-9B-Coder — Detailed Results
+### Reason Event (8 pts) — Run 1
 
-### Code Event (19 pts)
-- Run 1: **14/19** (74%) — String Cleaner 4/5, Log Parser 1/4, LRU Cache 3/3, File Indexer 2/2, Task Runner 1/2, Diff Tool 3/3
-- Run 2: **13/19** (68%) — String Cleaner 4/5, Log Parser 2/4, LRU Cache 3/3, File Indexer 1/2, Task Runner 1/2, Diff Tool 2/3
-- Run 3 (solo): **11/19** (58%) — String Cleaner 0/5, Log Parser 2/4, LRU Cache 3/3, File Indexer 2/2, Task Runner 1/2, Diff Tool 3/3
-- **Mean: 12.7/19 (67%)**
+| Task | Difficulty | Score | Time |
+|------|-----------|:-----:|:----:|
+| Logical Deduction | Easy | 0/1 | 1276s* |
+| Math Word Problem | Easy-Medium | **1/1** | 16.1s |
+| Constraint Satisfaction | Medium | **1/1** | 22.7s |
+| Counterfactual Reasoning | Medium-Hard | **1/1** | 8.5s |
+| Analytical Explanation | Hard | **1/1** | 9.4s |
+| Multi-Hop Synthesis | Very Hard | 0/1 | 5.9s |
+| Graph Path Optimization | Hard | 0/1 | 20.8s |
+| Probabilistic Diagnosis | Very Hard | **1/1** | 19.0s |
+| **Total** | | **5/8 (63%)** | **22 min** |
 
-### Agent Event (18 pts)
-- Run 1: **15/18** (83%) — Tool Calling 3/3, Orchestration 2/3, Error Handling 4/4, Planning 2/2, Parsing 1/3, Decision-Making 3/3
-- Run 2: **17/18** (94%) — Tool Calling 3/3, Orchestration 2/3, Error Handling 4/4, Planning 2/2, Parsing 3/3, Decision-Making 3/3
-- Run 3 (solo): **15/18** (83%) — Tool Calling 3/3, Orchestration 2/3, Error Handling 4/4, Planning 2/2, Parsing 1/3, Decision-Making 3/3
-- **Mean: 15.7/18 (87%)**
+*\*Task 1 triggered a 92K-char thinking chain (native `<|channel>thought` tokens not suppressed by `--reasoning off`). The other 7 tasks completed in seconds.*
 
-### Reason Event (17 pts)
-- Run 1: **14/17** (82%) — Logical Deduction 2/2, Math Word 3/3, Constraint Sat. 3/3, Counterfactual 3/3, Analytical Expl. 2/3, Multi-Hop 2/3
-- Run 2: **15/17** (88%) — Logical Deduction 2/2, Math Word 3/3, Constraint Sat. 3/3, Counterfactual 3/3, Analytical Expl. 1/3, Multi-Hop 3/3
-- Run 3 (solo): **15/17** (88%) — Logical Deduction 2/2, Math Word 3/3, Constraint Sat. 3/3, Counterfactual 3/3, Analytical Expl. 2/3, Multi-Hop 3/3
-- **Mean: 14.7/17 (86%)**
+### Code Event (25 pts) — Run 1
 
-### vs Base Holo-3.1-9B
-| Metric | Base | Coder | Delta |
-|--------|------|-------|-------|
-| **Code** | 7.0 (37%) | **12.7 (67%)** | **+5.7 pts (+30%)** |
-| **Agent** | 5.3 (30%) | **15.7 (87%)** | **+10.4 pts (+57%)** |
-| **Reason** | 15.0 (88%) | 14.7 (86%) | -0.3 pts (-2%) |
-| **Total** | 27.3 (51%) | **43.1 (80%)** | **+15.8 pts (+29%)** |
+| Task | Difficulty | Score | Time |
+|------|-----------|:-----:|:----:|
+| String Cleaner | Easy | **5/5** | 9.0s |
+| Log Parser | Easy-Medium | **4/4** | 11.9s |
+| LRU Cache | Medium | **3/3** | 7.0s |
+| File Indexer | Medium-Hard | 1/2 | 33.4s |
+| Task Runner CLI | Hard | 1/2 | 52.8s |
+| Constrained Diff Tool | Very Hard | 2/3 | 1278s* |
+| Regex Engine | Hard | 0/4 | 77.5s |
+| Concurrent Web Scraper | Very Hard | **2/2** | 32.2s |
+| **Total** | | **20/25 (80%)** | **25 min** |
+
+*\*Task 6 triggered a 118K-char thinking chain. Other 7 tasks completed in seconds.*
+
+### vs Gemma4-12B
+
+| Metric | Gemma4-12B | Grug-12B | Delta |
+|--------|:----------:|:--------:|:-----:|
+| **Total (57)** | **46.7** | **45.0** | **-1.7** |
+| Agent (24) | 20.7 | 20.0 | -0.7 |
+| Reason (8) | 5.7 | 5.0 | -0.7 |
+| Code (25) | 20.3 | 20.0 | -0.3 |
+| **tok/s** | **24** | **34** | **+10 (+42%)** |
 
 ### Key Observations
-- **Code**: Massive improvement. LRU Cache went from 0→3 (perfect), Diff Tool from 1.7→2.7, Task Runner from 0→1.0. String Cleaner still inconsistent (varies 0-4/5).
-- **Agent**: Huge improvement. Error Handling went from 0→4 (perfect), Decision-Making from 1→3, Orchestration from 0→2. Parsing still weak (1.7/3).
-- **Reason**: Slight regression. Multi-Hop Synthesis dropped from 3→2.7. Otherwise identical to base.
-- **Efficiency**: Same as base (~36.6 tok/s) — same architecture, same size.
-- **Architecture**: Qwen3.5-based, code-specialized LoRA (r=8, alpha=16). Claims 63.4% HumanEval+ vs 52.4% base.
 
-## Holo-3.1-9B (Base) — Detailed Results
-
-### Code Event (19 pts)
-- Run 1: **10/19** (53%) — String Cleaner 4/5, Log Parser 2/4, LRU Cache 0/3 (syntax error), File Indexer 2/2, Task Runner 0/2, Diff Tool 2/3
-- Run 2: **5/19** (26%) — String Cleaner 0/5 (runtime error), Log Parser 2/4, LRU Cache 0/3, File Indexer 2/2, Task Runner 0/2, Diff Tool 1/3
-- Run 3: **6/19** (32%) — String Cleaner 0/5 (syntax error), Log Parser 2/4, LRU Cache 0/3, File Indexer 2/2, Task Runner 0/2, Diff Tool 2/3
-- **Mean: 7.0/19 (37%)**
-
-### Agent Event (18 pts)
-- Run 1: **7/18** (39%) — Tool Calling 2/3, Orchestration 0/3, Error Handling 0/4, Planning 2/2, Parsing 0/3, Decision-Making 3/3
-- Run 2: **4/18** (22%) — Tool Calling 2/3, Orchestration 0/3, Error Handling 0/4, Planning 2/2, Parsing 0/3, Decision-Making 0/3
-- Run 3: **5/18** (28%) — Tool Calling 3/3, Orchestration 0/3, Error Handling 0/4, Planning 2/2, Parsing 0/3, Decision-Making 0/3
-- **Mean: 5.3/18 (30%)**
-
-### Reason Event (17 pts)
-- Run 1: **15/17** (88%) — Logical Deduction 2/2, Math Word 3/3, Constraint Sat. 3/3, Counterfactual 3/3, Analytical Expl. 1/3, Multi-Hop 3/3
-- Run 2: **15/17** (88%) — same pattern
-- Run 3: **15/17** (88%) — same pattern
-- **Mean: 15.0/17 (88%)**
-
-## SuperQwen-35B-A3B — Detailed Results
-
-### Code Event (19 pts)
-- Run 1: **19/19** (100%)
-- Run 2: **17/19** (89%) — Task 1 truncation edge case, Task 6 diff broken
-- Run 3: **19/19** (100%)
-- **Mean: 18.3/19 (96.5%)**
-
-### Agent Event (18 pts)
-- Run 1: **18/18** (100%)
-- Run 2: **18/18** (100%)
-- Run 3: **18/18** (100%)
-- **Mean: 18.0/18 (100%)**
-
-### Reason Event (17 pts)
-- Run 1: **11/17** (65%) — Math word problem 0/3, Counterfactual 2/3, Analytical Expl. 1/3
-- Run 2: **13/17** (76%) — Math word problem 0/3, Analytical Expl. 2/3
-- Run 3: **12/17** (71%) — Logical Deduction 1/2, Math word problem 0/3, Analytical Expl. 2/3
-- **Mean: 12.0/17 (70.6%)**
+- **Speed**: Grug runs 42% faster than Gemma4 on clean VRAM (34 vs 24 tok/s). The 600MB larger file size doesn't matter when you have the full 8GB to yourself.
+- **Quality**: Within 1.7 points of Gemma4 overall. Grug is better at parsing (2.0 vs 1.7) and web scraping (2.0 vs 1.0), worse at planning (2.0 vs 3.0) and graph path optimization (0.0 vs 1.0).
+- **Regex Engine**: Complete miss (0/4). This is the biggest single-task gap vs Gemma4 (3.3/4).
+- **Thinking Tokens**: Grug retains Gemma4's native `<|channel>thought` format. `--reasoning off` doesn't suppress it. Complex tasks trigger long reasoning chains (92K-118K chars) that waste tokens. The benchmark scripts strip them, but the model still burns time generating them.
+- **VRAM Contention**: Critical finding. Running multiple models simultaneously drops TPS from ~34 to ~2.4. Always run one model at a time on 8GB hardware.
 
 ## Methodology
+
 - All models: Q4_K_M quantization
 - Hardware: AMD RX 5700 XT (8GB VRAM)
 - Backend: llama.cpp + Vulkan (AMD radv/mesa)
-- 3 runs per model per event, reported as mean
+- One model at a time (VRAM contention degrades performance severely)
 - Hidden test grading (no model sees test cases)
-- 24GB class models use VRAM split: 6-7GB GPU, rest system RAM
-- **Harness fix (2026-06-29)**: Fixed code fence extraction regex that was eating code when responses started with ```. All Holo-3.1-9B scores are regraded with the fixed harness.
-- **Solo runs**: Run 3 of each event for Holo-3.1-9B-Coder was run solo (no concurrent model load) to ensure full model attention.
+- v2 benchmark: 8 tasks per event, 57 points total
+- Hand-graded with hidden test verification

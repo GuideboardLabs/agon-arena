@@ -88,11 +88,11 @@ Return the COMPLETE script. No explanations.""",
 Return ALL four files, each clearly marked with filename headers.""",
         "hidden_tests": [
             {"type": "script", "label": "TaskRunner creates project structure",
-             "setup": "import tempfile, os, sys, re, shutil\nfrom pathlib import Path\n# Read raw response file (not cleaned code) to preserve file headers and code fences\nraw_response_path = MODEL_CODE_PATH.replace('.py', '_raw.txt')\nif os.path.exists(raw_response_path):\n    response = open(raw_response_path).read()\nelse:\n    response = open(MODEL_CODE_PATH).read()\ntmpdir = Path(tempfile.mkdtemp())\ncurrent_file = None\ncurrent_content = []\nfor line in response.split('\\n'):\n    m = re.match(r'^#+\\s+(\\S+)\\s*$', line)\n    if not m:\n        m = re.match(r'^(\\S+\\.py)\\s*$', line)\n    if m:\n        if current_file and current_content:\n            file_path = tmpdir / current_file\n            file_path.parent.mkdir(parents=True, exist_ok=True)\n            # Strip code fences from content\n            clean_content = [l for l in current_content if not l.startswith('```')]\n            file_path.write_text('\\n'.join(clean_content))\n        current_file = m.group(1)\n        current_content = []\n    elif current_file:\n        current_content.append(line)\nif current_file and current_content:\n    file_path = tmpdir / current_file\n    file_path.parent.mkdir(parents=True, exist_ok=True)\n    clean_content = [l for l in current_content if not l.startswith('```')]\n    file_path.write_text('\\n'.join(clean_content))\nfiles = ['taskrunner/__init__.py', 'taskrunner/runner.py', 'taskrunner/cli.py', 'taskrunner/models.py']\nmissing = [f for f in files if not (tmpdir / f).exists()]\nshutil.rmtree(str(tmpdir), ignore_errors=True)",
+             "setup": "import tempfile, os, sys, re, shutil\nfrom pathlib import Path\n# Read raw response file (not cleaned code) to preserve file headers and code fences\nraw_response_path = MODEL_CODE_PATH.replace('.py', '_raw.txt')\nif os.path.exists(raw_response_path):\n    response = open(raw_response_path).read()\nelse:\n    response = open(MODEL_CODE_PATH).read()\ntmpdir = Path(tempfile.mkdtemp())\ncurrent_file = None\ncurrent_content = []\nin_fence = False\nfor line in response.split('\\n'):\n    if line.startswith('```'):\n        in_fence = not in_fence\n        if current_file:\n            current_content.append(line)\n        continue\n    if not in_fence:\n        m = re.match(r'^#+\\s+(\\S+)\\s*$', line)\n        if not m:\n            m = re.match(r'^(\\S+\\.py)\\s*$', line)\n        if m:\n            if current_file and current_content:\n                file_path = tmpdir / current_file\n                file_path.parent.mkdir(parents=True, exist_ok=True)\n                # Strip code fences from content\n                clean_content = [l for l in current_content if not l.startswith('```')]\n                file_path.write_text('\\n'.join(clean_content))\n            current_file = m.group(1)\n            current_content = []\n            continue\n    if current_file:\n        current_content.append(line)\nif current_file and current_content:\n    file_path = tmpdir / current_file\n    file_path.parent.mkdir(parents=True, exist_ok=True)\n    clean_content = [l for l in current_content if not l.startswith('```')]\n    file_path.write_text('\\n'.join(clean_content))\nfiles = ['taskrunner/__init__.py', 'taskrunner/runner.py', 'taskrunner/cli.py', 'taskrunner/models.py']\nmissing = [f for f in files if not (tmpdir / f).exists()]\nshutil.rmtree(str(tmpdir), ignore_errors=True)",
              "check": "print('OK')",
              "expected": "OK"},
             {"type": "script", "label": "TaskRunner models import correctly",
-             "setup": "import tempfile, os, sys, re, shutil\nfrom pathlib import Path\nraw_response_path = MODEL_CODE_PATH.replace('.py', '_raw.txt')\nif os.path.exists(raw_response_path):\n    response = open(raw_response_path).read()\nelse:\n    response = open(MODEL_CODE_PATH).read()\ntmpdir = Path(tempfile.mkdtemp())\ncurrent_file = None\ncurrent_content = []\nfor line in response.split('\\n'):\n    m = re.match(r'^#+\\s+(\\S+)\\s*$', line)\n    if not m:\n        m = re.match(r'^(\\S+\\.py)\\s*$', line)\n    if m:\n        if current_file and current_content:\n            file_path = tmpdir / current_file\n            file_path.parent.mkdir(parents=True, exist_ok=True)\n            clean_content = [l for l in current_content if not l.startswith('```')]\n            file_path.write_text('\\n'.join(clean_content))\n        current_file = m.group(1)\n        current_content = []\n    elif current_file:\n        current_content.append(line)\nif current_file and current_content:\n    file_path = tmpdir / current_file\n    file_path.parent.mkdir(parents=True, exist_ok=True)\n    clean_content = [l for l in current_content if not l.startswith('```')]\n    file_path.write_text('\\n'.join(clean_content))\nsys.path.insert(0, str(tmpdir))",
+             "setup": "import tempfile, os, sys, re, shutil\nfrom pathlib import Path\nraw_response_path = MODEL_CODE_PATH.replace('.py', '_raw.txt')\nif os.path.exists(raw_response_path):\n    response = open(raw_response_path).read()\nelse:\n    response = open(MODEL_CODE_PATH).read()\ntmpdir = Path(tempfile.mkdtemp())\ncurrent_file = None\ncurrent_content = []\nin_fence = False\nfor line in response.split('\\n'):\n    if line.startswith('```'):\n        in_fence = not in_fence\n        if current_file:\n            current_content.append(line)\n        continue\n    if not in_fence:\n        m = re.match(r'^#+\\s+(\\S+)\\s*$', line)\n        if not m:\n            m = re.match(r'^(\\S+\\.py)\\s*$', line)\n        if m:\n            if current_file and current_content:\n                file_path = tmpdir / current_file\n                file_path.parent.mkdir(parents=True, exist_ok=True)\n                clean_content = [l for l in current_content if not l.startswith('```')]\n                file_path.write_text('\\n'.join(clean_content))\n            current_file = m.group(1)\n            current_content = []\n            continue\n    if current_file:\n        current_content.append(line)\nif current_file and current_content:\n    file_path = tmpdir / current_file\n    file_path.parent.mkdir(parents=True, exist_ok=True)\n    clean_content = [l for l in current_content if not l.startswith('```')]\n    file_path.write_text('\\n'.join(clean_content))\nsys.path.insert(0, str(tmpdir))",
              "check": "from taskrunner.models import Task, Result\nt = Task(name='test', command='echo hi', timeout=30, retries=0)\nr = Result(task_name='test', exit_code=0, stdout='hi', stderr='', duration=0.1, retry_count=0)\nprint('OK')\nshutil.rmtree(str(tmpdir), ignore_errors=True)",
              "expected": "OK"},
         ]
@@ -124,6 +124,81 @@ Return the COMPLETE script. No explanations.""",
              "expected": "CONTAINS:BINARY"},
         ]
     },
+    # ─────────────────────────────────────────────
+    # Task 7: Regex Engine (Hard) [NEW]
+    # ─────────────────────────────────────────────
+    {
+        "id": 7, "name": "Regex Engine", "difficulty": "Hard",
+        "prompt": """Write a Python script `regex_engine.py` that implements a minimal regular expression engine with NO external dependencies (stdlib only). It must support:
+
+- Literal characters: 'a' matches 'a'
+- Dot '.': matches any single character
+- Star '*': matches zero or more of the preceding element
+- Plus '+': matches one or more of the preceding element
+- Question '?': matches zero or one of the preceding element
+- Character classes: [abc] matches a, b, or c; [^abc] matches anything except a, b, c
+- Anchors: '^' matches start of string, '$' matches end of string
+- Escape: '\\' escapes the next character
+
+The script must:
+- Accept a regex pattern and a string as command-line arguments: `python regex_engine.py "pattern" "string"`
+- Print "MATCH" if the pattern matches anywhere in the string, "NO MATCH" otherwise
+- Print "INVALID" if the pattern is malformed
+- Exit code 0 for MATCH, 1 for NO MATCH, 2 for INVALID
+
+Implement the engine using recursive backtracking (NFA simulation). Do NOT use Python's re module.
+
+Return the COMPLETE script. No explanations.""",
+        "hidden_tests": [
+            {"type": "script", "label": "Literal match",
+             "setup": "import tempfile, os, sys, subprocess\nfrom pathlib import Path\ntmpdir = Path(tempfile.mkdtemp())\nscript_path = tmpdir / 'regex_engine.py'\nimport shutil\nshutil.copy(MODEL_CODE_PATH, str(script_path))",
+             "check": "result = subprocess.run([sys.executable, str(script_path), 'hello', 'hello world'], capture_output=True, text=True, timeout=10)\nprint('OK' if 'MATCH' in result.stdout and result.returncode == 0 else f'FAIL: {result.stdout}')",
+             "expected": "OK"},
+            {"type": "script", "label": "Star quantifier",
+             "setup": "import tempfile, os, sys, subprocess\nfrom pathlib import Path\ntmpdir = Path(tempfile.mkdtemp())\nscript_path = tmpdir / 'regex_engine.py'\nimport shutil\nshutil.copy(MODEL_CODE_PATH, str(script_path))",
+             "check": "result = subprocess.run([sys.executable, str(script_path), 'ab*c', 'ac'], capture_output=True, text=True, timeout=10)\nprint('OK' if 'MATCH' in result.stdout and result.returncode == 0 else f'FAIL: {result.stdout}')",
+             "expected": "OK"},
+            {"type": "script", "label": "Plus quantifier",
+             "setup": "import tempfile, os, sys, subprocess\nfrom pathlib import Path\ntmpdir = Path(tempfile.mkdtemp())\nscript_path = tmpdir / 'regex_engine.py'\nimport shutil\nshutil.copy(MODEL_CODE_PATH, str(script_path))",
+             "check": "result = subprocess.run([sys.executable, str(script_path), 'ab+c', 'abbc'], capture_output=True, text=True, timeout=10)\nprint('OK' if 'MATCH' in result.stdout and result.returncode == 0 else f'FAIL: {result.stdout}')",
+             "expected": "OK"},
+            {"type": "script", "label": "No match returns exit 1",
+             "setup": "import tempfile, os, sys, subprocess\nfrom pathlib import Path\ntmpdir = Path(tempfile.mkdtemp())\nscript_path = tmpdir / 'regex_engine.py'\nimport shutil\nshutil.copy(MODEL_CODE_PATH, str(script_path))",
+             "check": "result = subprocess.run([sys.executable, str(script_path), 'xyz', 'hello world'], capture_output=True, text=True, timeout=10)\nprint('OK' if 'NO MATCH' in result.stdout and result.returncode == 1 else f'FAIL: {result.stdout}')",
+             "expected": "OK"},
+        ]
+    },
+    # ─────────────────────────────────────────────
+    # Task 8: Concurrent Web Scraper (Very Hard) [NEW]
+    # ─────────────────────────────────────────────
+    {
+        "id": 8, "name": "Concurrent Web Scraper", "difficulty": "Very Hard",
+        "prompt": """Write a Python script `scraper.py` that implements a concurrent web scraper with rate limiting. NO external dependencies (stdlib only). It must:
+
+- Accept a file of URLs (one per line) as a command-line argument
+- Fetch each URL concurrently using threading (not asyncio — stdlib only)
+- Respect a configurable rate limit: max N requests per second (default 10)
+- Implement exponential backoff on HTTP errors (429, 503): wait 2^retry seconds, max 3 retries
+- Save each result as {domain}/{path_hash}.html in an output directory
+- Print a summary: "Fetched N, Failed M, Skipped P (rate-limited)"
+- Handle DNS failures, timeouts, and connection errors gracefully (log to stderr, don't crash)
+- Include a --delay N flag that adds N seconds between each batch of requests
+- Include a --timeout N flag for per-request timeout (default 10)
+
+Use urllib.request, threading, queue, and hashlib. Do NOT use requests, aiohttp, or any third-party library.
+
+Return the COMPLETE script. No explanations.""",
+        "hidden_tests": [
+            {"type": "script", "label": "Script parses CLI args",
+             "setup": "import tempfile, os, sys, subprocess\nfrom pathlib import Path\ntmpdir = Path(tempfile.mkdtemp())\nscript_path = tmpdir / 'scraper.py'\nimport shutil\nshutil.copy(MODEL_CODE_PATH, str(script_path))\nurl_file = tmpdir / 'urls.txt'\nurl_file.write_text('http://example.com\\n')",
+             "check": "result = subprocess.run([sys.executable, str(script_path), str(url_file), '--delay', '0', '--timeout', '5'], capture_output=True, text=True, timeout=15)\n# Should at least parse args without crashing\nprint('OK' if result.returncode in (0, 1) else f'FAIL: {result.stderr[:200]}')",
+             "expected": "OK"},
+            {"type": "script", "label": "Script has rate limiting logic",
+             "setup": "import tempfile, os, sys\nfrom pathlib import Path\ntmpdir = Path(tempfile.mkdtemp())\nscript_path = tmpdir / 'scraper.py'\nimport shutil\nshutil.copy(MODEL_CODE_PATH, str(script_path))\ncode = open(str(script_path)).read()",
+             "check": "has_rate_limit = 'rate' in code.lower() or 'throttle' in code.lower() or 'sleep' in code.lower()\nhas_threading = 'threading' in code or 'Thread' in code\nhas_queue = 'queue' in code or 'Queue' in code\nprint('OK' if has_rate_limit and has_threading and has_queue else f'RATE:{has_rate_limit} THREAD:{has_threading} QUEUE:{has_queue}')",
+             "expected": "OK"},
+        ]
+    },
 ]
 
 
@@ -153,7 +228,9 @@ def call_llm(url, model, prompt, seed=None, timeout=1800, max_retries=5):
         try:
             resp = httpx.post(f"{url}/v1/chat/completions", json=payload, timeout=timeout)
             resp.raise_for_status()
-            return resp.json()["choices"][0]["message"]["content"]
+            msg = resp.json()["choices"][0]["message"]
+            content = msg.get("content", "") or msg.get("reasoning_content", "")
+            return content
         except Exception as e:
             last_error = str(e)
             if attempt < max_retries:
@@ -189,14 +266,24 @@ def run_hidden_tests(code, tests, raw_response=None):
     import re
     code_clean = code.strip()
     code_clean = strip_thinking(code_clean).strip()
-    # Strip any text before the first code fence (e.g. "Final answer:")
+    # Extract the LAST code block (final version after iterative refinement)
     if '```' in code_clean:
-        # Only strip text before fence if there's actual text there
-        fence_pos = code_clean.find('```')
-        if fence_pos > 0:
-            code_clean = code_clean[fence_pos:]
-        code_clean = re.sub(r'```(?:python)?\s*\n?', '', code_clean)
-        code_clean = re.sub(r'\n?```\s*', '', code_clean)
+        # Find all code blocks, take the last one
+        parts = re.split(r'```(?:python)?\s*\n?', code_clean)
+        code_blocks = []
+        for i in range(1, len(parts), 2):
+            if i < len(parts):
+                block = parts[i]
+                block = re.sub(r'\n?```\s*$', '', block)
+                code_blocks.append(block.strip())
+        if code_blocks:
+            code_clean = code_blocks[-1]  # Take the LAST block
+        else:
+            fence_pos = code_clean.find('```')
+            if fence_pos > 0:
+                code_clean = code_clean[fence_pos:]
+            code_clean = re.sub(r'```(?:python)?\s*\n?', '', code_clean)
+            code_clean = re.sub(r'\n?```\s*', '', code_clean)
     else:
         # No code fences - strip "Final answer:" prefix and use raw code
         code_clean = re.sub(r'^Final answer:\s*\n?', '', code_clean, flags=re.IGNORECASE)
@@ -279,6 +366,8 @@ def main():
     parser.add_argument("--output", required=True)
     parser.add_argument("--run", type=int, default=1)
     parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--tasks", type=str, default=None,
+                        help="Comma-separated task IDs to run (e.g. '7,8'). Default: all tasks.")
     args = parser.parse_args()
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -288,7 +377,16 @@ def main():
         sys.exit(1)
     print(f"  Model ready.")
     results = []
+    task_filter = None
+    if args.tasks:
+        task_filter = set(int(t.strip()) for t in args.tasks.split(","))
+        print(f"  Running only tasks: {sorted(task_filter)}")
     for task in TASKS:
+        if task_filter is not None and task["id"] not in task_filter:
+            print(f"\n{'='*60}")
+            print(f"Task {task['id']}: {task['name']} — SKIPPED (not in --tasks filter)")
+            print(f"{'='*60}")
+            continue
         print(f"\n{'='*60}")
         print(f"Task {task['id']}: {task['name']} ({task['difficulty']})")
         print(f"{'='*60}")

@@ -97,6 +97,79 @@ Return ONLY the function definition. No explanations, no test code.""",
              "expected": "OK"},
         ]
     },
+    # ─────────────────────────────────────────────
+    # Task 7: Multi-Step Research Agent (Hard) [NEW]
+    # ─────────────────────────────────────────────
+    {
+        "id": 7, "name": "Multi-Step Research Agent", "difficulty": "Hard",
+        "prompt": """Write a Python class `ResearchAgent` that simulates a multi-step research agent. It must:
+
+- __init__(self, tools: list[str]) — stores available tool names
+- research(self, question: str) -> dict — runs a research loop:
+  1. Parse the question to identify sub-questions (at least 2)
+  2. For each sub-question, call _select_tool() to pick the best tool
+  3. Call _execute_tool() to simulate getting results
+  4. Call _synthesize() to combine results into a final answer
+  5. Return {"answer": str, "steps_used": int, "tools_used": list[str], "confidence": float}
+
+- _select_tool(self, sub_question: str) -> str — picks the best tool from self.tools based on keywords in the sub-question. Map: "weather" -> "get_weather", "news" -> "search_news", "wiki"|"history"|"define" -> "query_knowledge", "stock"|"price" -> "get_stock", anything else -> "web_search"
+- _execute_tool(self, tool: str, query: str) -> str — returns a simulated result string based on the tool type
+- _synthesize(self, results: list[str]) -> str — combines results into a coherent answer
+
+The class should handle edge cases: empty question (return error), no tools available (return error), tool not found in list (fall back to first available tool).
+
+Return ONLY the class definition. No explanations, no test code.""",
+        "hidden_tests": [
+            {"type": "script", "label": "Research returns dict with required keys",
+             "setup": "agent = ResearchAgent(['get_weather', 'search_news', 'query_knowledge'])\nresult = agent.research('What is the weather in Tokyo and what is its history?')",
+             "check": "print('OK' if isinstance(result, dict) and all(k in result for k in ['answer', 'steps_used', 'tools_used', 'confidence']) else f'FAIL: keys={list(result.keys())}')",
+             "expected": "OK"},
+            {"type": "script", "label": "Research uses multiple tools",
+             "setup": "agent = ResearchAgent(['get_weather', 'search_news', 'query_knowledge'])\nresult = agent.research('What is the weather in Tokyo and what is its history?')",
+             "check": "print('OK' if len(result.get('tools_used', [])) >= 2 else f'FAIL: tools={result.get(\"tools_used\")}')",
+             "expected": "OK"},
+            {"type": "script", "label": "Empty question returns error",
+             "setup": "agent = ResearchAgent(['get_weather'])\nresult = agent.research('')",
+             "check": "print('OK' if 'error' in str(result.get('answer', '')).lower() or 'error' in str(result).lower() else f'FAIL: {result}')",
+             "expected": "OK"},
+        ]
+    },
+    # ─────────────────────────────────────────────
+    # Task 8: Memory-Augmented Agent (Very Hard) [NEW]
+    # ─────────────────────────────────────────────
+    {
+        "id": 8, "name": "Memory-Augmented Agent", "difficulty": "Very Hard",
+        "prompt": """Write a Python class `MemoryAgent` that implements an agent with episodic memory and retrieval. It must:
+
+- __init__(self) — initializes empty memory store (list of dicts with 'role', 'content', 'timestamp' keys)
+- remember(self, role: str, content: str) -> None — stores an experience in memory with current timestamp
+- recall(self, query: str, top_k: int = 3) -> list[dict] — retrieves top_k most relevant memories using simple keyword overlap scoring (count matching words between query and each memory's content, case-insensitive). Returns sorted by relevance descending.
+- reflect(self) -> list[str] — analyzes all memories and returns a list of insights (max 3). An insight is a pattern detected across memories: if the same tool appears in 3+ memories, generate "Frequently used: {tool}". If the same error appears in 2+ memories, generate "Recurring issue: {error}". If no patterns found, return ["No significant patterns detected"].
+- act(self, task: str) -> dict — simulates acting on a task:
+  1. Recall relevant memories
+  2. If recall returns results, use them to inform the action (return "informed" status)
+  3. If no relevant memories, return "exploring" status
+  4. Remember the action and result
+  5. Return {"status": str, "task": str, "memories_used": int, "reflection": list[str]}
+
+The class should handle edge cases: empty query in recall (return all memories), empty memory store (return empty list), duplicate memories (deduplicate by content).
+
+Return ONLY the class definition. No explanations, no test code.""",
+        "hidden_tests": [
+            {"type": "script", "label": "Remember and recall work",
+             "setup": "agent = MemoryAgent()\nagent.remember('user', 'Hello')\nagent.remember('assistant', 'Hi there')\nresults = agent.recall('hello', top_k=1)",
+             "check": "print('OK' if len(results) == 1 and 'hello' in results[0].get('content', '').lower() else f'FAIL: {results}')",
+             "expected": "OK"},
+            {"type": "script", "label": "Reflect detects patterns",
+             "setup": "agent = MemoryAgent()\nfor i in range(3):\n    agent.remember('tool', f'get_weather returned result {i}')\nagent.remember('tool', 'search_news returned result')\ninsights = agent.reflect()",
+             "check": "print('OK' if any('get_weather' in i for i in insights) else f'FAIL: insights={insights}')",
+             "expected": "OK"},
+            {"type": "script", "label": "Act returns dict with required keys",
+             "setup": "agent = MemoryAgent()\nresult = agent.act('check weather')",
+             "check": "print('OK' if isinstance(result, dict) and all(k in result for k in ['status', 'task', 'memories_used', 'reflection']) else f'FAIL: keys={list(result.keys())}')",
+             "expected": "OK"},
+        ]
+    },
 ]
 
 
@@ -126,7 +199,9 @@ def call_llm(url, model, prompt, seed=None, timeout=1800, max_retries=5):
         try:
             resp = httpx.post(f"{url}/v1/chat/completions", json=payload, timeout=timeout)
             resp.raise_for_status()
-            return resp.json()["choices"][0]["message"]["content"]
+            msg = resp.json()["choices"][0]["message"]
+            content = msg.get("content", "") or msg.get("reasoning_content", "")
+            return content
         except Exception as e:
             last_error = str(e)
             if attempt < max_retries:
@@ -161,14 +236,28 @@ def run_hidden_tests(code, tests):
         return 0, 0, []
     code_clean = code.strip()
     code_clean = strip_thinking(code_clean).strip()
-    # Strip any text before the first code fence (e.g. "Final answer:")
+    # Extract the LAST code block (final version after iterative refinement)
     if '```' in code_clean:
-        # Only strip text before fence if there's actual text there
-        fence_pos = code_clean.find('```')
-        if fence_pos > 0:
-            code_clean = code_clean[fence_pos:]
-        code_clean = re.sub(r'```(?:python)?\s*\n?', '', code_clean)
-        code_clean = re.sub(r'\n?```\s*', '', code_clean)
+        # Find all code blocks, take the last one
+        parts = re.split(r'```(?:python)?\s*\n?', code_clean)
+        # parts[0] is before first fence, parts[1] is first code block, etc.
+        # The last code block is the final version
+        code_blocks = []
+        for i in range(1, len(parts), 2):
+            if i < len(parts):
+                block = parts[i]
+                # Remove trailing fence if present
+                block = re.sub(r'\n?```\s*$', '', block)
+                code_blocks.append(block.strip())
+        if code_blocks:
+            code_clean = code_blocks[-1]  # Take the LAST block
+        else:
+            # Fallback: take everything after first fence
+            fence_pos = code_clean.find('```')
+            if fence_pos > 0:
+                code_clean = code_clean[fence_pos:]
+            code_clean = re.sub(r'```(?:python)?\s*\n?', '', code_clean)
+            code_clean = re.sub(r'\n?```\s*', '', code_clean)
     else:
         # No code fences - strip "Final answer:" prefix and use raw code
         code_clean = re.sub(r'^Final answer:\s*\n?', '', code_clean, flags=re.IGNORECASE)
@@ -234,6 +323,8 @@ def main():
     parser.add_argument("--output", required=True)
     parser.add_argument("--run", type=int, default=1)
     parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--tasks", type=str, default=None,
+                        help="Comma-separated task IDs to run (e.g. '7,8'). Default: all tasks.")
     args = parser.parse_args()
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -243,7 +334,16 @@ def main():
         sys.exit(1)
     print(f"  Model ready.")
     results = []
+    task_filter = None
+    if args.tasks:
+        task_filter = set(int(t.strip()) for t in args.tasks.split(","))
+        print(f"  Running only tasks: {sorted(task_filter)}")
     for task in TASKS:
+        if task_filter is not None and task["id"] not in task_filter:
+            print(f"\n{'='*60}")
+            print(f"Task {task['id']}: {task['name']} — SKIPPED (not in --tasks filter)")
+            print(f"{'='*60}")
+            continue
         print(f"\n{'='*60}")
         print(f"Task {task['id']}: {task['name']} ({task['difficulty']})")
         print(f"{'='*60}")

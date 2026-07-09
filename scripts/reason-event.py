@@ -179,7 +179,9 @@ def call_llm(url, model, prompt, seed=None, timeout=1800, max_retries=5):
         try:
             resp = httpx.post(f"{url}/v1/chat/completions", json=payload, timeout=timeout)
             resp.raise_for_status()
-            return resp.json()["choices"][0]["message"]["content"]
+            msg = resp.json()["choices"][0]["message"]
+            content = msg.get("content", "") or msg.get("reasoning_content", "")
+            return content
         except Exception as e:
             last_error = str(e)
             if attempt < max_retries:
