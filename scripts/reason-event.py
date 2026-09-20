@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
 """
 Agon-Bench: Reason Event — 6-task multi-step reasoning benchmark with hidden tests.
-Tests check for correct answers and key reasoning elements in model responses.
+Writes per-task results to DB in real-time.
 """
 import argparse, json, os, sys, time, re
 from pathlib import Path
+
+# Shared assertion matching (see scripts/assertions.py for the failure this fixes).
+# STRICT_ASSERTIONS=True adds word/number boundaries and negation-awareness;
+# set AGON_LENIENT_ASSERTIONS=1 to reproduce the historical naive substring behaviour.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from assertions import match_assertion  # noqa: E402
+
+STRICT_ASSERTIONS = os.environ.get("AGON_LENIENT_ASSERTIONS", "") not in ("1", "true", "True")
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
 import httpx
 
 TASKS = [
@@ -166,22 +175,31 @@ def wait_for_model(url, timeout=120):
     return False
 
 
-def call_llm(url, model, prompt, seed=None, timeout=1800, max_retries=5):
+def call_llm(url, model, prompt, seed=None, timeout=1800, max_retries=5, task_timeout=600, max_tokens=8192):
     payload = {
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
-        "max_tokens": 32768,
+        "max_tokens": max_tokens,
         "temperature": 0.3,
         "stream": False,
+        "chat_template_kwargs": {"reasoning_effort": "medium"},
     }
     last_error = None
     for attempt in range(1, max_retries + 1):
         try:
-            resp = httpx.post(f"{url}/v1/chat/completions", json=payload, timeout=timeout)
-            resp.raise_for_status()
-            msg = resp.json()["choices"][0]["message"]
-            content = msg.get("content", "") or msg.get("reasoning_content", "")
-            return content
+            def do_request():
+                resp = httpx.post(f"{url}/v1/chat/completions", json=payload, timeout=httpx.Timeout(connect=30, read=task_timeout, write=30, pool=30))
+                resp.raise_for_status()
+                msg = resp.json()["choices"][0]["message"]
+                return msg.get("content", "") or msg.get("reasoning_content", "")
+            
+            with ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(do_request)
+                try:
+                    content = future.result(timeout=task_timeout)
+                    return content
+                except TimeoutError:
+                    raise Exception(f"Task timed out after {task_timeout}s")
         except Exception as e:
             last_error = str(e)
             if attempt < max_retries:
@@ -192,7 +210,6 @@ def call_llm(url, model, prompt, seed=None, timeout=1800, max_retries=5):
 
 
 def run_text_tests(response, tests):
-    """Run text-based tests against model response. Checks for keywords/answers in the text."""
     if not tests:
         return 0, 0, []
     response_lower = response.lower()
@@ -203,20 +220,53 @@ def run_text_tests(response, tests):
             check = test_item["check"].lower()
             expected = test_item["expected"]
             label = test_item.get("label", "text test")
-            if expected.startswith("CONTAINS:"):
-                keyword = expected[9:].lower()
-                if keyword in response_lower:
-                    passed += 1
-                    details.append((label, expected, "PASS"))
-                else:
-                    details.append((label, expected, f"FAIL — '{keyword}' not found in response"))
+            _ok, _why = match_assertion(response, expected, strict=STRICT_ASSERTIONS)
+            if not _ok and not expected.startswith(("CONTAINS:", "EXACT:")):
+                # Non-prefixed text tests keep their legacy "check word" semantics.
+                _ok = check in response_lower
+                _why = f"'{check}' {'found' if _ok else 'not found'}"
+            if _ok:
+                passed += 1
+                details.append((label, expected, "PASS"))
             else:
-                if check in response_lower:
-                    passed += 1
-                    details.append((label, expected, "PASS"))
-                else:
-                    details.append((label, expected, f"FAIL — '{check}' not found"))
+                details.append((label, expected, f"FAIL - {_why}"))
     return passed, len(tests), details
+
+
+def save_task_to_db(db_path, run_id, task_id, task_name, difficulty,
+                    score, max_score, elapsed_s, response_chars, details):
+    import sqlite3
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    c.execute("""
+        INSERT OR REPLACE INTO reason_tasks
+        (run_id, task_id, task_name, difficulty, score, max_score, elapsed_s,
+         response_chars, details, started_at, completed_at, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'), 'completed')
+    """, (run_id, task_id, task_name, difficulty,
+          score, max_score, round(elapsed_s, 1),
+          response_chars, json.dumps(details) if details else None))
+    conn.commit()
+    conn.close()
+
+
+def update_run_total(db_path, run_id):
+    import sqlite3
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    c.execute("""
+        SELECT COALESCE(SUM(score), 0), COALESCE(SUM(max_score), 0)
+        FROM reason_tasks WHERE run_id=? AND status='completed'
+    """, (run_id,))
+    total_score, max_score = c.fetchone()
+    c.execute("""
+        UPDATE reason_runs SET total_score=?, max_score=?, status='completed',
+            completed_at=datetime('now')
+        WHERE id=?
+    """, (total_score, max_score, run_id))
+    conn.commit()
+    conn.close()
+    return total_score, max_score
 
 
 def main():
@@ -226,7 +276,22 @@ def main():
     parser.add_argument("--output", required=True)
     parser.add_argument("--run", type=int, default=1)
     parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--db-path", type=str, default=None,
+                        help="Path to database for real-time per-task writes.")
+    parser.add_argument("--run-id", type=int, default=None,
+                        help="Run ID in reason_runs table for per-task writes.")
+    parser.add_argument("--task-timeout", type=int, default=600,
+                        help="Per-task timeout in seconds (default: 600).")
+    parser.add_argument("--tasks", type=str, default=None,
+                        help="Comma-separated task IDs to run (default: all).")
+    parser.add_argument("--max-tokens", type=int, default=8192,
+                        help="Max tokens per completion (default: 8192). Lower for faster sprint runs.")
     args = parser.parse_args()
+
+    # Task filter
+    task_filter = None
+    if args.tasks:
+        task_filter = set(int(x) for x in args.tasks.split(",") if x.strip())
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
     print(f"  Waiting for model server...")
@@ -236,12 +301,18 @@ def main():
     print(f"  Model ready.")
     results = []
     for task in TASKS:
+        if task_filter is not None and task["id"] not in task_filter:
+            print(f"\n{'='*60}")
+            print(f"Task {task['id']}: {task['name']} — SKIPPED (not in --tasks filter)")
+            print(f"{'='*60}")
+            continue
         print(f"\n{'='*60}")
         print(f"Task {task['id']}: {task['name']} ({task['difficulty']})")
         print(f"{'='*60}")
         print(f"  Sending to {args.model}...")
         start = time.time()
-        response = call_llm(args.model_url, args.model, task["prompt"], seed=args.seed)
+        response = call_llm(args.model_url, args.model, task["prompt"], seed=args.seed,
+                            task_timeout=args.task_timeout, max_tokens=args.max_tokens)
         elapsed = time.time() - start
         print(f"  Response received in {elapsed:.1f}s ({len(response)} chars)")
         task_dir = output_dir / f"task{task['id']}"
@@ -252,12 +323,25 @@ def main():
         for detail in details:
             status = "PASS" if detail[-1] == "PASS" else "ERROR"
             print(f"    {status}: {detail[0][:60]}... -> {detail[-1]}")
+        
+        # Write to DB in real-time
+        if args.db_path and args.run_id:
+            save_task_to_db(args.db_path, args.run_id, task["id"], task["name"],
+                           task["difficulty"], passed, total, elapsed, len(response), details)
+            print(f"  [DB] Task {task['id']} saved to database")
+        
         results.append({
             "id": task["id"], "name": task["name"], "difficulty": task["difficulty"],
             "response_length": len(response), "elapsed_seconds": round(elapsed, 1),
             "hidden_tests_passed": passed, "hidden_tests_total": total,
             "response_file": f"{args.output}/task{task['id']}/response.txt",
         })
+    
+    # Update run total in DB
+    if args.db_path and args.run_id:
+        total_score, max_score = update_run_total(args.db_path, args.run_id)
+        print(f"  [DB] Run total: {total_score}/{max_score}")
+    
     summary = {
         "model": args.model, "model_url": args.model_url,
         "benchmark": "reason-event", "run": args.run,
@@ -265,6 +349,7 @@ def main():
     }
     (output_dir / "summary.json").write_text(json.dumps(summary, indent=2))
     print(f"\nSummary saved to {args.output}/summary.json")
+
 
 if __name__ == "__main__":
     main()

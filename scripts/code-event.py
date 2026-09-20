@@ -5,6 +5,15 @@ Part of Agon-Bench (Agent + Reason + Code).
 """
 import argparse, json, os, sys, time, subprocess, tempfile
 from pathlib import Path
+
+# Shared assertion matching (see scripts/assertions.py for the failure this fixes).
+# STRICT_ASSERTIONS=True adds word/number boundaries and negation-awareness;
+# set AGON_LENIENT_ASSERTIONS=1 to reproduce the historical naive substring behaviour.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from assertions import match_assertion  # noqa: E402
+
+STRICT_ASSERTIONS = os.environ.get("AGON_LENIENT_ASSERTIONS", "") not in ("1", "true", "True")
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
 import httpx
 
 TASKS = [
@@ -70,7 +79,7 @@ Return ONLY the class definition. No explanations, no test code.""",
 - Handles symlinks (follow them), hidden directories (skip .-prefixed dirs), and permission errors (skip and continue)
 Return the COMPLETE script. No explanations.""",
         "hidden_tests": [
-            {"type": "script", "label": "Indexer finds wikilinks", "setup": "import tempfile, os, sys, json\nfrom pathlib import Path\ntmpdir = tempfile.mkdtemp()\n(Path(tmpdir) / 'note1.md').write_text('Link to [[note2]] and [[note3]]')\n(Path(tmpdir) / 'note2.md').write_text('Has a [[markdown link]](https://example.com)')\nscript_path = os.path.join(tmpdir, 'indexer.py')\nimport shutil\nshutil.copy(MODEL_CODE_PATH, script_path)", "check": "import subprocess\nresult = subprocess.run([sys.executable, script_path, tmpdir], capture_output=True, text=True, timeout=10)\noutput = result.stdout\nprint('BROKEN' if 'note3' in output else 'NO_BROKEN')\nshutil.rmtree(tmpdir, ignore_errors=True)", "expected": "CONTAINS:BROKEN"},
+            {"type": "script", "label": "Indexer finds wikilinks", "setup": "import tempfile, os, sys, json\nfrom pathlib import Path\ntmpdir = tempfile.mkdtemp()\n(Path(tmpdir) / 'note1.md').write_text('Link to [[note2]] and [[note3]]')\n(Path(tmpdir) / 'note2.md').write_text('Has a [[markdown link]](https://example.com)')\nscript_path = os.path.join(tmpdir, 'indexer.py')\nimport shutil\nshutil.copy(MODEL_CODE_PATH, script_path)", "check": "import subprocess\nresult = subprocess.run([sys.executable, script_path, tmpdir], capture_output=True, text=True, timeout=10)\noutput = result.stdout\nprint('BROKEN' if 'note3' in output else 'NO_BROKEN')\nshutil.rmtree(tmpdir, ignore_errors=True)", "expected": "EXACT:BROKEN"},
             {"type": "script", "label": "Indexer skips hidden dirs", "setup": "import tempfile, os, sys\nfrom pathlib import Path\ntmpdir = tempfile.mkdtemp()\n(Path(tmpdir) / 'visible.md').write_text('Hello')\nhidden = Path(tmpdir) / '.hidden'\nhidden.mkdir()\n(hidden / 'secret.md').write_text('[[hidden]]')\nscript_path = os.path.join(tmpdir, 'indexer.py')\nimport shutil\nshutil.copy(MODEL_CODE_PATH, script_path)", "check": "import subprocess\nresult = subprocess.run([sys.executable, script_path, tmpdir], capture_output=True, text=True, timeout=10)\noutput = result.stdout + result.stderr\nprint('OK' if '.hidden' not in output and result.returncode == 0 else 'FAIL')\nshutil.rmtree(tmpdir, ignore_errors=True)", "expected": "OK"},
         ]
     },
@@ -121,7 +130,7 @@ Return the COMPLETE script. No explanations.""",
             {"type": "script", "label": "Diff handles binary files",
              "setup": "import tempfile, os, sys\nfrom pathlib import Path\ntmpdir = Path(tempfile.mkdtemp())\nscript_path = tmpdir / 'diff.py'\nimport shutil\nshutil.copy(MODEL_CODE_PATH, str(script_path))\nfile_a = tmpdir / 'a.bin'\nfile_b = tmpdir / 'b.bin'\nfile_a.write_bytes(b'hello\\x00world\\n')\nfile_b.write_bytes(b'hello\\x00there\\n')",
              "check": "import subprocess\nresult = subprocess.run([sys.executable, str(script_path), str(file_a), str(file_b)], capture_output=True, text=True, timeout=10)\noutput = (result.stdout + result.stderr).lower()\nprint('BINARY' if 'binary' in output else 'NO_BINARY')\nshutil.rmtree(str(tmpdir), ignore_errors=True)",
-             "expected": "CONTAINS:BINARY"},
+             "expected": "EXACT:BINARY"},
         ]
     },
     # ─────────────────────────────────────────────
@@ -215,13 +224,14 @@ def wait_for_model(url, timeout=120):
     return False
 
 
-def call_llm(url, model, prompt, seed=None, timeout=1800, max_retries=5):
+def call_llm(url, model, prompt, seed=None, timeout=1800, max_retries=5, max_tokens=32768):
     payload = {
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
-        "max_tokens": 32768,
+        "max_tokens": max_tokens,
         "temperature": 0.3,
         "stream": False,
+        "chat_template_kwargs": {"reasoning_effort": "medium"},
     }
     last_error = None
     for attempt in range(1, max_retries + 1):
@@ -252,11 +262,19 @@ def strip_thinking(text):
     # Qwen3.5 format: "thinking" then "response" as plain text markers
     if 'thinking' in text:
         text = re.sub(r'(?s)\s*thinking\s*.*?response\s*\n?', '', text, count=1)
+    # Holo format: <thinking>...</thinking> or <think>...</think> tags (no "response" marker)
+    if re.search(r'<think(?:ing)?>', text):
+        text = re.sub(r'(?s)<think(?:ing)?>.*?</think(?:ing)?>\s*\n?', '', text)
     # DeepSeek format:  thinking... response HTML tags
-    if re.search(r'<think>', text):
-        text = re.sub(r'(?s)(?:^|\n)\s*<think>.*?</think>\n?', '', text)
-        if re.search(r'(?:^|\n)\s*<think>', text):
-            text = re.sub(r'(?s)(?:^|\n)\s*<think>.*$', '', text)
+    if re.search(r' thinking', text):
+        text = re.sub(r'(?s)(?:^|\n)\s* thinking.*? response\n?', '', text)
+        if re.search(r'(?:^|\n)\s* thinking', text):
+            text = re.sub(r'(?s)(?:^|\n)\s* thinking.*$', '', text)
+    # Holo format:  think... response HTML tags (no "ing")
+    if re.search(r' think', text):
+        text = re.sub(r'(?s)(?:^|\n)\s* think.*? response\n?', '', text)
+        if re.search(r'(?:^|\n)\s* think', text):
+            text = re.sub(r'(?s)(?:^|\n)\s* think.*$', '', text)
     return text.strip()
 
 
@@ -321,11 +339,12 @@ def run_hidden_tests(code, tests, raw_response=None):
                     continue
                 actual = result.stdout.strip()
                 expected = test_item["expected"]
-                if actual == expected or (expected.startswith("CONTAINS:") and expected[9:] in actual):
+                _passed, _why = match_assertion(actual, expected, strict=STRICT_ASSERTIONS)
+                if _passed:
                     passed += 1
                     details.append((test_item.get("label", "script"), expected, actual, "PASS"))
                 else:
-                    details.append((test_item.get("label", "script"), expected, actual, "FAIL"))
+                    details.append((test_item.get("label", "script"), expected, actual, f"FAIL - {_why}"))
             except Exception as e:
                 details.append((test_item.get("label", "script"), test_item["expected"], f"TEST ERROR: {str(e)[:200]}"))
                 try:
@@ -359,6 +378,42 @@ def run_hidden_tests(code, tests, raw_response=None):
     return passed, len(tests), details
 
 
+def save_task_to_db(db_path, run_id, task_id, task_name, difficulty,
+                    score, max_score, elapsed_s, response_chars, details):
+    import sqlite3
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    c.execute("""
+        INSERT OR REPLACE INTO code_tasks
+        (run_id, task_id, task_name, difficulty, score, max_score, elapsed_s,
+         response_chars, details, started_at, completed_at, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'), 'completed')
+    """, (run_id, task_id, task_name, difficulty,
+          score, max_score, round(elapsed_s, 1),
+          response_chars, json.dumps(details) if details else None))
+    conn.commit()
+    conn.close()
+
+
+def update_run_total(db_path, run_id):
+    import sqlite3
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    c.execute("""
+        SELECT COALESCE(SUM(score), 0), COALESCE(SUM(max_score), 0)
+        FROM code_tasks WHERE run_id=? AND status='completed'
+    """, (run_id,))
+    total_score, max_score = c.fetchone()
+    c.execute("""
+        UPDATE code_runs SET total_score=?, max_score=?, status='completed',
+            completed_at=datetime('now')
+        WHERE id=?
+    """, (total_score, max_score, run_id))
+    conn.commit()
+    conn.close()
+    return total_score, max_score
+
+
 def main():
     parser = argparse.ArgumentParser(description="Agon-Bench: Code Event")
     parser.add_argument("--model-url", required=True)
@@ -368,6 +423,14 @@ def main():
     parser.add_argument("--seed", type=int, default=None)
     parser.add_argument("--tasks", type=str, default=None,
                         help="Comma-separated task IDs to run (e.g. '7,8'). Default: all tasks.")
+    parser.add_argument("--db-path", type=str, default=None,
+                        help="Path to database for real-time per-task writes.")
+    parser.add_argument("--run-id", type=int, default=None,
+                        help="Run ID in code_runs table for per-task writes.")
+    parser.add_argument("--task-timeout", type=int, default=600,
+                        help="Per-task timeout in seconds (default: 600).")
+    parser.add_argument("--max-tokens", type=int, default=32768,
+                        help="Max tokens per completion (default: 32768). Lower for faster sprint runs.")
     args = parser.parse_args()
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -392,7 +455,15 @@ def main():
         print(f"{'='*60}")
         print(f"  Sending to {args.model}...")
         start = time.time()
-        response = call_llm(args.model_url, args.model, task["prompt"], seed=args.seed)
+        # Bound the per-task LLM call to the task timeout so a single hung
+        # task (e.g. Regex Engine) cannot cascade and kill the whole run.
+        # On timeout, record the task as failed (0) and continue to the next.
+        try:
+            response = call_llm(args.model_url, args.model, task["prompt"], seed=args.seed,
+                                max_tokens=args.max_tokens, timeout=args.task_timeout,
+                                max_retries=1)
+        except Exception as e:
+            response = f"[TASK_TIMEOUT] {e}"
         elapsed = time.time() - start
         print(f"  Response received in {elapsed:.1f}s ({len(response)} chars)")
         task_dir = output_dir / f"task{task['id']}"
@@ -403,12 +474,25 @@ def main():
         for detail in details:
             status = "PASS" if detail[-1] == "PASS" else "ERROR"
             print(f"    {status}: {detail[0][:60]}... -> {detail[-1]}")
+        
+        # Write to DB in real-time
+        if args.db_path and args.run_id:
+            save_task_to_db(args.db_path, args.run_id, task["id"], task["name"],
+                           task["difficulty"], passed, total, elapsed, len(response), details)
+            print(f"  [DB] Task {task['id']} saved to database")
+        
         results.append({
             "id": task["id"], "name": task["name"], "difficulty": task["difficulty"],
             "response_length": len(response), "elapsed_seconds": round(elapsed, 1),
             "hidden_tests_passed": passed, "hidden_tests_total": total,
             "response_file": f"{args.output}/task{task['id']}/response.txt",
         })
+    
+    # Update run total in DB
+    if args.db_path and args.run_id:
+        total_score, max_score = update_run_total(args.db_path, args.run_id)
+        print(f"  [DB] Run total: {total_score}/{max_score}")
+    
     summary = {
         "model": args.model, "model_url": args.model_url,
         "benchmark": "code-event", "run": args.run,

@@ -173,7 +173,7 @@ CODE_TASKS = [
     {
         "id": 4, "name": "File Indexer",
         "hidden_tests": [
-            {"type": "script", "label": "Indexer finds wikilinks", "setup": "import tempfile, os, sys, json\nfrom pathlib import Path\ntmpdir = tempfile.mkdtemp()\n(Path(tmpdir) / 'note1.md').write_text('Link to [[note2]] and [[note3]]')\n(Path(tmpdir) / 'note2.md').write_text('Has a [[markdown link]](https://example.com)')\nscript_path = os.path.join(tmpdir, 'indexer.py')\nimport shutil\nshutil.copy(MODEL_CODE_PATH, script_path)", "check": "import subprocess\nresult = subprocess.run([sys.executable, script_path, tmpdir], capture_output=True, text=True, timeout=10)\noutput = result.stdout\nprint('BROKEN' if 'note3' in output else 'NO_BROKEN')\nshutil.rmtree(tmpdir, ignore_errors=True)", "expected": "CONTAINS:BROKEN"},
+            {"type": "script", "label": "Indexer finds wikilinks", "setup": "import tempfile, os, sys, json\nfrom pathlib import Path\ntmpdir = tempfile.mkdtemp()\n(Path(tmpdir) / 'note1.md').write_text('Link to [[note2]] and [[note3]]')\n(Path(tmpdir) / 'note2.md').write_text('Has a [[markdown link]](https://example.com)')\nscript_path = os.path.join(tmpdir, 'indexer.py')\nimport shutil\nshutil.copy(MODEL_CODE_PATH, script_path)", "check": "import subprocess\nresult = subprocess.run([sys.executable, script_path, tmpdir], capture_output=True, text=True, timeout=10)\noutput = result.stdout\nprint('BROKEN' if 'note3' in output else 'NO_BROKEN')\nshutil.rmtree(tmpdir, ignore_errors=True)", "expected": "EXACT:BROKEN"},
             {"type": "script", "label": "Indexer skips hidden dirs", "setup": "import tempfile, os, sys\nfrom pathlib import Path\ntmpdir = tempfile.mkdtemp()\n(Path(tmpdir) / 'visible.md').write_text('Hello')\nhidden = Path(tmpdir) / '.hidden'\nhidden.mkdir()\n(hidden / 'secret.md').write_text('[[hidden]]')\nscript_path = os.path.join(tmpdir, 'indexer.py')\nimport shutil\nshutil.copy(MODEL_CODE_PATH, script_path)", "check": "import subprocess\nresult = subprocess.run([sys.executable, script_path, tmpdir], capture_output=True, text=True, timeout=10)\noutput = result.stdout + result.stderr\nprint('OK' if '.hidden' not in output and result.returncode == 0 else 'FAIL')\nshutil.rmtree(tmpdir, ignore_errors=True)", "expected": "OK"},
         ]
     },
@@ -204,7 +204,7 @@ CODE_TASKS = [
             {"type": "script", "label": "Diff handles binary files",
              "setup": "import tempfile, os, sys\nfrom pathlib import Path\ntmpdir = Path(tempfile.mkdtemp())\nscript_path = tmpdir / 'diff.py'\nimport shutil\nshutil.copy(MODEL_CODE_PATH, str(script_path))\nfile_a = tmpdir / 'a.bin'\nfile_b = tmpdir / 'b.bin'\nfile_a.write_bytes(b'hello\\x00world\\n')\nfile_b.write_bytes(b'hello\\x00there\\n')",
              "check": "import subprocess\nresult = subprocess.run([sys.executable, str(script_path), str(file_a), str(file_b)], capture_output=True, text=True, timeout=10)\noutput = (result.stdout + result.stderr).lower()\nprint('BINARY' if 'binary' in output else 'NO_BINARY')\nshutil.rmtree(str(tmpdir), ignore_errors=True)",
-             "expected": "CONTAINS:BINARY"},
+             "expected": "EXACT:BINARY"},
         ]
     },
 ]
