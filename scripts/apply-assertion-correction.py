@@ -102,6 +102,16 @@ def main():
     if apply:
         con.commit()
 
+    # IDEMPOTENCE GUARD. This script derives the correct score from the RECORDED
+    # score, so running it twice would correct corrected data and compound the
+    # change (a Task Runner row at 2.0 -> 1.0 would become 0.0). Any row already
+    # recorded in score_corrections is skipped, so re-running is a no-op.
+    cur.execute("select run_id, task_id from score_corrections")
+    already = set(cur.fetchall())
+    if already:
+        print(f"note: {len(already)} rows already corrected - skipping them "
+              f"(this script is idempotent)")
+
     cfg_idx = load_check("Indexer finds wikilinks")
 
     cur.execute("select id, model_id, run_number from code_runs")
@@ -148,6 +158,8 @@ def main():
                 ev = "UNRESOLVED - no details and no stored response; assumed not earned"
 
         new = (1.0 if wiki_broken else 0.0) + check_struct
+        if (run_id, 4) in already:
+            new = score          # leave an already-corrected row untouched
         t4_new += new
         if abs(new - score) > 1e-9:
             changes.append((run_id, 4, score, new,
@@ -162,6 +174,8 @@ def main():
     t5_new = 0.0
     for run_id, score in t5_rows:
         new = 1.0 if score == 2.0 else 0.0
+        if (run_id, 5) in already:
+            new = score          # leave an already-corrected row untouched
         t5_new += new
         if abs(new - score) > 1e-9:
             changes.append((run_id, 5, score, new,

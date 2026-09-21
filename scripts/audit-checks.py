@@ -132,6 +132,30 @@ def find_ignored_derived_values(setup, check):
     return ignored
 
 
+def can_raise_before_print(body):
+    """True if the check body contains a statement that can fail at runtime.
+
+    A check whose stdout is constant can still discriminate: if the import
+    raises, the script exits non-zero and the harness records a RUNTIME ERROR.
+    So `from taskrunner.models import Task` is a legitimate (if crude) check even
+    though it always prints 'OK' on success.
+    """
+    try:
+        tree = ast.parse(body.strip() or "pass")
+    except SyntaxError:
+        return True
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            return True
+        if isinstance(node, ast.Call):
+            name = getattr(node.func, "id", "") or getattr(node.func, "attr", "")
+            if name != "print":
+                return True
+        if isinstance(node, ast.Attribute):
+            return True
+    return False
+
+
 def audit():
     defects, reviews, audited = [], [], 0
     for name in SCRIPTS:
@@ -146,12 +170,26 @@ def audit():
 
             outs, complete = possible_outputs(check)
             accepts = assertion_accepts_all(expected, outs) if complete else None
-            if complete and accepts:
+
+            # Defect A: stdout is constant AND nothing can raise, so the check
+            # has exactly one outcome for every submission.
+            if complete and accepts and not can_raise_before_print(check):
                 defects.append({
                     "file": name, "label": label, "expected": expected,
-                    "outputs": sorted(outs),
+                    "outputs": sorted(outs), "kind": "SINGLE_OUTCOME",
+                    "reason": (f"the check can only ever produce {sorted(outs)} and "
+                               f"{expected!r} accepts it; nothing can fail"),
+                })
+                continue
+
+            # Defect B: stdout varies, but the assertion accepts every possible
+            # value, so it cannot tell a pass from a fail.
+            if complete and accepts and len(outs) > 1:
+                defects.append({
+                    "file": name, "label": label, "expected": expected,
+                    "outputs": sorted(outs), "kind": "ALL_OUTPUTS_ACCEPTED",
                     "reason": (f"every possible output {sorted(outs)} satisfies "
-                               f"{expected!r}; the check cannot fail"),
+                               f"{expected!r}; pass and fail look identical"),
                 })
                 continue
 
