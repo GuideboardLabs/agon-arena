@@ -82,6 +82,54 @@ This shifts Code scores down by roughly 5.7pp across the board. Because the free
 points were nearly uniform, **relative code ranking moves less than the absolute
 numbers do** — the fix mostly lowers the ceiling rather than reordering models.
 
+Measured against per-task sums (the documented source of truth), **all 23
+affected models move down, by 1.0 to 2.0 Code points**:
+
+| Model | Code before | Code after | Δ |
+|---|---|---|---|
+| Grug-12B | 7.0 | 5.0 | −2.0 |
+| LFM2.5-8B-A1B | 15.0 | 13.0 | −2.0 |
+| SuperQwen-35B | 14.8 | 12.8 | −2.0 |
+| Qwythos-9B-v1 | 11.0 | 9.0 | −2.0 |
+| Qwopus3.5-9B-Coder-MTP | 11.0 | 9.0 | −2.0 |
+| MiniCPM5-2B | 10.3 | 8.7 | −1.7 |
+| Holo-3.1-9B-Coder | 11.0 | 9.3 | −1.7 |
+| Qwopus3.5-9B-Coder | 13.7 | 12.0 | −1.7 |
+| Qwen3.8-27B-Q3-DOWN-XS | 15.7 | 14.0 | −1.7 |
+| Nanbeige4.2-3B | 16.7 | 15.3 | −1.3 |
+| Heem-9B (Uncensored) | 16.0 | 14.7 | −1.3 |
+| Ornith-1.5-9B | 13.0 | 11.7 | −1.3 |
+| OmniCoder-9B | 9.0 | 7.7 | −1.3 |
+| Qwen3.5-9B | 14.3 | 13.3 | −1.0 |
+| Ornith-1.0-9B | 17.0 | 16.0 | −1.0 |
+| Gemma4-12B | 13.3 | 12.3 | −1.0 |
+| Gemma4-26B-A4B | 15.0 | 14.0 | −1.0 |
+| Ornith-1.0-35B-MTP | 12.5 | 11.5 | −1.0 |
+| Qwen3.8-9B | 16.0 | 15.0 | −1.0 |
+| Qwen3.6-35B-Q4-ncmoe40 | 22.7 | 21.7 | −1.0 |
+| Qwen3.8-35B-A3B-Distill | 20.7 | 19.7 | −1.0 |
+| Ternary-Bonsai-2-27B-PTQ1_0 | 22.0 | 21.0 | −1.0 |
+| Bonsai-27B-Q1_0 | 16.3 | 15.3 | −1.0 |
+
+The spread (−1.0 to −2.0) is the real signal: models that had genuinely
+functional indexers and TaskRunner projects lose only the free structural point,
+while models that produced broken output lose both. The corrected column
+therefore separates them, which the original could not.
+
+### A separate corruption found and repaired in passing
+
+Recomputing run totals surfaced one **pre-existing** inconsistency unrelated to
+the assertion defects: `code_runs` id 123 (Ornith-1.5-9B, run 1) had a stored
+`total_score` of **1.0** while its per-task rows summed to **13.0**. The
+published README leaderboard was generated while that stale total was live, so
+its Ornith-1.5-9B Code figure (9.0) was depressed by 4 points for a reason that
+had nothing to do with this model's actual performance.
+
+After the recompute, **every run total in all three events reconciles with its
+per-task sum**, and no task row scores above its `max_score`. The table above
+isolates the assertion correction from that repair by comparing per-task sums on
+both sides.
+
 Two caveats for anyone reading the table:
 
 1. **Do not mix corrected and uncorrected Code numbers.** The Code column here
