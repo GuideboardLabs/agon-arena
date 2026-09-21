@@ -9,6 +9,19 @@ env/
 # Results (generated at runtime)
 results/
 
+# Benchmark database — 800KB+ of generated data, rebuilt by the runner.
+# Keep it out of git; the per-event tables are the source of truth.
+agon-bench.db
+agon-bench.db.*
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Generated schema/diagram artifacts (regenerable from the DB)
+agon-bench-er.*
+agon-bench-schema*
+*.png
+
 # OS
 .DS_Store
 Thumbs.db
