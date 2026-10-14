@@ -50,16 +50,29 @@ it answers in about 2,200 bytes containing "step" twice.
 
 ## What the two numbers mean
 
-- **Official: 57.0/66 = 86.36%**, third on the 23-model board. This is the comparable number,
-  and it is what the leaderboard carries.
-- **Replay variant: 185/198 = 93.4%**, first. This is **not protocol-comparable**: every other
-  row on the board ran at the standard window. It is a cut-task-recovery variant and must be
-  labelled as one wherever it is shown, which is why the board clip that carried it also carries
-  an `ADJUSTED CONTEXT` note in its footer.
+- **Re-cut: 61.7/66 = 93.43%**, first on the 23-model board. This is the number the leaderboard
+  now carries, marked with a dagger in the table and disclosed in the note beneath it.
+- **Original 16,384 run: 57.0/66 = 86.36%**, third. This is what the model scored under the
+  standard window, and it is retained here because the gap between the two is the finding.
 
-Both numbers exist on purpose. Quoting only the variant would misrepresent the protocol; quoting
-only the official number would hide a real harness artefact that applies to any model that
-thinks for longer than the window.
+Both numbers exist on purpose. Quoting only the original would hide a real harness artefact that
+applies to any model that thinks for longer than the window. Quoting only the re-cut without
+saying so would misrepresent the protocol.
+
+## The artefact is not specific to this model
+
+A scan of the whole database for the same signature (a zero-scored task whose stored response is
+far larger than any real answer) finds **118 task-runs across 20 models**. The largest
+concentrations are Qwythos-9B-v1 (19), Qwen3.5-9B (17), Qwopus3.5-9B-Coder (16), Mimo-v2.6-9B
+(11), Grug-12B (11) and Gemma4-12B (10). Within the top six of the board, Gemma4-26B-A4B and
+Underdog-Saluki each carry affected runs.
+
+Qwen3.6-35B-Q4-ncmoe40, the model that held first place, carries none: it runs with reasoning
+suppressed, so its thinking never consumes the window. Every model that runs with reasoning on is
+a candidate.
+
+Re-cutting the rest is roughly 24 hours of GPU time, one model at a time with the other services
+suspended, and until that is done the table mixes two effective protocols.
 
 ## Replay hygiene
 

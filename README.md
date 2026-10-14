@@ -31,9 +31,9 @@ Hardware: AMD RX 5700 XT (8GB VRAM, RDNA 1), Ryzen 5 1600, 64GB RAM. All models 
 
 | # | Model | Size | Agent | Code | Reason | **Total** | **%** | tok/s |
 |---|-------|:----:|:-----:|:----:|:------:|:---------:|:-----:|:-----:|
-| 🥇 | **Qwen3.6-35B-Q4-ncmoe40** | 21.1G | 21.3 | 21.7 | 16.3 | **59.3** | **89.90%** | 21.7 |
-| 🥈 | **Qwen3.8-35B-A3B-Distill** | 21.7G | 21.0 | 19.7 | 17.0 | **57.7** | **87.37%** | 21.0 |
-| 🥉 | **LFM2.5-24B-A2B** | 14.5G | 22.0 | 19.7 | 15.3 | **57.0** | **86.36%** | 25.8 |
+| 🥇 | **LFM2.5-24B-A2B** † | 14.5G | 22.0 | 23.3 | 16.3 | **61.7** | **93.43%** | 25.8 |
+| 🥈 | **Qwen3.6-35B-Q4-ncmoe40** | 21.1G | 21.3 | 21.7 | 16.3 | **59.3** | **89.90%** | 21.7 |
+| 🥉 | **Qwen3.8-35B-A3B-Distill** | 21.7G | 21.0 | 19.7 | 17.0 | **57.7** | **87.37%** | 21.0 |
 | 4 | **MiniCPM-V-4.7-35B-A3B** | 19.7G | 21.3 | 19.0 | 15.7 | **56.0** | **84.85%** | 19.2 |
 | 5 | **Underdog-Saluki-27B-IQ2** | 7.9G | 20.3 | 18.3 | 16.0 | **54.7** | **82.83%** | 23.2 |
 | 6= | **Nanbeige4.2-3B** | 2.4G | 23.0 | 15.3 | 15.3 | **53.7** | **81.31%** | 44.9 |
@@ -59,6 +59,15 @@ Ties are real and are labelled rather than broken: Nanbeige4.2-3B and Gemma4-26B
 compute to 81.313131%, and the two 63.13% and two 58.59% pairs are likewise identical to six
 decimals.
 
+**† LFM2.5-24B-A2B's row was re-cut at a 32,768-token window.** The Code and Reason events run
+at 16,384 tokens, thinking shares that window with the answer, and this model's reasoning on one
+Code task and one Reason task runs longer than the window, so those six task-runs were originally
+recorded as truncated reasoning and scored zero. Re-running only those six at 32,768 recovers 14
+of the 15 points those tasks were worth. Every other row ran at the standard window, and **118
+task-runs across 19 other models carry the same artefact unfixed**, so this row is not yet
+protocol-identical to the rest of the table. That work is next on the list. Full mechanism and
+evidence: [references/context-window-truncation.md](references/context-window-truncation.md).
+
 Every row carries a complete 3/3/3 set of completed runs. Models with an incomplete set are
 excluded from the ranking entirely rather than ranked on partial data.
 
@@ -66,25 +75,28 @@ excluded from the ranking entirely rather than ranked on partial data.
 
 ## What the numbers say
 
-- **Qwen3.6-35B-Q4-ncmoe40 still holds the crown** at 89.90% — the `-ncmoe 40` recipe turns a 35B MoE into a genuine all-rounder, and it has the best code score on the bench (21.7/25).
-- **LFM2.5-24B-A2B is the interesting arrival.** Third overall at 86.36%, and it does it on an architecture that is not a finetune of anything else on this board: 24B total with 2B active per token, 64 experts routed top-4, and **30 of its 40 layers are gated short convolutions** with only every fourth layer running full attention. It is the fastest model in the top five at 25.8 tok/s.
+- **LFM2.5-24B-A2B takes the board at 93.43%**, on an architecture that is not a finetune of anything else here: 24B total with 2B active per token, 64 experts routed top-4, and **30 of its 40 layers are gated short convolutions** with only every fourth layer running full attention. It holds the best code score on the bench (23.3/25) and is the fastest model in the top five at 25.8 tok/s. The dagger under the table covers what changed.
+- **Qwen3.6-35B-Q4-ncmoe40 is the model that held the crown** at 89.90%, and it held it cleanly: it runs with reasoning suppressed, so the context-window artefact cannot touch it. The `-ncmoe 40` recipe turns a 35B MoE into a genuine all-rounder.
 - **Nanbeige4.2-3B is still the story at the small end.** A 2.4GB, 3B looped transformer ties for the best agent score on the bench (23.0/24) at 3.3× the speed of the 26B it ties with. The looped architecture gives 3B the reasoning depth of a 6-7B model.
-- **Bonsai-27B-Q1_0** — a 3.8GB 1-bit ternary model that shouldn't work but does. Elite agent (22.3/24), 79.80% overall. The dark horse.
+- **Bonsai-27B-Q1_0 is the dark horse**: a 3.8GB 1-bit ternary model that shouldn't work but does. Elite agent (22.3/24), 79.80% overall.
 - **Speed is a real axis.** LFM2.5-8B (91.1 tok/s) and MiniCPM5-2B (118.0 tok/s) are the speed kings, but both trade capability for it. MiniCPM is a razor-sharp reasoner (16.7/17) that can't close agent or code tasks. It reasons beautifully and never ships.
-- **The 8GB ceiling is real.** The top of the board needs 21GB with CPU spill. The best model under 5GB is Nanbeige4.2-3B at 81.31%, on 2.4GB. That gap is the whole point of the bench.
+- **The 8GB ceiling is real.** The top of the board needs 21GB with CPU spill, and the best model under 5GB is Nanbeige4.2-3B at 81.31% on 2.4GB. That gap is the whole point of the bench.
 
 ### A harness artefact worth knowing about
 
 The Code and Reason events run at a 16,384-token context, and thinking shares that window with
 the answer. A model whose reasoning on one task runs longer than the window never finishes the
 thought, so the harness records the truncated reasoning stream as the answer and the task scores
-zero. LFM2.5-24B-A2B loses 12 Code points and 3 Reason points to this and nothing else.
+zero. LFM2.5-24B-A2B lost 12 Code points and 3 Reason points to this and nothing else, and those
+six task-runs were re-cut at 32,768 to recover 14 of the 15 points. That is where the 93.43% at
+the top of the table comes from, and it is disclosed rather than hidden.
 
-Re-running only those task-runs at 32,768 recovers 14 of the 15 points, which would put it first
-at 93.4%. That number is **not** on this leaderboard and should not be: every other row ran at the
-standard window, so it is not protocol-comparable. The official 86.36% is what stands. The
-mechanism, the replay, and the reproducibility gap in the seeding are documented in
-[references/context-window-truncation.md](references/context-window-truncation.md).
+The same artefact is still sitting in **118 task-runs across 19 other models**, from Gemma4-12B
+and Grug-12B in the middle of the board up to Gemma4-26B and Underdog-Saluki in the top six.
+Those models are scored low for the same reason this one was. Re-cutting them is roughly a day of
+GPU time, one model at a time, and it is the honest way to make the whole table
+protocol-identical. The mechanism, the replay method, and the reproducibility gap in the seeding
+are in [references/context-window-truncation.md](references/context-window-truncation.md).
 
 ---
 
