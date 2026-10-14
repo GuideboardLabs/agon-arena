@@ -2,385 +2,798 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agon-Bench Results</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Agon-Bench</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #fff; color: #333; padding: 40px; max-width: 1400px; margin: 0 auto;
+  background: #1a1a1e; color: #d4d4d8; padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
-h1 { font-size: 2rem; margin-bottom: 8px; color: #1a1a2e; }
-.subtitle { color: #666; margin-bottom: 32px; font-size: 0.95rem; line-height: 1.5; }
-h2 { font-size: 1.3rem; margin: 32px 0 16px; color: #1a1a2e; }
-.tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid #e0e0e0; }
-.tab {
-  padding: 10px 24px; cursor: pointer; font-size: 0.95rem; font-weight: 600;
-  color: #888; border: none; background: none; border-bottom: 3px solid transparent;
-  margin-bottom: -2px; transition: all 0.2s;
+.container { max-width: 1200px; margin: 0 auto; padding: 12px; }
+@media (min-width: 768px) { .container { padding: 24px; } }
+
+/* ── Header ── */
+header {
+  background: linear-gradient(135deg, #1e1e24 0%, #252530 100%);
+  border-bottom: 1px solid #2a2a35;
+  padding: 16px 0 12px; margin-bottom: 12px;
 }
-.tab:hover { color: #555; }
-.tab.active { color: #1a73e8; border-bottom-color: #1a73e8; }
-.tab-badge {
-  display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 1px 7px;
-  border-radius: 10px; margin-left: 6px; vertical-align: middle;
+header .container { padding-bottom: 0; }
+h1 {
+  font-size: 1.3rem; font-weight: 700; color: #e8e8ec;
+  letter-spacing: -0.3px;
 }
-.tab-badge.g8 { background: #e8f0fe; color: #1a73e8; }
-.tab-badge.g4 { background: #f3e8ff; color: #8e44ad; }
+@media (min-width: 768px) { h1 { font-size: 1.6rem; } }
+.subtitle {
+  color: #888; font-size: 0.75rem; margin-top: 3px; line-height: 1.5;
+}
+@media (min-width: 768px) { .subtitle { font-size: 0.85rem; } }
+
+/* ── View Toggle ── */
+.view-toggle {
+  display: flex; gap: 6px; margin-bottom: 12px;
+}
+.view-btn {
+  padding: 8px 18px; border-radius: 8px; border: 1px solid #333;
+  background: #1a1a1e; color: #888; font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.view-btn:hover { border-color: #555; color: #c0c0c8; }
+.view-btn.active { background: #e67e22; border-color: #e67e22; color: #fff; }
+
+/* ── Carousel (single model view) ── */
+.carousel-container {
+  position: relative; overflow: hidden; margin-bottom: 12px;
+  touch-action: pan-y;
+}
+.carousel-track {
+  display: flex; transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+.carousel-slide {
+  min-width: 100%; padding: 0 2px;
+}
+.carousel-dots {
+  display: flex; justify-content: center; gap: 6px; margin-top: 8px;
+}
+.carousel-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: #333;
+  border: none; cursor: pointer; transition: all 0.2s; padding: 0;
+}
+.carousel-dot.active { background: #e67e22; transform: scale(1.3); }
+.carousel-arrows { display: none; }
+@media (min-width: 768px) {
+  .carousel-arrows {
+    display: flex; justify-content: space-between;
+    position: absolute; top: 50%; left: -12px; right: -12px;
+    transform: translateY(-50%); pointer-events: none;
+  }
+  .carousel-arrow {
+    pointer-events: auto; width: 36px; height: 36px; border-radius: 50%;
+    background: #2a2a35; border: 1px solid #3a3a45; color: #aaa;
+    font-size: 1.1rem; cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .carousel-arrow:hover { background: #3a3a45; color: #e8e8ec; }
+}
+
+/* ── All Models Grid ── */
+.models-grid { display: none; }
+.models-grid.visible {
+  display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px;
+}
+@media (min-width: 640px) { .models-grid.visible { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .models-grid.visible { grid-template-columns: repeat(3, 1fr); } }
+
+.model-card {
+  background: #22222a; border: 1px solid #2a2a35;
+  border-radius: 12px; padding: 14px; cursor: pointer;
+  transition: all 0.2s; position: relative;
+}
+.model-card:hover { border-color: #444; background: #26262e; }
+.model-card.selected { border-color: #e67e22; box-shadow: 0 0 0 1px #e67e22; }
+.model-card.vs-selected { border-color: #9b59b6; box-shadow: 0 0 0 1px #9b59b6; }
+.model-card .mc-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+}
+.model-card .mc-avatar {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.model-card .mc-name { font-size: 0.85rem; font-weight: 600; color: #e8e8ec; }
+.model-card .mc-tags {
+  display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px;
+}
+.model-card .mc-tags span {
+  font-size: 0.6rem; padding: 1px 6px; border-radius: 10px;
+  background: #1a1a1e; color: #888; border: 1px solid #2a2a35;
+}
+.model-card .mc-stats {
+  display: flex; gap: 8px; margin-top: 6px;
+}
+.model-card .mc-stat { text-align: center; flex: 1; }
+.model-card .mc-stat .v { font-size: 1rem; font-weight: 700; }
+.model-card .mc-stat .l { font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.3px; }
+.model-card .mc-bar {
+  height: 3px; border-radius: 2px; margin-top: 8px;
+  transition: width 0.4s ease;
+}
+
+/* ── Model Hero ── */
+.model-hero {
+  background: linear-gradient(135deg, #22222a 0%, #2a2a35 100%);
+  border: 1px solid #333; border-radius: 14px; padding: 16px; margin-bottom: 12px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+@media (min-width: 768px) {
+  .model-hero { flex-direction: row; align-items: center; padding: 24px; gap: 20px; }
+}
+.model-hero .avatar {
+  width: 56px; height: 56px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; font-weight: 800; color: #fff; flex-shrink: 0;
+}
+@media (min-width: 768px) { .model-hero .avatar { width: 72px; height: 72px; font-size: 1.8rem; } }
+.model-hero .info { flex: 1; }
+.model-hero .info h2 { font-size: 1.2rem; font-weight: 700; color: #e8e8ec; }
+@media (min-width: 768px) { .model-hero .info h2 { font-size: 1.4rem; } }
+.model-hero .info .tags {
+  display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px;
+}
+.model-hero .info .tags span {
+  font-size: 0.65rem; padding: 2px 8px; border-radius: 16px;
+  background: #2a2a35; color: #aaa; border: 1px solid #3a3a45;
+}
+.model-hero .hero-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 100%;
+}
+@media (min-width: 768px) { .model-hero .hero-stats { width: auto; min-width: 240px; } }
+.hero-stats .stat {
+  text-align: center; padding: 8px 6px;
+  background: #1a1a1e; border-radius: 8px;
+}
+.hero-stats .stat .val { font-size: 1.2rem; font-weight: 700; color: #e8e8ec; }
+.hero-stats .stat .lbl {
+  font-size: 0.6rem; color: #888; text-transform: uppercase;
+  letter-spacing: 0.3px; margin-top: 1px;
+}
+
+/* ── Cards ── */
 .card {
-  background: #f8f9fa; border-radius: 12px; padding: 24px;
-  margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  background: #22222a; border: 1px solid #2a2a35;
+  border-radius: 12px; padding: 14px; margin-bottom: 10px;
 }
-.card h3 { font-size: 1rem; margin-bottom: 16px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
-.grid-1 { display: grid; grid-template-columns: 1fr; gap: 12px; }
-.chart-container { position: relative; height: 300px; }
-.chart-container-sm { position: relative; height: 220px; }
-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-th { text-align: left; padding: 10px 12px; border-bottom: 2px solid #e0e0e0; color: #555; font-weight: 600; }
-td { padding: 10px 12px; border-bottom: 1px solid #eee; }
-tr:hover td { background: rgba(0,0,0,0.02); }
-.bar-cell { display: flex; align-items: center; gap: 8px; }
-.bar { height: 20px; border-radius: 4px; min-width: 4px; transition: width 0.3s; }
-.score { font-weight: 600; min-width: 50px; }
-.pct { color: #888; font-size: 0.85rem; }
-.legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
-.legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #555; }
-.legend-dot { width: 12px; height: 12px; border-radius: 3px; }
-.note { font-size: 0.85rem; color: #888; margin-top: 8px; font-style: italic; }
-.metric-row { display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #eee; }
-.metric { text-align: center; flex: 1; }
-.metric .val { font-size: 1.1rem; font-weight: 600; }
-.metric .lbl { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
-.composite-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 8px; }
-.composite-bar .seg { height: 100%; transition: width 0.3s; }
-.class-label { font-size: 0.8rem; color: #888; margin-bottom: 16px; }
+@media (min-width: 768px) { .card { padding: 18px; margin-bottom: 14px; } }
+.card h3 {
+  font-size: 0.75rem; font-weight: 600; color: #888;
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
+}
+.card h3 .badge {
+  display: inline-block; font-size: 0.6rem; font-weight: 600;
+  padding: 1px 7px; border-radius: 8px; margin-left: 5px;
+  background: #2a2a35; color: #aaa; vertical-align: middle;
+}
+
+/* ── Grids ── */
+.grid-2 { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 768px) { .grid-2 { grid-template-columns: 1fr 1fr; gap: 14px; } }
+.grid-3 { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 640px) { .grid-3 { grid-template-columns: repeat(3, 1fr); gap: 10px; } }
+.grid-4 { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 640px) { .grid-4 { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+@media (min-width: 1024px) { .grid-4 { grid-template-columns: repeat(4, 1fr); gap: 10px; } }
+
+/* ── Charts ── */
+.chart-container { position: relative; height: 180px; }
+@media (min-width: 768px) { .chart-container { height: 240px; } }
+.chart-container-sm { position: relative; height: 140px; }
+@media (min-width: 768px) { .chart-container-sm { height: 180px; } }
+.chart-container-lg { position: relative; height: 220px; }
+@media (min-width: 768px) { .chart-container-lg { height: 300px; } }
+.chart-container-xl { position: relative; height: 300px; }
+@media (min-width: 768px) { .chart-container-xl { height: 400px; } }
+
+/* ── Score Bars ── */
+.score-row {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 5px;
+}
+.score-row .label {
+  font-size: 0.75rem; color: #aaa; min-width: 55px; flex-shrink: 0;
+}
+@media (min-width: 768px) { .score-row .label { min-width: 70px; } }
+.score-row .bar-track {
+  flex: 1; height: 16px; background: #1a1a1e; border-radius: 3px;
+  overflow: hidden; position: relative;
+}
+.score-row .bar-fill {
+  height: 100%; border-radius: 3px; transition: width 0.5s ease;
+  min-width: 3px;
+}
+.score-row .bar-text {
+  position: absolute; right: 5px; top: 50%; transform: translateY(-50%);
+  font-size: 0.65rem; font-weight: 600; color: #d4d4d8;
+}
+.score-row .score-val {
+  font-size: 0.8rem; font-weight: 600; color: #e8e8ec;
+  min-width: 32px; text-align: right;
+}
+
+/* ── Run Selector ── */
+.run-selector {
+  display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap;
+}
+.run-btn {
+  padding: 5px 12px; border-radius: 7px; border: 1px solid #333;
+  background: #1a1a1e; color: #888; font-size: 0.7rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.run-btn:hover { border-color: #555; color: #c0c0c8; }
+.run-btn.active { background: #e67e22; border-color: #e67e22; color: #fff; }
+.run-detail-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px;
+}
+@media (min-width: 640px) { .run-detail-grid { grid-template-columns: repeat(4, 1fr); } }
+.run-detail-item {
+  text-align: center; padding: 6px 3px;
+  background: #1a1a1e; border-radius: 7px;
+}
+.run-detail-item .val { font-size: 0.9rem; font-weight: 700; color: #e8e8ec; }
+.run-detail-item .lbl { font-size: 0.55rem; color: #888; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 1px; }
+
+/* ── Task Table ── */
+.task-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+.task-table th {
+  text-align: left; padding: 6px 5px; border-bottom: 1px solid #2a2a35;
+  color: #888; font-weight: 600; font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 0.3px;
+}
+.task-table td { padding: 5px; border-bottom: 1px solid #1e1e24; }
+.task-table tr:last-child td { border-bottom: none; }
+.task-table .task-name { color: #c0c0c8; }
+.task-table .task-score { font-weight: 600; text-align: center; }
+.task-table .task-max { color: #666; text-align: center; font-size: 0.65rem; }
+.task-table .task-bar { height: 3px; border-radius: 2px; min-width: 2px; transition: width 0.4s ease; }
+
+/* ── Assessment ── */
+.assessment { font-size: 0.8rem; line-height: 1.6; color: #c0c0c8; }
+.assessment strong { color: #e8e8ec; }
+.assessment .verdict {
+  background: #1a1a1e; border-left: 3px solid #e67e22;
+  padding: 10px 12px; border-radius: 0 7px 7px 0; margin: 10px 0;
+  font-size: 0.85rem;
+}
+.assessment .pros-cons {
+  display: grid; grid-template-columns: 1fr; gap: 7px; margin: 10px 0;
+}
+@media (min-width: 640px) { .assessment .pros-cons { grid-template-columns: 1fr 1fr; } }
+.assessment .pros, .assessment .cons {
+  padding: 8px 10px; border-radius: 7px;
+}
+.assessment .pros { background: rgba(46,204,113,0.08); border: 1px solid rgba(46,204,113,0.2); }
+.assessment .cons { background: rgba(231,76,60,0.08); border: 1px solid rgba(231,76,60,0.2); }
+.assessment .pros h4 { color: #2ecc71; font-size: 0.75rem; margin-bottom: 3px; }
+.assessment .cons h4 { color: #e74c3c; font-size: 0.75rem; margin-bottom: 3px; }
+.assessment ul { list-style: none; padding: 0; }
+.assessment li { padding: 1px 0; font-size: 0.75rem; }
+.assessment li::before { content: '• '; }
+
+/* ── VS Mode ── */
+.vs-container { display: none; }
+.vs-container.visible { display: block; }
+.vs-selector {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;
+}
+.vs-chip {
+  padding: 6px 14px; border-radius: 20px; border: 1px solid #333;
+  background: #1a1a1e; color: #aaa; font-size: 0.75rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.vs-chip:hover { border-color: #555; }
+.vs-chip.active { background: #9b59b6; border-color: #9b59b6; color: #fff; }
+.vs-hint {
+  font-size: 0.7rem; color: #666; margin-bottom: 10px;
+  text-align: center;
+}
+.vs-delta-positive { color: #2ecc71; }
+.vs-delta-negative { color: #e74c3c; }
+.vs-delta-neutral { color: #888; }
+.vs-delta-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+.vs-delta-table th {
+  text-align: left; padding: 6px 5px; border-bottom: 1px solid #2a2a35;
+  color: #888; font-weight: 600; font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 0.3px;
+}
+.vs-delta-table td { padding: 5px; border-bottom: 1px solid #1e1e24; }
+.vs-delta-table tr:last-child td { border-bottom: none; }
+.vs-delta-table .vs-name { color: #c0c0c8; }
+.vs-delta-table .vs-val { font-weight: 600; text-align: center; }
+.vs-delta-table .vs-delta { font-weight: 700; text-align: center; }
+
+/* ── Footer ── */
+footer {
+  text-align: center; padding: 20px 12px; color: #555;
+  font-size: 0.7rem; line-height: 1.6;
+}
+footer a { color: #888; text-decoration: none; }
+footer a:hover { color: #aaa; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #1a1a1e; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+/* ── Composite Legend ── */
+.comp-legend {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;
+}
+.comp-legend-item {
+  display: flex; align-items: center; gap: 4px; font-size: 0.7rem; color: #888;
+}
+.comp-legend-dot { width: 10px; height: 10px; border-radius: 2px; }
 </style>
 </head>
 <body>
 
-<h1>Agon-Bench</h1>
-<p class="subtitle">
-  Local LLM benchmark &mdash; Agent (18pts) &middot; Reason (17pts) &middot; Code (19pts) &middot; Total (54pts)<br>
-  3 runs per model per event, reported as mean across runs. All models Q4_K_M on AMD RX 5700 XT (8GB VRAM) via llama.cpp + Vulkan.
-  <strong>Efficiency</strong> (tokens/sec) is included as a 10% weight in the composite score.<br>
-  <strong>24GB class:</strong> Models larger than 8GB use VRAM split (6-7GB GPU, rest system RAM). Efficiency reflects the CPU/GPU split penalty.
-</p>
+<header>
+  <div class="container">
+    <h1>Agon-Bench</h1>
+    <p class="subtitle">Local LLM benchmark · 3 events × 3 runs · AMD RX 5700 XT (8GB VRAM) · llama.cpp + Vulkan</p>
+  </div>
+</header>
 
-<div class="tabs">
-  <button class="tab active" onclick="switchClass('8gb')">
-    8GB VRAM Class <span class="tab-badge g8">7 models</span>
-  </button>
-  <button class="tab" onclick="switchClass('4gb')">
-    4GB VRAM Class <span class="tab-badge g4">1 model</span>
-  </button>
-  <button class="tab" onclick="switchClass('24gb')">
-    24GB VRAM Class <span class="tab-badge" style="background:#e0f2f1;color:#009688;">1 model</span>
-  </button>
+<div class="container">
+
+<!-- View Toggle -->
+<div class="view-toggle">
+  <button class="view-btn active" data-view="single">Single Model</button>
+  <button class="view-btn" data-view="all">All Models</button>
+  <button class="view-btn" data-view="vs">VS</button>
 </div>
 
-<div id="classLabel" class="class-label"></div>
+<!-- Carousel (single model view) -->
+<div class="carousel-container" id="carousel">
+  <div class="carousel-track" id="carouselTrack"></div>
+  <div class="carousel-arrows">
+    <button class="carousel-arrow" id="carouselPrev">‹</button>
+    <button class="carousel-arrow" id="carouselNext">›</button>
+  </div>
+</div>
+<div class="carousel-dots" id="carouselDots"></div>
 
-<div id="summaryCards" class="grid-5"></div>
+<!-- All Models Grid -->
+<div class="models-grid" id="modelsGrid"></div>
 
-<div class="card">
-  <h3>Overall Score (54pts) + Efficiency (tok/s)</h3>
-  <div class="chart-container">
-    <canvas id="overallChart"></canvas>
+<!-- All Models: Per-Event Ranked Charts -->
+<div class="card" id="allEventCharts" style="display:none;">
+  <h3>Per-Event Rankings <span class="badge">best to worst</span></h3>
+  <div class="grid-3">
+    <div>
+      <div style="font-size:0.65rem;color:#3498db;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;text-align:center;font-weight:600;">Agent</div>
+      <div class="chart-container-sm"><canvas id="allAgentChart"></canvas></div>
+    </div>
+    <div>
+      <div style="font-size:0.65rem;color:#2ecc71;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;text-align:center;font-weight:600;">Code</div>
+      <div class="chart-container-sm"><canvas id="allCodeChart"></canvas></div>
+    </div>
+    <div>
+      <div style="font-size:0.65rem;color:#9b59b6;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;text-align:center;font-weight:600;">Reasoning</div>
+      <div class="chart-container-sm"><canvas id="allReasonChart"></canvas></div>
+    </div>
   </div>
 </div>
 
+<!-- Composite Score Chart -->
+<div class="card" id="compositeCard">
+  <h3>Composite Score <span class="badge">80% benchmark + 20% speed²</span></h3>
+  <div class="comp-legend" id="compLegend"></div>
+  <div class="chart-container-lg">
+    <canvas id="compositeChart"></canvas>
+  </div>
+</div>
+
+<!-- Score % Chart -->
+<div class="card" id="scoreCard">
+  <h3>Score % <span class="badge">raw benchmark score</span></h3>
+  <div class="comp-legend" id="scoreLegend"></div>
+  <div class="chart-container-lg">
+    <canvas id="scoreChart"></canvas>
+  </div>
+</div>
+
+<!-- Model Hero -->
+<div class="model-hero" id="modelHero"></div>
+
+<!-- Run Selector -->
+<div class="card" id="runCard">
+  <h3>Run Selector <span class="badge">click to compare</span></h3>
+  <div class="run-selector" id="runSelector"></div>
+  <div class="run-detail-grid" id="runDetails"></div>
+</div>
+
+<!-- Event Scores -->
+<div class="card">
+  <h3>Event Scores <span class="badge">3-run average</span></h3>
+  <div class="grid-3" id="eventCards"></div>
+</div>
+
+<!-- Charts -->
 <div class="grid-2">
   <div class="card">
-    <h3>Agent Event (18pts)</h3>
-    <div class="chart-container-sm">
-      <canvas id="agentChart"></canvas>
-    </div>
-  </div>
-  <div class="card">
-    <h3>Reason Event (17pts)</h3>
-    <div class="chart-container-sm">
-      <canvas id="reasonChart"></canvas>
-    </div>
-  </div>
-  <div class="card">
-    <h3>Code Event (19pts)</h3>
-    <div class="chart-container-sm">
-      <canvas id="codeChart"></canvas>
-    </div>
-  </div>
-  <div class="card">
-    <h3>Efficiency (tokens/sec)</h3>
-    <div class="chart-container-sm">
-      <canvas id="efficiencyChart"></canvas>
-    </div>
-  </div>
-</div>
-
-<div class="card">
-  <h3>Per-Task Breakdown (mean across 3 runs)</h3>
-  <table>
-    <thead>
-      <tr id="taskHeader">
-        <th>Task</th>
-        <th>Max</th>
-      </tr>
-    </thead>
-    <tbody id="taskTable"></tbody>
-  </table>
-</div>
-
-<div class="grid-2">
-  <div class="card">
-    <h3>Capability Radar</h3>
-    <div class="chart-container">
-      <canvas id="radarChart"></canvas>
-    </div>
+    <h3>Per-Task Radar</h3>
+    <div class="chart-container"><canvas id="radarChart"></canvas></div>
   </div>
   <div class="card">
     <h3>Score Distribution</h3>
-    <div class="chart-container">
-      <canvas id="distributionChart"></canvas>
+    <div class="chart-container"><canvas id="distributionChart"></canvas></div>
+  </div>
+</div>
+
+<!-- Per-Task Breakdown -->
+<div class="card">
+  <h3>Per-Task Breakdown <span class="badge">all runs</span></h3>
+  <div style="overflow-x:auto;"><table class="task-table" id="taskTable"></table></div>
+</div>
+
+<!-- Model Assessment -->
+<div class="card">
+  <h3>Model Assessment</h3>
+  <div class="assessment" id="assessment"></div>
+</div>
+
+<!-- ── VS View ── -->
+<div class="vs-container" id="vsContainer">
+  <div class="card">
+    <h3>Select Models <span class="badge">click to add/remove</span></h3>
+    <div class="vs-hint">Click models in the grid below to add them to the comparison. Select 2+ models.</div>
+    <div class="vs-selector" id="vsSelector"></div>
+  </div>
+
+  <div class="card" id="vsCompareCard" style="display:none;">
+    <h3>Head-to-Head Comparison <span class="badge">deltas vs average</span></h3>
+    <div class="chart-container-xl">
+      <canvas id="vsChart"></canvas>
+    </div>
+  </div>
+
+  <div class="grid-4" id="vsEventCards" style="display:none;"></div>
+
+  <div class="card" id="vsTaskCard" style="display:none;">
+    <h3>Per-Task Comparison <span class="badge">with deltas</span></h3>
+    <div style="overflow-x:auto;"><table class="vs-delta-table" id="vsTaskTable"></table></div>
+  </div>
+
+  <div class="card" id="vsSpeedCard" style="display:none;">
+    <h3>Speed Comparison</h3>
+    <div class="chart-container-sm">
+      <canvas id="vsSpeedChart"></canvas>
     </div>
   </div>
 </div>
 
-<p class="note">
-  Agon-Bench v1.0 &middot; 6 tasks per event &middot; 3 runs per model &middot; Hidden test grading &middot; All models run locally via llama.cpp with Vulkan (AMD RX 5700 XT, 8GB VRAM).<br>
-  <strong>Efficiency note:</strong> Tokens/sec is hardware-dependent. On 8GB VRAM, larger models (12B) are VRAM-constrained, reducing throughput. On 16GB+, all models would fit more comfortably and the speed gap would narrow, but the relative ordering (smaller = faster) would persist. The 10% efficiency weight is modest &mdash; benchmark performance dominates the composite score.
-</p>
+</div>
+
+<footer>
+  Agon-Bench v2.0 · All models Q4_K_M on AMD RX 5700 XT (8GB VRAM) via llama.cpp + Vulkan<br>
+  <a href="https://github.com/GuideboardLabs">Guideboard Labs</a>
+</footer>
 
 <script>
-const COLORS = {
-  gemma4:  { bg: 'rgba(26,115,232,0.85)',  border: '#1a73e8',  light: 'rgba(26,115,232,0.15)' },
-  qwen35:  { bg: 'rgba(230,126,34,0.85)',  border: '#e67e22',  light: 'rgba(230,126,34,0.15)' },
-  ornith:  { bg: 'rgba(192,57,43,0.85)',   border: '#c0392b',  light: 'rgba(192,57,43,0.15)' },
-  lfm:     { bg: 'rgba(39,174,96,0.85)',   border: '#27ae60',  light: 'rgba(39,174,96,0.15)' },
-  vibethinker: { bg: 'rgba(142,68,173,0.85)', border: '#8e44ad', light: 'rgba(142,68,173,0.15)' },
-  superqwen: { bg: 'rgba(0,150,136,0.85)', border: '#009688', light: 'rgba(0,150,136,0.15)' },
-  holo: { bg: 'rgba(233,30,99,0.85)', border: '#e91e63', light: 'rgba(233,30,99,0.15)' },
-  holocoder: { bg: 'rgba(156,39,176,0.85)', border: '#9c27b0', light: 'rgba(156,39,176,0.15)' },
-};
+// ── All Models Data (fetched from live API) ──
+let ALL_MODELS = [];
 
-const CLASSES = {
-  '8gb': {
-    label: '8GB VRAM Class &mdash; Models that fit entirely or partially in 8GB VRAM',
-    models: [
-      { key: 'holocoder', label: 'Holo-3.1-9B-Coder', color: COLORS.holocoder },
-      { key: 'gemma4',  label: 'Gemma4-12B',  color: COLORS.gemma4 },
-      { key: 'qwen35',  label: 'Qwen3.5-9B',  color: COLORS.qwen35 },
-      { key: 'ornith',  label: 'Ornith-1.0-9B', color: COLORS.ornith },
-      { key: 'vibethinker', label: 'VibeThinker-3B', color: COLORS.vibethinker },
-      { key: 'lfm',     label: 'LFM2.5-8B',   color: COLORS.lfm },
-      { key: 'holo', label: 'Holo-3.1-9B', color: COLORS.holo },
-    ],
-    data: {
-      overall: [43.1, 42.0, 40.3, 40.0, 39.0, 36.2, 27.3],
-      agent:   [15.7, 15.0, 14.0, 11.7, 15.3, 10.7, 5.3],
-      reason:  [14.7, 16.7, 16.0, 16.3, 17.0, 16.7, 15.0],
-      code:    [12.7, 10.3, 10.3, 12.0, 7.0, 8.8, 7.0],
-      efficiency: [36.6, 21.6, 41.9, 45.4, 82.7, 91.1, 36.6],
-    },
-    tasks: [
-      { name: 'Tool Calling',     max: 3, holocoder: 3.0, gemma4: 2.0, qwen35: 2.0, ornith: 2.0, vibethinker: 1.7, lfm: 2.0, holo: 2.3 },
-      { name: 'Orchestration',    max: 3, holocoder: 2.0, gemma4: 3.0, qwen35: 2.0, ornith: 2.3, vibethinker: 3.0, lfm: 2.0, holo: 0.0 },
-      { name: 'Error Handling',   max: 4, holocoder: 4.0, gemma4: 4.0, qwen35: 4.0, ornith: 4.0, vibethinker: 4.0, lfm: 2.3, holo: 0.0 },
-      { name: 'Planning',         max: 2, holocoder: 2.0, gemma4: 1.3, qwen35: 2.0, ornith: 0.7, vibethinker: 2.0, lfm: 0.7, holo: 2.0 },
-      { name: 'Parsing',          max: 3, holocoder: 1.7, gemma4: 1.7, qwen35: 1.0, ornith: 0.0, vibethinker: 1.7, lfm: 1.0, holo: 0.0 },
-      { name: 'Decision-Making',  max: 3, holocoder: 3.0, gemma4: 3.0, qwen35: 3.0, ornith: 2.7, vibethinker: 3.0, lfm: 2.7, holo: 1.0 },
-      { name: 'Logical Deduction',max: 2, holocoder: 2.0, gemma4: 2.0, qwen35: 2.0, ornith: 2.0, vibethinker: 2.0, lfm: 2.0, holo: 2.0 },
-      { name: 'Math Word Problem',max: 3, holocoder: 3.0, gemma4: 3.0, qwen35: 3.0, ornith: 3.0, vibethinker: 3.0, lfm: 2.7, holo: 3.0 },
-      { name: 'Constraint Sat.',  max: 3, holocoder: 3.0, gemma4: 3.0, qwen35: 3.0, ornith: 3.0, vibethinker: 3.0, lfm: 3.0, holo: 3.0 },
-      { name: 'Counterfactual',   max: 3, holocoder: 3.0, gemma4: 2.7, qwen35: 3.0, ornith: 3.0, vibethinker: 3.0, lfm: 3.0, holo: 3.0 },
-      { name: 'Analytical Expl.', max: 3, holocoder: 1.7, gemma4: 3.0, qwen35: 2.0, ornith: 2.3, vibethinker: 3.0, lfm: 3.0, holo: 1.0 },
-      { name: 'Multi-Hop Synth.', max: 3, holocoder: 2.7, gemma4: 3.0, qwen35: 3.0, ornith: 3.0, vibethinker: 3.0, lfm: 3.0, holo: 3.0 },
-      { name: 'String Cleaner',   max: 5, holocoder: 1.3, gemma4: 5.0, qwen35: 2.0, ornith: 5.0, vibethinker: 3.7, lfm: 3.2, holo: 1.3 },
-      { name: 'Log Parser',       max: 4, holocoder: 1.7, gemma4: 2.0, qwen35: 1.0, ornith: 0.0, vibethinker: 0.7, lfm: 1.5, holo: 2.0 },
-      { name: 'LRU Cache',        max: 3, holocoder: 3.0, gemma4: 0.0, qwen35: 3.0, ornith: 3.0, vibethinker: 2.3, lfm: 0.8, holo: 0.0 },
-      { name: 'File Indexer',     max: 2, holocoder: 1.7, gemma4: 2.0, qwen35: 2.0, ornith: 2.0, vibethinker: 0.3, lfm: 1.8, holo: 2.0 },
-      { name: 'Task Runner CLI',  max: 2, holocoder: 1.0, gemma4: 0.0, qwen35: 0.3, ornith: 0.0, vibethinker: 0.0, lfm: 0.0, holo: 0.0 },
-      { name: 'Constrained Diff', max: 3, holocoder: 2.7, gemma4: 1.3, qwen35: 2.0, ornith: 2.0, vibethinker: 0.0, lfm: 1.5, holo: 1.7 },
-    ],
-    medals: ['&#x1F947;', '&#x1F948;', '&#x1F949;', '', '', '', ''],
-  },
-  '4gb': {
-    label: '4GB VRAM Class &mdash; Models that fit entirely in 4GB VRAM (sub-4B params)',
-    models: [
-      { key: 'vibethinker', label: 'VibeThinker-3B', color: COLORS.vibethinker },
-    ],
-    data: {
-      overall: [39.0],
-      agent:   [15.3],
-      reason:  [17.0],
-      code:    [7.0],
-      efficiency: [82.7],
-    },
-    tasks: [
-      { name: 'Tool Calling',     max: 3, vibethinker: 1.7 },
-      { name: 'Orchestration',    max: 3, vibethinker: 3.0 },
-      { name: 'Error Handling',   max: 4, vibethinker: 4.0 },
-      { name: 'Planning',         max: 2, vibethinker: 2.0 },
-      { name: 'Parsing',          max: 3, vibethinker: 1.7 },
-      { name: 'Decision-Making',  max: 3, vibethinker: 3.0 },
-      { name: 'Logical Deduction',max: 2, vibethinker: 2.0 },
-      { name: 'Math Word Problem',max: 3, vibethinker: 3.0 },
-      { name: 'Constraint Sat.',  max: 3, vibethinker: 3.0 },
-      { name: 'Counterfactual',   max: 3, vibethinker: 3.0 },
-      { name: 'Analytical Expl.', max: 3, vibethinker: 3.0 },
-      { name: 'Multi-Hop Synth.', max: 3, vibethinker: 3.0 },
-      { name: 'String Cleaner',   max: 5, vibethinker: 3.7 },
-      { name: 'Log Parser',       max: 4, vibethinker: 0.7 },
-      { name: 'LRU Cache',        max: 3, vibethinker: 2.3 },
-      { name: 'File Indexer',     max: 2, vibethinker: 0.3 },
-      { name: 'Task Runner CLI',  max: 2, vibethinker: 0.0 },
-      { name: 'Constrained Diff', max: 3, vibethinker: 0.0 },
-    ],
-    medals: [''],
-  },
-  '24gb': {
-    label: '24GB VRAM Class &mdash; Models requiring VRAM split (6-7GB GPU, rest system RAM)',
-    models: [
-      { key: 'superqwen', label: 'SuperQwen-35B-A3B', color: COLORS.superqwen },
-    ],
-    data: {
-      overall: [48.3],
-      agent:   [18.0],
-      reason:  [12.0],
-      code:    [18.3],
-      efficiency: [10.1],
-    },
-    tasks: [
-      { name: 'Tool Calling',     max: 3, superqwen: 3.0 },
-      { name: 'Orchestration',    max: 3, superqwen: 3.0 },
-      { name: 'Error Handling',   max: 4, superqwen: 4.0 },
-      { name: 'Planning',         max: 2, superqwen: 2.0 },
-      { name: 'Parsing',          max: 3, superqwen: 3.0 },
-      { name: 'Decision-Making',  max: 3, superqwen: 3.0 },
-      { name: 'Logical Deduction',max: 2, superqwen: 1.7 },
-      { name: 'Math Word Problem',max: 3, superqwen: 0.0 },
-      { name: 'Constraint Sat.',  max: 3, superqwen: 3.0 },
-      { name: 'Counterfactual',   max: 3, superqwen: 2.7 },
-      { name: 'Analytical Expl.', max: 3, superqwen: 1.7 },
-      { name: 'Multi-Hop Synth.', max: 3, superqwen: 3.0 },
-      { name: 'String Cleaner',   max: 5, superqwen: 4.7 },
-      { name: 'Log Parser',       max: 4, superqwen: 4.0 },
-      { name: 'LRU Cache',        max: 3, superqwen: 3.0 },
-      { name: 'File Indexer',     max: 2, superqwen: 2.0 },
-      { name: 'Task Runner CLI',  max: 2, superqwen: 2.0 },
-      { name: 'Constrained Diff', max: 3, superqwen: 2.7 },
-    ],
-    medals: [''],
-  },
-};
-
+// ── State ──
+let currentView = 'single';
+let currentIndex = 0;
+let selectedRun = null;
 let chartInstances = {};
-let currentClass = '8gb';
+let touchStartX = 0;
+let touchDeltaX = 0;
+let isDragging = false;
+let vsSelected = [];
 
-function getClass(name) {
-  return CLASSES[name];
+// ── Helpers ──
+function getModel(i) { return ALL_MODELS[i]; }
+function getCurrentModel() { return getModel(currentIndex); }
+
+function getEventColor(event) {
+  return event === 'agent' ? '#3498db' : event === 'code' ? '#2ecc71' : '#9b59b6';
+}
+
+function getEventLabel(event) {
+  return event === 'agent' ? 'Agent' : event === 'code' ? 'Code' : 'Reasoning';
+}
+
+function getEventMax(event) {
+  return event === 'agent' ? 24 : event === 'code' ? 25 : 17;
 }
 
 function destroyCharts() {
-  Object.keys(chartInstances).forEach(key => {
-    if (chartInstances[key]) {
-      chartInstances[key].destroy();
-      delete chartInstances[key];
+  Object.values(chartInstances).forEach(c => { if (c) c.destroy(); });
+  chartInstances = {};
+}
+
+// ── Carousel ──
+function buildCarousel() {
+  const track = document.getElementById('carouselTrack');
+  track.innerHTML = ALL_MODELS.map((m, i) => {
+    const pct = (m.total / m.max * 100).toFixed(0);
+    return `<div class="carousel-slide">
+      <div class="model-hero" style="cursor:pointer;" onclick="selectModel(${i})">
+        <div class="avatar" style="background:linear-gradient(135deg, ${m.color.border}, ${m.color.border}88);">${m.label[0]}</div>
+        <div class="info">
+          <h2>${m.label}</h2>
+          <div class="tags">${m.tags.map(t => `<span>${t}</span>`).join('')}</div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><div class="val" style="color:${m.color.border};">${m.total.toFixed(1)}</div><div class="lbl">Total /${m.max}</div></div>
+          <div class="stat"><div class="val">${m.tok_s.toFixed(1)}</div><div class="lbl">tok/s</div></div>
+          <div class="stat"><div class="val">#${m.rank}</div><div class="lbl">Rank</div></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  updateCarousel();
+}
+
+function updateCarousel() {
+  const track = document.getElementById('carouselTrack');
+  track.style.transform = `translateX(-${currentIndex * 100}%)`;
+  const dots = document.getElementById('carouselDots');
+  dots.innerHTML = ALL_MODELS.map((_, i) =>
+    `<button class="carousel-dot ${i === currentIndex ? 'active' : ''}" onclick="selectModel(${i})"></button>`
+  ).join('');
+}
+
+function selectModel(idx) {
+  currentIndex = idx;
+  updateCarousel();
+  renderModelDetail();
+}
+
+function carouselNext() {
+  currentIndex = (currentIndex + 1) % ALL_MODELS.length;
+  updateCarousel();
+  renderModelDetail();
+}
+
+function carouselPrev() {
+  currentIndex = (currentIndex - 1 + ALL_MODELS.length) % ALL_MODELS.length;
+  updateCarousel();
+  renderModelDetail();
+}
+
+// ── Touch Swipe ──
+document.addEventListener('DOMContentLoaded', () => {
+  const carousel = document.getElementById('carousel');
+  carousel.addEventListener('touchstart', e => {
+    if (currentView !== 'single') return;
+    touchStartX = e.touches[0].clientX;
+    isDragging = true;
+  }, { passive: true });
+  carousel.addEventListener('touchmove', e => {
+    if (!isDragging || currentView !== 'single') return;
+    touchDeltaX = e.touches[0].clientX - touchStartX;
+  }, { passive: true });
+  carousel.addEventListener('touchend', () => {
+    if (!isDragging || currentView !== 'single') return;
+    if (Math.abs(touchDeltaX) > 50) {
+      if (touchDeltaX < 0) carouselNext();
+      else carouselPrev();
     }
+    isDragging = false;
+    touchDeltaX = 0;
+  }, { passive: true });
+});
+
+// ── All Models Grid ──
+function buildModelsGrid() {
+  const grid = document.getElementById('modelsGrid');
+  grid.innerHTML = ALL_MODELS.map((m, i) => {
+    const pct = (m.total / m.max * 100).toFixed(0);
+    const isVs = vsSelected.includes(i);
+    return `<div class="model-card ${i === currentIndex ? 'selected' : ''} ${isVs ? 'vs-selected' : ''}" onclick="selectFromGrid(${i})">
+      <div class="mc-header">
+        <div class="mc-avatar" style="background:linear-gradient(135deg, ${m.color.border}, ${m.color.border}88);">${m.label[0]}</div>
+        <div>
+          <div class="mc-name">${m.label}</div>
+          <div class="mc-tags">${m.tags.slice(0, 2).map(t => `<span>${t}</span>`).join('')}</div>
+        </div>
+      </div>
+      <div class="mc-stats">
+        <div class="mc-stat"><div class="v" style="color:${m.color.border};">${m.total.toFixed(1)}</div><div class="l">Score</div></div>
+        <div class="mc-stat"><div class="v">${m.tok_s.toFixed(1)}</div><div class="l">tok/s</div></div>
+        <div class="mc-stat"><div class="v">#${m.rank}</div><div class="l">Rank</div></div>
+      </div>
+      <div class="mc-bar" style="width:${pct}%;background:${m.color.border};"></div>
+    </div>`;
+  }).join('');
+}
+
+function selectFromGrid(idx) {
+  if (currentView === 'vs') {
+    // Toggle VS selection
+    const pos = vsSelected.indexOf(idx);
+    if (pos >= 0) {
+      vsSelected.splice(pos, 1);
+    } else {
+      vsSelected.push(idx);
+    }
+    buildModelsGrid();
+    buildVsSelector();
+    renderVs();
+    return;
+  }
+  currentIndex = idx;
+  document.querySelectorAll('.model-card').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+  renderModelDetail();
+}
+
+// ── View Toggle ──
+function switchView(view) {
+  currentView = view;
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+
+  const carousel = document.getElementById('carousel');
+  const dots = document.getElementById('carouselDots');
+  const grid = document.getElementById('modelsGrid');
+  const composite = document.getElementById('compositeCard');
+  const scoreCard = document.getElementById('scoreCard');
+  const allEventCharts = document.getElementById('allEventCharts');
+  const vsContainer = document.getElementById('vsContainer');
+  const singleContent = [document.getElementById('modelHero'), document.getElementById('runCard'), document.querySelector('.card:has(#eventCards)'), document.querySelector('.grid-2'), document.querySelector('.card:has(#taskTable)'), document.querySelector('.card:has(#assessment)')];
+
+  // Hide everything first
+  carousel.style.display = 'none';
+  dots.style.display = 'none';
+  grid.classList.remove('visible');
+  composite.style.display = 'none';
+  scoreCard.style.display = 'none';
+  allEventCharts.style.display = 'none';
+  vsContainer.classList.remove('visible');
+  singleContent.forEach(el => { if (el) el.style.display = 'none'; });
+
+  if (view === 'single') {
+    carousel.style.display = 'block';
+    dots.style.display = 'flex';
+    composite.style.display = 'block';
+    scoreCard.style.display = 'block';
+    singleContent.forEach(el => { if (el) el.style.display = ''; });
+  } else if (view === 'all') {
+    grid.classList.add('visible');
+    composite.style.display = 'block';
+    scoreCard.style.display = 'block';
+    allEventCharts.style.display = 'block';
+  } else if (view === 'vs') {
+    grid.classList.add('visible');
+    vsContainer.classList.add('visible');
+  }
+
+  setTimeout(() => {
+    if (view === 'single') {
+      renderCompositeChart();
+      renderScoreChart();
+    } else if (view === 'all') {
+      renderCompositeChart();
+      renderScoreChart();
+      renderAllEventCharts();
+    } else if (view === 'vs') {
+      renderVs();
+    }
+  }, 50);
+}
+
+// ── All Models: Per-Event Ranked Charts ──
+function renderAllEventCharts() {
+  ['agent', 'code', 'reason'].forEach(event => {
+    const maxVal = getEventMax(event);
+    const sorted = [...ALL_MODELS].sort((a, b) => b[event] - a[event]);
+    const labels = sorted.map(m => m.label);
+    const data = sorted.map(m => (m[event] / maxVal * 100).toFixed(1));
+    const colors = sorted.map(m => m.color.border);
+    const canvasId = event === 'agent' ? 'allAgentChart' : event === 'code' ? 'allCodeChart' : 'allReasonChart';
+
+    if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+
+    chartInstances[canvasId] = new Chart(document.getElementById(canvasId), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: colors.map(c => c + 'b3'),
+          borderColor: colors,
+          borderWidth: 1,
+          borderRadius: 2,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                const m = sorted[ctx.dataIndex];
+                return `${m[event].toFixed(1)}/${maxVal} (${ctx.parsed.x}%)`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { max: 100, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#666', font: { size: 8 } } },
+          y: { grid: { display: false }, ticks: { color: '#888', font: { size: 7 } } }
+        }
+      }
+    });
   });
 }
 
-function buildSummaryCards(cls) {
-  const container = document.getElementById('summaryCards');
-  const n = cls.models.length;
-  container.className = n <= 1 ? 'grid-1' : 'grid-5';
+// ── Composite Chart ──
+function renderCompositeChart() {
+  destroyCharts();
 
-  const maxEff = Math.max(...cls.data.efficiency);
-  const maxOverall = Math.max(...cls.data.overall);
+  const maxTok = Math.max(...ALL_MODELS.map(m => m.tok_s));
 
-  container.innerHTML = cls.models.map((m, i) => {
-    const score = cls.data.overall[i];
-    const pct = (score / 54 * 100).toFixed(0);
-    const agent = cls.data.agent[i];
-    const reason = cls.data.reason[i];
-    const code = cls.data.code[i];
-    const eff = cls.data.efficiency[i];
-    const effPct = (eff / maxEff * 100).toFixed(0);
-    const benchPct = (score / 54 * 100).toFixed(1);
-    const composite = (0.9 * score / 54 + 0.1 * eff / maxEff) * 100;
-    const medal = cls.medals[i] || '';
-    const color = m.color;
+  const sorted = [...ALL_MODELS].sort((a, b) => {
+    const aComp = (0.8 * a.total / a.max + 0.2 * (a.tok_s / maxTok) * (a.tok_s / maxTok)) * 100;
+    const bComp = (0.8 * b.total / b.max + 0.2 * (b.tok_s / maxTok) * (b.tok_s / maxTok)) * 100;
+    return bComp - aComp;
+  });
+  const labels = sorted.map(m => m.label);
+  const toks = sorted.map(m => m.tok_s);
+  const colors = sorted.map(m => m.color);
 
-    return '<div class="card">' +
-      '<h3>' + medal + ' ' + m.label + '</h3>' +
-      '<div style="font-size:2.2rem;font-weight:700;color:' + color.border + ';">' + score.toFixed(1) + '</div>' +
-      '<div style="color:#666;">/ 54 (' + pct + '%)</div>' +
-      '<div style="margin-top:8px;font-size:0.85rem;color:#888;">Agent ' + agent.toFixed(1) + ' &middot; Reason ' + reason.toFixed(1) + ' &middot; Code ' + code.toFixed(1) + '</div>' +
-      '<div class="metric-row">' +
-        '<div class="metric"><div class="val" style="color:' + color.border + ';">' + eff.toFixed(1) + '</div><div class="lbl">tok/s</div></div>' +
-        '<div class="metric"><div class="val">--</div><div class="lbl">tokens</div></div>' +
-        '<div class="metric"><div class="val">--</div><div class="lbl">runtime</div></div>' +
-      '</div>' +
-      '<div class="composite-bar">' +
-        '<div class="seg" style="width:' + (benchPct * 0.9).toFixed(1) + '%;background:' + color.border + ';" title="Benchmark ' + benchPct + '%"></div>' +
-        '<div class="seg" style="width:' + (effPct * 0.1).toFixed(1) + '%;background:' + color.light + ';" title="Efficiency ' + effPct + '%"></div>' +
-      '</div>' +
-      '<div style="font-size:0.8rem;color:#888;margin-top:4px;">Composite: ' + composite.toFixed(1) + '% (90% bench + 10% efficiency)</div>' +
-    '</div>';
-  }).join('');
-}
+  const composites = sorted.map((m, i) => {
+    const benchPct = m.total / m.max;
+    const effRatio = m.tok_s / maxTok;
+    const effScore = effRatio * effRatio;
+    return (0.8 * benchPct + 0.2 * effScore) * 100;
+  });
 
-function buildTaskTable(cls) {
-  const header = document.getElementById('taskHeader');
-  const body = document.getElementById('taskTable');
+  const legend = document.getElementById('compLegend');
+  legend.innerHTML = sorted.map((m, i) =>
+    `<div class="comp-legend-item"><div class="comp-legend-dot" style="background:${m.color.border};"></div>${m.label}</div>`
+  ).join('');
 
-  header.innerHTML = '<th>Task</th><th>Max</th>' +
-    cls.models.map(m => '<th>' + m.label + '</th>').join('');
-
-  body.innerHTML = cls.tasks.map(t => {
-    const vals = cls.models.map(m => t[m.key] || 0);
-    const maxVal = Math.max(...vals);
-    const td = vals.map((v, i) => {
-      const pct = v / t.max * 100;
-      const isMax = v === maxVal && v > 0;
-      const color = cls.models[i].color;
-      return '<td><div class="bar-cell"><div class="bar" style="width:' + (pct * 1.8) + 'px;background:' + color.bg + '"></div><span class="score" style="color:' + (isMax ? color.border : '#333') + '">' + v.toFixed(1) + '</span><span class="pct">(' + pct.toFixed(0) + '%)</span></div></td>';
-    }).join('');
-    return '<tr><td><strong>' + t.name + '</strong></td><td>' + t.max + '</td>' + td + '</tr>';
-  }).join('');
-}
-
-function renderCharts(cls) {
-  const labels = cls.models.map(m => m.label);
-  const colors = cls.models.map(m => m.color);
-  const data = cls.data;
-
-  chartInstances.overall = new Chart(document.getElementById('overallChart'), {
+  chartInstances.composite = new Chart(document.getElementById('compositeChart'), {
     type: 'bar',
     data: {
       labels: labels,
       datasets: [
         {
-          label: 'Benchmark Score (54pts)',
-          data: data.overall,
+          label: 'Composite Score',
+          data: composites,
           backgroundColor: colors.map(c => c.bg),
           borderColor: colors.map(c => c.border),
           borderWidth: 1,
-          borderRadius: 4,
+          borderRadius: 3,
           yAxisID: 'y',
+          order: 2,
         },
         {
-          label: 'Efficiency (tok/s)',
-          data: data.efficiency,
+          label: 'Speed (tok/s)',
+          data: toks,
           type: 'line',
-          borderColor: '#333',
-          backgroundColor: 'rgba(0,0,0,0.05)',
+          borderColor: '#e8e8ec',
+          backgroundColor: 'rgba(232,232,236,0.08)',
           borderWidth: 2,
-          pointBackgroundColor: '#333',
-          pointRadius: 5,
+          pointBackgroundColor: colors.map(c => c.border),
+          pointBorderColor: '#1a1a1e',
+          pointBorderWidth: 2,
+          pointRadius: 6,
           pointStyle: 'rectRot',
           yAxisID: 'y1',
+          order: 1,
         }
       ]
     },
@@ -388,136 +801,645 @@ function renderCharts(cls) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'top', labels: { boxWidth: 12, padding: 12, font: { size: 11 } } }
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const i = ctx.dataIndex;
+              const m = sorted[i];
+              if (ctx.datasetIndex === 0) return `Composite: ${composites[i].toFixed(1)}%`;
+              return `Speed: ${m.tok_s.toFixed(1)} tok/s`;
+            }
+          }
+        }
       },
       scales: {
         y: {
-          beginAtZero: true, max: 54,
-          grid: { color: 'rgba(0,0,0,0.05)' },
-          title: { display: true, text: 'Score (pts)', color: '#888' }
+          beginAtZero: true, max: 100,
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { color: '#666', font: { size: 9 }, callback: v => v + '%' },
+          title: { display: true, text: 'Composite Score', color: '#666', font: { size: 10 } }
         },
         y1: {
           position: 'right',
-          beginAtZero: true, max: 100,
+          beginAtZero: true,
           grid: { display: false },
-          title: { display: true, text: 'tok/s', color: '#888' }
+          ticks: { color: '#666', font: { size: 9 } },
+          title: { display: true, text: 'tok/s', color: '#666', font: { size: 10 } }
         },
-        x: { grid: { display: false } }
+        x: {
+          grid: { display: false },
+          ticks: { color: '#888', font: { size: 8 } }
+        }
       }
     }
   });
+}
 
-  function barChart(id, chartData, maxVal) {
-    chartInstances[id] = new Chart(document.getElementById(id), {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [{
-          data: chartData,
+// ── Score % Chart ──
+function renderScoreChart() {
+  const maxTok = Math.max(...ALL_MODELS.map(m => m.tok_s));
+
+  const sorted = [...ALL_MODELS].sort((a, b) => (b.total / b.max) - (a.total / a.max));
+  const labels = sorted.map(m => m.label);
+  const toks = sorted.map(m => m.tok_s);
+  const colors = sorted.map(m => m.color);
+  const scorePcts = sorted.map(m => (m.total / m.max * 100));
+
+  const legend = document.getElementById('scoreLegend');
+  legend.innerHTML = sorted.map((m, i) =>
+    `<div class="comp-legend-item"><div class="comp-legend-dot" style="background:${m.color.border};"></div>${m.label}</div>`
+  ).join('');
+
+  chartInstances.score = new Chart(document.getElementById('scoreChart'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Score %',
+          data: scorePcts,
           backgroundColor: colors.map(c => c.bg),
           borderColor: colors.map(c => c.border),
           borderWidth: 1,
-          borderRadius: 4,
-        }]
+          borderRadius: 3,
+          yAxisID: 'y',
+          order: 2,
+        },
+        {
+          label: 'Speed (tok/s)',
+          data: toks,
+          type: 'line',
+          borderColor: '#e8e8ec',
+          backgroundColor: 'rgba(232,232,236,0.08)',
+          borderWidth: 2,
+          pointBackgroundColor: colors.map(c => c.border),
+          pointBorderColor: '#1a1a1e',
+          pointBorderWidth: 2,
+          pointRadius: 6,
+          pointStyle: 'rectRot',
+          yAxisID: 'y1',
+          order: 1,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const i = ctx.dataIndex;
+              const m = sorted[i];
+              if (ctx.datasetIndex === 0) return `Score: ${m.total.toFixed(1)}/${m.max} (${scorePcts[i].toFixed(0)}%)`;
+              return `Speed: ${m.tok_s.toFixed(1)} tok/s`;
+            }
+          }
+        }
       },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { max: maxVal, grid: { color: 'rgba(0,0,0,0.05)' } },
-          y: { grid: { display: false } }
+      scales: {
+        y: {
+          beginAtZero: true, max: 100,
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { color: '#666', font: { size: 9 }, callback: v => v + '%' },
+          title: { display: true, text: 'Score %', color: '#666', font: { size: 10 } }
+        },
+        y1: {
+          position: 'right',
+          beginAtZero: true,
+          grid: { display: false },
+          ticks: { color: '#666', font: { size: 9 } },
+          title: { display: true, text: 'tok/s', color: '#666', font: { size: 10 } }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: '#888', font: { size: 8 } }
         }
       }
+    }
+  });
+}
+
+// ── Model Detail ──
+function renderModelDetail() {
+  const m = getCurrentModel();
+  selectedRun = null;
+
+  const hero = document.getElementById('modelHero');
+  const pct = (m.total / m.max * 100).toFixed(0);
+  hero.innerHTML = `
+    <div class="avatar" style="background:linear-gradient(135deg, ${m.color.border}, ${m.color.border}88);">${m.label[0]}</div>
+    <div class="info">
+      <h2>${m.label}${m.flagged ? ' <span style="color:#e74c3c;font-size:0.7rem;background:rgba(231,76,60,0.15);padding:2px 8px;border-radius:10px;border:1px solid rgba(231,76,60,0.4);">USELESS</span>' : ''}</h2>
+      <div class="tags">${m.tags.map(t => `<span>${t}</span>`).join('')}</div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="val" style="color:${m.color.border};">${m.total.toFixed(1)}</div><div class="lbl">Total /${m.max}</div></div>
+      <div class="stat"><div class="val">${m.tok_s.toFixed(1)}</div><div class="lbl">tok/s</div></div>
+      <div class="stat"><div class="val">#${m.rank}</div><div class="lbl">8GB Class</div></div>
+    </div>`;
+
+  buildRunSelector();
+  buildRunDetails();
+  buildEventCards();
+  buildTaskTable();
+  renderDetailCharts();
+  buildAssessment();
+}
+
+function buildRunSelector() {
+  const container = document.getElementById('runSelector');
+  container.innerHTML = '<button class="run-btn active" data-run="avg">Average</button>' +
+    [1,2,3].map(n => `<button class="run-btn" data-run="${n}">Run ${n}</button>`).join('');
+
+  container.querySelectorAll('.run-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      container.querySelectorAll('.run-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedRun = btn.dataset.run === 'avg' ? null : parseInt(btn.dataset.run);
+      buildRunDetails();
+      buildEventCards();
+      buildTaskTable();
+      renderDetailCharts();
     });
+  });
+}
+
+function getDisplayScores() {
+  const m = getCurrentModel();
+  if (selectedRun === null) {
+    return {
+      agent: m.agent, code: m.code, reason: m.reason,
+      tasks: m.tasks, taskMax: m.taskMax, tok_s: m.tok_s
+    };
   }
+  return {
+    agent: m.agent, code: m.code, reason: m.reason,
+    tasks: m.tasks, taskMax: m.taskMax, tok_s: m.tok_s
+  };
+}
 
-  barChart('agentChart', data.agent, 18);
-  barChart('reasonChart', data.reason, 17);
-  barChart('codeChart', data.code, 19);
-  barChart('efficiencyChart', data.efficiency, 100);
+function buildRunDetails() {
+  const container = document.getElementById('runDetails');
+  const m = getCurrentModel();
+  const d = getDisplayScores();
+  const total = d.agent + d.code + d.reason;
 
+  container.innerHTML = [
+    { val: `${total.toFixed(1)}/${m.max}`, lbl: 'Total Score' },
+    { val: `${d.tok_s.toFixed(1)} tok/s`, lbl: 'Avg Speed' },
+    { val: selectedRun ? `Run ${selectedRun}` : '3-run avg', lbl: 'Display Mode' },
+    { val: `#${m.rank} of ${ALL_MODELS.length}`, lbl: 'Class Rank' },
+  ].map(d => `<div class="run-detail-item"><div class="val">${d.val}</div><div class="lbl">${d.lbl}</div></div>`).join('');
+}
+
+function buildEventCards() {
+  const container = document.getElementById('eventCards');
+  const d = getDisplayScores();
+  const events = [
+    { key: 'agent', max: 24, color: '#3498db' },
+    { key: 'code', max: 25, color: '#2ecc71' },
+    { key: 'reason', max: 17, color: '#9b59b6' },
+  ];
+
+  container.innerHTML = events.map(e => {
+    const score = d[e.key];
+    const pct = (score / e.max * 100).toFixed(0);
+    return `<div class="card" style="text-align:center;">
+      <div style="font-size:0.65rem;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">${getEventLabel(e.key)}</div>
+      <div style="font-size:1.8rem;font-weight:700;color:${e.color};">${score.toFixed(1)}</div>
+      <div style="color:#888;font-size:0.75rem;">/ ${e.max} (${pct}%)</div>
+      <div style="margin-top:6px;">
+        <div class="score-row" style="margin-bottom:0;">
+          <div class="bar-track" style="height:5px;">
+            <div class="bar-fill" style="width:${pct}%;background:${e.color};"></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function buildTaskTable() {
+  const container = document.getElementById('taskTable');
+  const m = getCurrentModel();
+  const d = getDisplayScores();
+
+  let html = '<thead><tr><th>Task</th><th>Event</th><th>Score</th><th>Max</th><th></th></tr></thead><tbody>';
+
+  ['agent', 'code', 'reason'].forEach(event => {
+    const tasks = m.taskNames[event];
+    const scores = d.tasks[event];
+    const maxes = d.taskMax[event];
+    const color = getEventColor(event);
+
+    tasks.forEach((name, i) => {
+      const score = scores[i] || 0;
+      const max = maxes[i] || 1;
+      const pct = (score / max * 100).toFixed(0);
+      html += `<tr>
+        <td class="task-name">${name}</td>
+        <td style="font-size:0.65rem;color:#666;">${getEventLabel(event)}</td>
+        <td class="task-score" style="color:${color};">${score.toFixed(1)}</td>
+        <td class="task-max">${max}</td>
+        <td style="width:35%;">
+          <div class="task-bar" style="width:${pct}%;background:${color};"></div>
+        </td>
+      </tr>`;
+    });
+  });
+
+  html += '</tbody>';
+  container.innerHTML = html;
+}
+
+function renderDetailCharts() {
+  destroyCharts();
+  const m = getCurrentModel();
+  const d = getDisplayScores();
+  const color = m.color;
+
+  // Radar
   chartInstances.radar = new Chart(document.getElementById('radarChart'), {
     type: 'radar',
     data: {
-      labels: ['Agent', 'Reason', 'Code'],
-      datasets: labels.map((label, i) => ({
-        label: label,
-        data: [data.agent[i], data.reason[i], data.code[i]],
-        backgroundColor: colors[i].light,
-        borderColor: colors[i].border,
+      labels: ['Agent', 'Code', 'Reasoning'],
+      datasets: [{
+        label: m.label,
+        data: [d.agent, d.code, d.reason],
+        backgroundColor: color.light,
+        borderColor: color.border,
         borderWidth: 2,
-        pointBackgroundColor: colors[i].border,
-      }))
+        pointBackgroundColor: color.border,
+        pointRadius: 5,
+      }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { position: 'top', labels: { boxWidth: 12, padding: 8, font: { size: 11 } } } },
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
       scales: {
         r: {
-          min: 0, max: 18,
-          grid: { color: 'rgba(0,0,0,0.08)' },
-          angleLines: { color: 'rgba(0,0,0,0.08)' },
-          pointLabels: { font: { size: 12 } },
-          ticks: { stepSize: 3, font: { size: 10 } }
+          min: 0, max: 25,
+          grid: { color: 'rgba(255,255,255,0.06)' },
+          angleLines: { color: 'rgba(255,255,255,0.06)' },
+          pointLabels: { color: '#888', font: { size: 11 } },
+          ticks: { color: '#666', backdropColor: 'transparent', stepSize: 5, font: { size: 9 } },
         }
       }
     }
   });
+
+  // Distribution
+  const tasks = [];
+  ['agent', 'code', 'reason'].forEach(event => {
+    const names = m.taskNames[event];
+    const scores = d.tasks[event];
+    const maxes = d.taskMax[event];
+    names.forEach((name, i) => {
+      tasks.push({ name, score: scores[i] || 0, max: maxes[i] || 1, event });
+    });
+  });
+  tasks.sort((a, b) => (a.score / a.max) - (b.score / b.max));
+
+  const barColors = tasks.map(t => {
+    const c = getEventColor(t.event);
+    return c + 'b3';
+  });
+  const borderColors = tasks.map(t => getEventColor(t.event));
 
   chartInstances.distribution = new Chart(document.getElementById('distributionChart'), {
-    type: 'radar',
+    type: 'bar',
     data: {
-      labels: ['Tool Calling', 'Orchestration', 'Error Handling', 'Planning', 'Parsing', 'Decision-Making',
-               'Logical Deduction', 'Math Word', 'Constraint Sat.', 'Counterfactual', 'Analytical Expl.', 'Multi-Hop',
-               'String Cleaner', 'Log Parser', 'LRU Cache', 'File Indexer', 'Task Runner CLI', 'Constrained Diff'],
-      datasets: labels.map((label, i) => ({
-        label: label,
-        data: cls.tasks.map(t => (t[cls.models[i].key] || 0) / t.max * 100),
-        backgroundColor: colors[i].light,
-        borderColor: colors[i].border,
-        borderWidth: 1.5,
-        pointRadius: 2,
-        pointBackgroundColor: colors[i].border,
-      }))
+      labels: tasks.map(t => t.name),
+      datasets: [{
+        data: tasks.map(t => (t.score / t.max * 100).toFixed(0)),
+        backgroundColor: barColors,
+        borderColor: borderColors,
+        borderWidth: 1,
+        borderRadius: 3,
+      }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { position: 'top', labels: { boxWidth: 12, padding: 8, font: { size: 10 } } } },
-      scales: {
-        r: {
-          min: 0, max: 100,
-          grid: { color: 'rgba(0,0,0,0.06)' },
-          angleLines: { color: 'rgba(0,0,0,0.06)' },
-          pointLabels: { font: { size: 8 } },
-          ticks: { stepSize: 25, font: { size: 9 }, callback: v => v + '%' }
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${tasks[ctx.dataIndex].score.toFixed(1)}/${tasks[ctx.dataIndex].max} (${ctx.parsed.x}%)`
+          }
         }
+      },
+      scales: {
+        x: { max: 100, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#666', font: { size: 9 } } },
+        y: { grid: { display: false }, ticks: { color: '#888', font: { size: 9 } } }
       }
     }
   });
 }
 
-function switchClass(name) {
-  currentClass = name;
-  const cls = getClass(name);
+function buildAssessment() {
+  const container = document.getElementById('assessment');
+  const m = getCurrentModel();
+  const total = m.agent + m.code + m.reason;
+  const pct = (total / m.max * 100).toFixed(0);
 
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  const tabIndex = name === '8gb' ? 0 : name === '4gb' ? 1 : 2;
-  document.querySelectorAll('.tab')[tabIndex].classList.add('active');
+  const allTasks = [];
+  ['agent', 'code', 'reason'].forEach(event => {
+    const names = m.taskNames[event];
+    const scores = m.tasks[event];
+    const maxes = m.taskMax[event];
+    names.forEach((name, i) => {
+      allTasks.push({ name, event: getEventLabel(event), score: scores[i] || 0, max: maxes[i] || 1, pct: (scores[i] || 0) / (maxes[i] || 1) });
+    });
+  });
+  allTasks.sort((a, b) => b.pct - a.pct);
+  const strengths = allTasks.filter(t => t.pct >= 0.8);
+  const weaknesses = allTasks.filter(t => t.pct < 0.3);
 
-  document.getElementById('classLabel').innerHTML = cls.label;
-
-  destroyCharts();
-
-  buildSummaryCards(cls);
-  buildTaskTable(cls);
-  renderCharts(cls);
+  container.innerHTML = `
+    <div class="verdict">
+      <strong>${total.toFixed(1)}/${m.max} (${pct}%)</strong> — ${m.assessment}
+    </div>
+    <div class="pros-cons">
+      <div class="pros">
+        <h4>Strengths</h4>
+        <ul>
+          ${strengths.slice(0, 5).map(t => `<li>${t.name} (${(t.pct * 100).toFixed(0)}%)</li>`).join('')}
+          <li>Speed: ${m.tok_s.toFixed(1)} tok/s on RX 5700 XT</li>
+          <li>${m.license} license</li>
+          <li>${m.size_gb} GB at ${m.quant}</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4>Weaknesses</h4>
+        <ul>
+          ${weaknesses.slice(0, 5).map(t => `<li>${t.name} (${(t.pct * 100).toFixed(0)}%)</li>`).join('')}
+        </ul>
+      </div>
+    </div>
+    <p><strong>Architecture:</strong> ${m.arch} · ${m.params} · ${m.ctx.toLocaleString()} context · ${m.fc ? 'Function calling ✓' : 'No function calling'} · ${m.mm ? 'Multimodal ✓' : 'No multimodal'}</p>
+    <p><strong>Training:</strong> ${m.training}</p>
+    <p><strong>Links:</strong> <a href="https://huggingface.co/${m.hf}" target="_blank" style="color:#e67e22;">huggingface.co/${m.hf}</a></p>
+    <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <button onclick="toggleFlag()" style="background:${m.flagged ? 'rgba(231,76,60,0.2)' : 'rgba(231,76,60,0.08)'};border:1px solid ${m.flagged ? '#e74c3c' : 'rgba(231,76,60,0.4)'};color:${m.flagged ? '#e74c3c' : '#c0c0c8'};padding:6px 14px;border-radius:8px;cursor:pointer;font-size:0.75rem;">
+        ${m.flagged ? '✓ Flagged USELESS' : 'Flag as USELESS'}
+      </button>
+      ${m.flagged && m.flag_reason ? `<span style="color:#e74c3c;font-size:0.75rem;">${m.flag_reason}</span>` : ''}
+    </div>
+  `;
 }
 
-switchClass('8gb');
+function toggleFlag() {
+  const m = getCurrentModel();
+  const newFlag = !m.flagged;
+  const reason = newFlag ? (prompt('Why is this model useless? (optional)') || '') : '';
+  fetch('/api/flag', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ key: m.key, flagged: newFlag, reason })
+  }).then(r => r.json()).then(() => {
+    m.flagged = newFlag;
+    m.flag_reason = reason;
+    renderModelDetail();
+  }).catch(e => console.error('Flag failed:', e));
+}
+
+// ── VS Mode ──
+function buildVsSelector() {
+  const container = document.getElementById('vsSelector');
+  if (vsSelected.length === 0) {
+    container.innerHTML = '<span style="color:#666;font-size:0.75rem;">No models selected. Click models in the grid above.</span>';
+    return;
+  }
+  container.innerHTML = vsSelected.map(idx => {
+    const m = ALL_MODELS[idx];
+    return `<span class="vs-chip active" onclick="removeVs(${idx})">${m.label} ✕</span>`;
+  }).join('');
+}
+
+function removeVs(idx) {
+  const pos = vsSelected.indexOf(idx);
+  if (pos >= 0) vsSelected.splice(pos, 1);
+  buildModelsGrid();
+  buildVsSelector();
+  renderVs();
+}
+
+function renderVs() {
+  const compareCard = document.getElementById('vsCompareCard');
+  const eventCards = document.getElementById('vsEventCards');
+  const taskCard = document.getElementById('vsTaskCard');
+  const speedCard = document.getElementById('vsSpeedCard');
+
+  if (vsSelected.length < 2) {
+    compareCard.style.display = 'none';
+    eventCards.style.display = 'none';
+    taskCard.style.display = 'none';
+    speedCard.style.display = 'none';
+    return;
+  }
+
+  compareCard.style.display = '';
+  eventCards.style.display = '';
+  taskCard.style.display = '';
+  speedCard.style.display = '';
+
+  const models = vsSelected.map(i => ALL_MODELS[i]);
+  const colors = models.map(m => m.color.border);
+
+  // Composite comparison chart
+  if (chartInstances.vs) chartInstances.vs.destroy();
+  chartInstances.vs = new Chart(document.getElementById('vsChart'), {
+    type: 'bar',
+    data: {
+      labels: models.map(m => m.label),
+      datasets: [
+        {
+          label: 'Composite',
+          data: models.map(m => (m.total / m.max * 100).toFixed(1)),
+          backgroundColor: colors.map(c => c + 'b3'),
+          borderColor: colors,
+          borderWidth: 2,
+          borderRadius: 3,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const m = models[ctx.dataIndex];
+              return `Composite: ${(m.total/m.max*100).toFixed(1)}% (${m.total.toFixed(1)}/${m.max})`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#666', font: { size: 9 }, callback: v => v + '%' } },
+        x: { grid: { display: false }, ticks: { color: '#888', font: { size: 10 } } }
+      }
+    }
+  });
+
+  // Per-event comparison cards
+  const events = [
+    { key: 'agent', max: 24, color: '#3498db', label: 'Agent' },
+    { key: 'code', max: 25, color: '#2ecc71', label: 'Code' },
+    { key: 'reason', max: 17, color: '#9b59b6', label: 'Reasoning' },
+    { key: 'tok_s', max: null, color: '#e8e8ec', label: 'Speed (tok/s)' },
+  ];
+
+  eventCards.innerHTML = events.map(e => {
+    const vals = e.key === 'tok_s'
+      ? models.map(m => m.tok_s)
+      : models.map(m => m[e.key]);
+    const maxVal = e.max || Math.max(...vals);
+    const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+
+    return `<div class="card" style="text-align:center;">
+      <div style="font-size:0.65rem;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">${e.label}</div>
+      ${models.map((m, i) => {
+        const v = vals[i];
+        const pct = e.max ? (v / e.max * 100).toFixed(0) : '-';
+        const delta = v - avg;
+        const deltaClass = delta > 0 ? 'vs-delta-positive' : delta < 0 ? 'vs-delta-negative' : 'vs-delta-neutral';
+        const deltaStr = delta > 0 ? `+${delta.toFixed(1)}` : delta.toFixed(1);
+        return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:0.75rem;">
+          <div style="width:10px;height:10px;border-radius:2px;background:${colors[i]};flex-shrink:0;"></div>
+          <span style="color:#c0c0c8;flex:1;text-align:left;">${m.label}</span>
+          <span style="font-weight:700;color:${e.color || '#e8e8ec'};">${e.key === 'tok_s' ? v.toFixed(1) : v.toFixed(1)}</span>
+          <span style="font-size:0.65rem;${deltaClass};min-width:40px;text-align:right;">${deltaStr}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+
+  // Per-task comparison table
+  const allTaskNames = [];
+  ['agent', 'code', 'reason'].forEach(event => {
+    const names = models[0].taskNames[event];
+    names.forEach((name, i) => {
+      allTaskNames.push({ name, event, eventLabel: getEventLabel(event) });
+    });
+  });
+
+  let taskHtml = '<thead><tr><th>Task</th>';
+  models.forEach(m => {
+    taskHtml += `<th style="text-align:center;color:${m.color.border};">${m.label}</th>`;
+  });
+  taskHtml += '<th style="text-align:center;color:#888;">Delta (max-min)</th></tr></thead><tbody>';
+
+  allTaskNames.forEach(t => {
+    const scores = models.map(m => {
+      const taskScores = m.tasks[t.event];
+      const taskMaxes = m.taskMax[t.event];
+      const idx = m.taskNames[t.event].indexOf(t.name);
+      if (idx >= 0 && taskScores[idx] !== undefined && taskMaxes[idx]) {
+        return (taskScores[idx] / taskMaxes[idx] * 100).toFixed(0);
+      }
+      return '0';
+    });
+    const numScores = scores.map(Number);
+    const minVal = Math.min(...numScores);
+    const maxVal = Math.max(...numScores);
+    const delta = maxVal - minVal;
+    const deltaClass = delta > 20 ? 'vs-delta-negative' : delta > 5 ? 'vs-delta-neutral' : 'vs-delta-positive';
+
+    taskHtml += `<tr>
+      <td class="vs-name">${t.name} <span style="color:#666;font-size:0.6rem;">${t.eventLabel}</span></td>
+      ${scores.map((s, i) => `<td class="vs-val" style="color:${models[i].color.border};">${s}%</td>`).join('')}
+      <td class="vs-delta ${deltaClass}">${delta > 0 ? '+' : ''}${delta}%</td>
+    </tr>`;
+  });
+
+  taskHtml += '</tbody>';
+  document.getElementById('vsTaskTable').innerHTML = taskHtml;
+
+  // Speed comparison chart
+  if (chartInstances.vsSpeed) chartInstances.vsSpeed.destroy();
+  chartInstances.vsSpeed = new Chart(document.getElementById('vsSpeedChart'), {
+    type: 'bar',
+    data: {
+      labels: models.map(m => m.label),
+      datasets: [{
+        data: models.map(m => m.tok_s),
+        backgroundColor: colors.map(c => c + 'b3'),
+        borderColor: colors,
+        borderWidth: 2,
+        borderRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: { label: ctx => `${ctx.parsed.y.toFixed(1)} tok/s` }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#666', font: { size: 9 } }, title: { display: true, text: 'tok/s', color: '#666', font: { size: 10 } } },
+        x: { grid: { display: false }, ticks: { color: '#888', font: { size: 10 } } }
+      }
+    }
+  });
+}
+
+// ── Init ──
+async function initDashboard() {
+  try {
+    const resp = await fetch('/api/models');
+    ALL_MODELS = await resp.json();
+    const sorted = [...ALL_MODELS].sort((a, b) => b.total - a.total);
+    sorted.forEach((m, i) => m.rank = i + 1);
+  } catch (e) {
+    console.error('Failed to fetch model data:', e);
+  }
+
+  document.getElementById('carouselPrev').addEventListener('click', carouselPrev);
+  document.getElementById('carouselNext').addEventListener('click', carouselNext);
+
+  document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchView(btn.dataset.view));
+  });
+
+  buildCarousel();
+  buildModelsGrid();
+  renderModelDetail();
+  renderCompositeChart();
+  renderScoreChart();
+
+  setInterval(async () => {
+    try {
+      const resp = await fetch('/api/models');
+      ALL_MODELS = await resp.json();
+      const sorted = [...ALL_MODELS].sort((a, b) => b.total - a.total);
+      sorted.forEach((m, i) => m.rank = i + 1);
+      buildCarousel();
+      buildModelsGrid();
+      if (currentView === 'single') {
+        renderModelDetail();
+        renderCompositeChart();
+        renderScoreChart();
+      } else if (currentView === 'all') {
+        renderCompositeChart();
+        renderScoreChart();
+        renderAllEventCharts();
+      } else if (currentView === 'vs') {
+        renderVs();
+      }
+    } catch (e) {
+      console.error('Auto-refresh failed:', e);
+    }
+  }, 15000);
+}
+
+document.addEventListener('DOMContentLoaded', initDashboard);
 </script>
 </body>
 </html>

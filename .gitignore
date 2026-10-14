@@ -28,6 +28,32 @@ Thumbs.db
 
 # Editor
 .vscode/
+
+# Runtime stderr logs — GB-scale, appended across every bench session
+server-stderr.log
+server-stderr.log.*
+sweep-stderr.log
+*-stderr.log
+
+# Scratch / empty databases left by experiments
+benchmark.db
+benchmark_results.db
+
+# Editor and variant backups of the harness
+*.bak
+*.bak-*
+*~
+
+# Benchmark scrape output — agent tasks write example.com HTML into CWD
+example.com/
+example_com/
+output/
+scripts/output/
+scripts/example_com/
+
+# Sprint sweep raw output (regenerable; summaries live in results/)
+sprint-results/
+
 .idea/
 *.swp
 *.swo

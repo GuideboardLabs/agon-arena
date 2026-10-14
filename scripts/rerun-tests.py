@@ -97,10 +97,10 @@ def strip_thinking(text):
     """
     import re
     # Qwen3.5 format: " thinking
-...
- response
-
-actual content"
+    # ...
+    #  response
+    #
+    # actual content"
     if 'thinking' in text:
         text = re.sub(r'(?s)\s*thinking\s*.*?response\s*\n?', '', text, count=1)
     # DeepSeek format: <think>...</think> HTML tags

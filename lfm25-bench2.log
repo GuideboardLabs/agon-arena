@@ -1,0 +1,44 @@
+Loaded 1 submitted model(s) from /home/sc/.local/state/agon-submitted-models.json
+[14:50:50] Database initialized with model entries
+[14:50:50] 
+============================================================
+[14:50:50] Starting LFM2.5-24B-A2B (lfm25_24b_a2b_q4)
+[14:50:50] ============================================================
+[14:50:50]   Model ID: 241 (stable)
+[14:50:52]   Using pre-measured tok/s: 25.8
+[14:50:52]   Starting server on port 8171...
+[14:50:52]   Command: /home/sc/llama-mcpv47/build-vulkan/bin/llama-server --model /mnt/blue/LLMbackups/LFM2.5-24B-A2B-Q4_K_M.gguf --port 8171 --host ...
+[14:50:52]   Launching in own cgroup via systemd-run --scope (unit agon-llama-8171)
+[14:50:55]   Server loading... (attempt 1/200)
+[14:50:59]   Server ready on port 8171
+[14:51:00]   7/8 tasks already done, running remaining: [5]
+[14:51:00]   Running agent run 1 (ctx=4096)...
+[14:55:18]   agent run 1: 2/3 in 258s
+[14:55:18]   [DB] Run 167 completed in database
+[14:55:18]   3/8 tasks already done, running remaining: [4, 5, 6, 7, 8]
+[14:55:18]   Running agent run 2 (ctx=4096)...
+[15:11:30]   agent run 2: 13/14 in 972s
+[15:11:30]   [DB] Run 168 completed in database
+[15:11:30]   Running agent run 3 (ctx=4096)...
+[15:32:52]   agent run 3: 21/24 in 1282s
+[15:32:52]   [DB] Run 169 completed in database
+[15:32:52]   Running code run 1 (ctx=16384)...
+[16:15:00]   code run 1: 19/25 in 2528s
+[16:15:00]   [DB] Run 148 completed in database
+[16:15:00]   Running code run 2 (ctx=16384)...
+[16:55:19]   code run 2: 19/25 in 2419s
+[16:55:19]   [DB] Run 149 completed in database
+[16:55:19]   Running code run 3 (ctx=16384)...
+[17:34:30]   code run 3: 21/25 in 2351s
+[17:34:30]   [DB] Run 150 completed in database
+[17:34:30]   Running reason run 1 (ctx=4096)...
+[17:57:27]   reason run 1: 15/17 in 1377s
+[17:57:27]   [DB] Run 136 completed in database
+[17:57:27]   Running reason run 2 (ctx=4096)...
+[18:18:34]   reason run 2: 16/17 in 1267s
+[18:18:34]   [DB] Run 137 completed in database
+[18:18:34]   Running reason run 3 (ctx=4096)...
+[18:40:20]   reason run 3: 15/17 in 1306s
+[18:40:20]   [DB] Run 138 completed in database
+[18:40:22]   WARNING: llama-server still running, trying SIGKILL
+[18:40:24]   Completed LFM2.5-24B-A2B

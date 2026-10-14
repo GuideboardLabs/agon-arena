@@ -4,7 +4,7 @@
 
 Named after the Greek *agon* — contest, struggle, gathering. Three events, hidden-test grading, consumer GPUs only. No datacenter. No 8×H100 flex. Just the hardware people actually own: 8GB VRAM cards sitting in gaming PCs and laptops.
 
-> **Current scale:** v2 · 66 points · 19 models · AMD RX 5700 XT (8GB VRAM) · llama.cpp + Vulkan
+> **Current scale:** v2 · 66 points · 23 models · AMD RX 5700 XT (8GB VRAM) · llama.cpp + Vulkan
 
 ---
 
@@ -31,40 +31,60 @@ Hardware: AMD RX 5700 XT (8GB VRAM, RDNA 1), Ryzen 5 1600, 64GB RAM. All models 
 
 | # | Model | Size | Agent | Code | Reason | **Total** | **%** | tok/s |
 |---|-------|:----:|:-----:|:----:|:------:|:---------:|:-----:|:-----:|
-| 🥇 | **Qwen3.6-35B-Q4-ncmoe40** | 21.1G | 21.3 | 21.7 | 16.3 | **59.3** | **89.9%** | 21.7 |
-| 🥈 | **Nanbeige4.2-3B** | 2.4G | 23.0 | 15.3 | 15.3 | **53.7** | **81.3%** | 44.9 |
-| 🥉 | **Gemma4-26B-A4B** | 16.9G | 23.0 | 14.0 | 16.7 | **53.7** | **81.3%** | 13.5 |
-| 4 | **Bonsai-27B-Q1_0** | 3.8G | 22.3 | 15.3 | 15.0 | **52.7** | **79.8%** | 12.5 |
-| 5 | **Ornith-1.0-9B** | 5.3G | 19.7 | 16.0 | 16.7 | **52.3** | **79.3%** | 48.0 |
-| 6 | **Qwen3.8-27B-Q3-DOWN-XS** | 7.9G | 21.0 | 14.0 | 16.7 | **51.7** | **78.3%** | 24.0 |
-| 7 | **Qwen3.8-9B** | 5.8G | 21.7 | 15.0 | 14.7 | **51.3** | **77.8%** | 40.0 |
-| 8 | **Heem-9B (Uncensored)** | 5.6G | 19.0 | 14.7 | 16.0 | **49.7** | **75.3%** | 40.0 |
-| 9 | **Ornith-1.5-9B** | 5.9G | 19.7 | 11.7 | 16.7 | **48.0** | **72.7%** | 48.0 |
-| 10 | **Gemma4-12B** | 6.7G | 18.3 | 12.3 | 15.7 | **46.3** | **70.2%** | 24.0 |
-| 11 | **LFM2.5-8B-A1B** | 5.0G | 16.7 | 13.0 | 14.7 | **44.3** | **67.2%** | 91.1 |
-| 12 | **Qwopus3.5-9B-Coder** | 4.5G | 13.3 | 12.0 | 16.3 | **41.7** | **63.1%** | 30.0 |
-| 13 | **Qwen3.5-9B** | 5.3G | 12.0 | 13.3 | 16.3 | **41.7** | **63.1%** | 60.0 |
-| 14 | **MiniCPM5-2B** | 1.6G | 14.0 | 8.7 | 16.7 | **39.3** | **59.6%** | 118.0 |
-| 15 | **SuperQwen-35B** | 21.0G | 15.0 | 12.8 | 11.3 | **39.2** | **59.3%** | 10.8 |
-| 16 | **Qwythos-9B-v1** | 5.3G | 14.3 | 9.0 | 15.3 | **38.7** | **58.6%** | 30.4 |
-| 17 | **Holo-3.1-9B-Coder** | 5.3G | 14.7 | 9.3 | 14.7 | **38.7** | **58.6%** | 40.0 |
-| 18 | **Grug-12B** | 6.9G | 13.0 | 5.0 | 14.7 | **32.7** | **49.5%** | 34.0 |
-| 19 | **OmniCoder-9B** | 5.4G | 4.3 | 7.7 | 16.7 | **28.7** | **43.4%** | 53.8 |
+| 🥇 | **Qwen3.6-35B-Q4-ncmoe40** | 21.1G | 21.3 | 21.7 | 16.3 | **59.3** | **89.90%** | 21.7 |
+| 🥈 | **Qwen3.8-35B-A3B-Distill** | 21.7G | 21.0 | 19.7 | 17.0 | **57.7** | **87.37%** | 21.0 |
+| 🥉 | **LFM2.5-24B-A2B** | 14.5G | 22.0 | 19.7 | 15.3 | **57.0** | **86.36%** | 25.8 |
+| 4 | **MiniCPM-V-4.7-35B-A3B** | 19.7G | 21.3 | 19.0 | 15.7 | **56.0** | **84.85%** | 19.2 |
+| 5 | **Underdog-Saluki-27B-IQ2** | 7.9G | 20.3 | 18.3 | 16.0 | **54.7** | **82.83%** | 23.2 |
+| 6= | **Nanbeige4.2-3B** | 2.4G | 23.0 | 15.3 | 15.3 | **53.7** | **81.31%** | 44.9 |
+| 6= | **Gemma4-26B-A4B** | 16.9G | 23.0 | 14.0 | 16.7 | **53.7** | **81.31%** | 13.5 |
+| 8 | **Bonsai-27B-Q1_0** | 3.8G | 22.3 | 15.3 | 15.0 | **52.7** | **79.80%** | 12.5 |
+| 9 | **Ornith-1.0-9B** | 5.3G | 19.7 | 16.0 | 16.7 | **52.3** | **79.29%** | 48.0 |
+| 10 | **Qwen3.8-27B-Q3-DOWN-XS** | 7.9G | 21.0 | 14.0 | 16.7 | **51.7** | **78.28%** | 24.0 |
+| 11 | **Qwen3.8-9B** | 5.8G | 21.7 | 15.0 | 14.7 | **51.3** | **77.78%** | 40.0 |
+| 12 | **Heem-9B (Uncensored)** | 5.6G | 19.0 | 14.7 | 16.0 | **49.7** | **75.25%** | 40.0 |
+| 13 | **Ornith-1.5-9B** | 5.9G | 19.7 | 11.7 | 16.7 | **48.0** | **72.73%** | 48.0 |
+| 14 | **Gemma4-12B** | 6.7G | 18.3 | 12.3 | 15.7 | **46.3** | **70.20%** | 24.0 |
+| 15 | **LFM2.5-8B-A1B** | 5.0G | 16.7 | 13.0 | 14.7 | **44.3** | **67.17%** | 91.1 |
+| 16= | **Qwopus3.5-9B-Coder** | 4.5G | 13.3 | 12.0 | 16.3 | **41.7** | **63.13%** | 30.0 |
+| 16= | **Qwen3.5-9B** | 5.3G | 12.0 | 13.3 | 16.3 | **41.7** | **63.13%** | 60.0 |
+| 18 | **MiniCPM5-2B** | 1.6G | 14.0 | 8.7 | 16.7 | **39.3** | **59.60%** | 118.0 |
+| 19 | **SuperQwen-35B** | 21.0G | 15.0 | 12.8 | 11.3 | **39.2** | **59.34%** | 10.8 |
+| 20= | **Qwythos-9B-v1** | 5.3G | 14.3 | 9.0 | 15.3 | **38.7** | **58.59%** | 30.4 |
+| 20= | **Holo-3.1-9B-Coder** | 5.3G | 14.7 | 9.3 | 14.7 | **38.7** | **58.59%** | 40.0 |
+| 22 | **Grug-12B** | 6.9G | 13.0 | 5.0 | 14.7 | **32.7** | **49.49%** | 34.0 |
+| 23 | **OmniCoder-9B** | 5.4G | 4.3 | 7.7 | 16.7 | **28.7** | **43.43%** | 53.1 |
 
-> **Not shown: Qwen3.8-35B-A3B-Distill** (21.7G, 21.0 / 19.7 / 17.0 = **57.7**,
-> **87.4%**). It has a complete 3/3/3 set and would rank #2, but it was absent
-> from the 19-model table published on 2026-07 and is left out here so this edit
-> changes only the scores and not the roster. Adding it is a separate call.
+Ties are real and are labelled rather than broken: Nanbeige4.2-3B and Gemma4-26B-A4B both
+compute to 81.313131%, and the two 63.13% and two 58.59% pairs are likewise identical to six
+decimals.
+
+Every row carries a complete 3/3/3 set of completed runs. Models with an incomplete set are
+excluded from the ranking entirely rather than ranked on partial data.
 
 ---
 
 ## What the numbers say
 
-- **Qwen3.6-35B-Q4-ncmoe40 takes the crown** at 91.4% — the `-ncmoe 40` recipe turns a 35B MoE into a genuine all-rounder. Best code on the bench (22.7/25).
-- **Nanbeige4.2-3B is the story.** A 2.4GB, 3B looped transformer ties a 16.9GB 26B MoE for the top agent score (23.0/24) at 3.3× the speed. The looped architecture gives 3B the reasoning depth of a 6-7B model. The most significant small-model innovation since MoE.
-- **Bonsai-27B-Q1_0** — a 3.8GB 1-bit ternary model that shouldn't work but does. Elite agent (22.3/24), 81.3% overall. The dark horse.
-- **Speed is a real axis.** LFM2.5-8B (91 tok/s) and MiniCPM5-2B (118 tok/s) are the speed kings, but both trade capability for it. MiniCPM is a razor-sharp reasoner (16.7/17) that can't close agent/code tasks — it reasons beautifully and never ships.
-- **The 8GB ceiling is real.** The best model needs 21GB and CPU spill. The best model that *fits* in 8GB is Nanbeige at 83.3%. That gap is the whole point of the bench.
+- **Qwen3.6-35B-Q4-ncmoe40 still holds the crown** at 89.90% — the `-ncmoe 40` recipe turns a 35B MoE into a genuine all-rounder, and it has the best code score on the bench (21.7/25).
+- **LFM2.5-24B-A2B is the interesting arrival.** Third overall at 86.36%, and it does it on an architecture that is not a finetune of anything else on this board: 24B total with 2B active per token, 64 experts routed top-4, and **30 of its 40 layers are gated short convolutions** with only every fourth layer running full attention. It is the fastest model in the top five at 25.8 tok/s.
+- **Nanbeige4.2-3B is still the story at the small end.** A 2.4GB, 3B looped transformer ties for the best agent score on the bench (23.0/24) at 3.3× the speed of the 26B it ties with. The looped architecture gives 3B the reasoning depth of a 6-7B model.
+- **Bonsai-27B-Q1_0** — a 3.8GB 1-bit ternary model that shouldn't work but does. Elite agent (22.3/24), 79.80% overall. The dark horse.
+- **Speed is a real axis.** LFM2.5-8B (91.1 tok/s) and MiniCPM5-2B (118.0 tok/s) are the speed kings, but both trade capability for it. MiniCPM is a razor-sharp reasoner (16.7/17) that can't close agent or code tasks. It reasons beautifully and never ships.
+- **The 8GB ceiling is real.** The top of the board needs 21GB with CPU spill. The best model under 5GB is Nanbeige4.2-3B at 81.31%, on 2.4GB. That gap is the whole point of the bench.
+
+### A harness artefact worth knowing about
+
+The Code and Reason events run at a 16,384-token context, and thinking shares that window with
+the answer. A model whose reasoning on one task runs longer than the window never finishes the
+thought, so the harness records the truncated reasoning stream as the answer and the task scores
+zero. LFM2.5-24B-A2B loses 12 Code points and 3 Reason points to this and nothing else.
+
+Re-running only those task-runs at 32,768 recovers 14 of the 15 points, which would put it first
+at 93.4%. That number is **not** on this leaderboard and should not be: every other row ran at the
+standard window, so it is not protocol-comparable. The official 86.36% is what stands. The
+mechanism, the replay, and the reproducibility gap in the seeding are documented in
+[references/context-window-truncation.md](references/context-window-truncation.md).
 
 ---
 
@@ -122,6 +142,16 @@ python3 scripts/grade-all.py
 
 Reads from `./results/` by default. Override with `AGON_RESULTS_DIR`.
 
+### Re-running a truncated task
+
+```bash
+python3 scripts/agon-winback-rerun.py --port 8174
+```
+
+Re-cuts task-runs whose response was cut off by the context window at a larger window, with a
+pre-flight assertion that the server on that port is really the one you intended. Runs outside the
+database unless `--db-path` and `--run-id` are passed, so an official run row cannot be modified.
+
 ---
 
 ## Repo layout
@@ -133,12 +163,32 @@ agon-arena/
 │   ├── agent-event.py            # Agent event runner
 │   ├── code-event.py             # Code event runner
 │   ├── reason-event.py           # Reason event runner
+│   ├── assertions.py             # Hidden-test assertions + matcher
+│   ├── grade-all.py              # Grade all events against results
+│   ├── hand-grade.py             # Apply partial-credit corrections
 │   ├── dashboard-server.py       # Live dashboard server (serves /api/models)
 │   ├── export-static-dashboard.py# Builds self-contained agon-bench.html
-│   ├── grade-all.py              # Grade all events against results
-│   └── hand-grade.py             # Apply partial-credit corrections
-├── references/                   # Benchmark design + methodology docs
-├── results/                      # Per-model response files + summaries
+│   ├── create_db.py              # Schema creation
+│   ├── audit-checks.py           # Find checks that cannot fail
+│   ├── verify-scores.py          # Recompute every score from per-task rows
+│   ├── agon-grade-audit.py       # Audit grading across a run
+│   ├── agon-fix-run-totals.py    # Reconciliation: recompute run totals
+│   ├── agon-sweep-ncmoe.py       # MoE offload-depth sweep
+│   ├── agon-code-reasoning-ab.py # Reasoning-config A/B (see the truncation note)
+│   ├── agon-t7-room-test.py      # Single-task window test, pre-flight asserted
+│   ├── agon-winback-rerun.py     # Replay truncated task-runs at a larger window
+│   ├── agon-suspend.sh           # Suspend other GPU services before a bench
+│   ├── agon-restore.sh           # Restore them afterwards
+│   ├── retry-task.py             # Re-run one failed task
+│   ├── find-ceilings.py          # Find the context ceiling per model
+│   ├── real-ctx-test.py          # Measure usable context
+│   ├── speed-test.py             # Decode/prefill throughput probe
+│   ├── sprint-bench.py           # Fast partial sweep
+│   └── ...                       # Model-specific probes and regrades
+├── references/                   # Design, methodology, and findings docs
+├── results/                      # Published result summaries
+├── models/                       # Per-model notes and write-ups
+├── artshow/                      # Prompt sets for the board's art panels
 ├── agon-bench.db                 # SQLite source of truth (scores, runs, tasks)
 ├── agon-dashboard.html           # Live interactive dashboard
 ├── agon-bench.html               # Static dashboard export (for hosting)
@@ -154,13 +204,16 @@ agon-arena/
 - **3 runs per event** (seeds 42/137/256) to smooth variance. Reported scores are the mean.
 - **Hand-grading for termination failures.** Some models (MiniCPM5-2B, SuperQwen) reason correctly but loop instead of emitting a final answer. Where the in-thought logic is clearly correct, partial credit is applied via `hand-grade.py` — the DB is the source of truth.
 - **tok/s is the mean across completed runs**, not a burst test.
+- **One model at a time.** The GPU cannot hold two, so other services are suspended for the duration of a bench and restored afterwards (`agon-suspend.sh` / `agon-restore.sh`).
+- **Known gap: the seed argument is accepted and never sent.** The event payloads carry no seed key, so recorded seeds are misleading and every completion is an uncontrolled sample at temperature 0.3. Per-task spread is documented in `references/context-window-truncation.md`; treat any one or two point composite gap as inside the noise until this is fixed.
 
 ---
 
 ## Roadmap
 
-- [x] 8GB VRAM class (RX 5700 XT, 19 models, v2 66-point scale)
+- [x] 8GB VRAM class (RX 5700 XT, 23 models, v2 66-point scale)
 - [x] Static dashboard export for public hosting
+- [ ] Send the seed in every event payload (reproducibility)
 - [ ] 12GB VRAM class (RTX 3060/4070)
 - [ ] Vision event
 - [ ] Tool-use event with real API calls

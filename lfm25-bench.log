@@ -1,0 +1,28 @@
+Loaded 1 submitted model(s) from /home/sc/.local/state/agon-submitted-models.json
+[14:16:42] Database initialized with model entries
+[14:16:42] 
+============================================================
+[14:16:42] Starting LFM2.5-24B-A2B (lfm25_24b_a2b_q4)
+[14:16:42] ============================================================
+[14:16:42]   Model ID: 241 (stable)
+[14:16:45]   Using pre-measured tok/s: 25.8
+[14:16:45]   Starting server on port 8171...
+[14:16:45]   Command: /home/sc/llama-mcpv47/build-vulkan/bin/llama-server --model /mnt/blue/LLMbackups/LFM2.5-24B-A2B-Q4_K_M.gguf --port 8171 --host ...
+[14:16:45]   Launching in own cgroup via systemd-run --scope (unit agon-llama-8171)
+[14:16:47]   Server loading... (attempt 1/200)
+[14:16:51]   Server ready on port 8171
+[14:16:52]   Running agent run 1 (ctx=4096)...
+[14:38:43]   agent run 1: 20/24 in 1312s
+[14:38:43]   [DB] Run 167 completed in database
+[14:38:43]   Running agent run 2 (ctx=4096)...
+[14:46:15]   agent run 2: 10/24 in 452s
+[14:46:15]   [DB] Run 168 completed in database
+[14:46:15]   WARNING: server on port 8171 is DOWN — restarting...
+[14:46:17]   WARNING: llama-server still running, trying SIGKILL
+[14:46:19]   Starting server on port 8171...
+[14:46:19]   Command: /home/sc/llama-mcpv47/build-vulkan/bin/llama-server --model /mnt/blue/LLMbackups/LFM2.5-24B-A2B-Q4_K_M.gguf --port 8171 --host ...
+[14:46:19]   Launching in own cgroup via systemd-run --scope (unit agon-llama-8171)
+[14:46:22]   Server loading... (attempt 1/200)
+[14:46:26]   Server ready on port 8171
+[14:46:26]   Server restarted on port 8171
+[14:46:27]   Running agent run 3 (ctx=4096)...
