@@ -16,7 +16,6 @@
  },
  "models": [
   {
-   "rank": 1,
    "key": "lfm25_24b_a2b_q4",
    "model": "LFM2.5-24B-A2B",
    "size_gb": 14.53,
@@ -31,10 +30,28 @@
    "max": 66,
    "pct": 93.42,
    "tok_s": 25.8,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 1
   },
   {
-   "rank": 2,
+   "key": "flint_39b_a3b",
+   "model": "Flint-40B-A3B",
+   "size_gb": 25.05,
+   "quant": "UD-Q4_K_XL",
+   "agent": 23.33,
+   "agent_max": 24,
+   "code": 20.33,
+   "code_max": 25,
+   "reason": 17.0,
+   "reason_max": 17,
+   "total": 60.66,
+   "max": 66,
+   "pct": 91.91,
+   "tok_s": 17.1,
+   "reference_only": false,
+   "rank": 2
+  },
+  {
    "key": "nemotron_74b_a9b",
    "model": "Nemotron-3.5-Bolt-74B-A9B",
    "size_gb": 22.02,
@@ -49,10 +66,10 @@
    "max": 66,
    "pct": 90.41,
    "tok_s": 6.7,
-   "reference_only": true
+   "reference_only": true,
+   "rank": 3
   },
   {
-   "rank": 3,
    "key": "qwen36_35b_q4_ncmoe40",
    "model": "Qwen3.6-35B-Q4-ncmoe40",
    "size_gb": 21.1,
@@ -67,10 +84,10 @@
    "max": 66,
    "pct": 89.89,
    "tok_s": 21.7,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 4
   },
   {
-   "rank": 4,
    "key": "bonsai_ternary_ptq1_0_pinned",
    "model": "Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",
    "size_gb": 5.53,
@@ -85,10 +102,10 @@
    "max": 66,
    "pct": 89.39,
    "tok_s": 10.9,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 5
   },
   {
-   "rank": 5,
    "key": "groot_19b_a3b",
    "model": "Groot-19B-A3B-261023",
    "size_gb": 11.66,
@@ -103,10 +120,10 @@
    "max": 66,
    "pct": 88.38,
    "tok_s": 28.5,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 6
   },
   {
-   "rank": 6,
    "key": "qwen38_35b_a3b_distill",
    "model": "Qwen3.8-35B-A3B-Distill",
    "size_gb": 21.7,
@@ -121,10 +138,10 @@
    "max": 66,
    "pct": 87.38,
    "tok_s": 21.0,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 7
   },
   {
-   "rank": 7,
    "key": "minicpm_v47_35b_a3b_q4",
    "model": "MiniCPM-V-4.7-35B-A3B",
    "size_gb": 19.71,
@@ -139,10 +156,10 @@
    "max": 66,
    "pct": 84.85,
    "tok_s": 19.2,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 8
   },
   {
-   "rank": 8,
    "key": "bonsai2_27b_pq2_0",
    "model": "Ternary-Bonsai-2-27B-PQ2_0",
    "size_gb": 7.21,
@@ -157,10 +174,10 @@
    "max": 66,
    "pct": 83.33,
    "tok_s": 11.8,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 9
   },
   {
-   "rank": 9,
    "key": "underdog_saluki_27b_iq2",
    "model": "Underdog-Saluki-27B-IQ2",
    "size_gb": 7.9,
@@ -175,10 +192,10 @@
    "max": 66,
    "pct": 82.82,
    "tok_s": 23.2,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 10
   },
   {
-   "rank": 10,
    "key": "gemma4_26b",
    "model": "Gemma4-26B-A4B",
    "size_gb": 16.9,
@@ -193,10 +210,10 @@
    "max": 66,
    "pct": 81.32,
    "tok_s": 13.5,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 11
   },
   {
-   "rank": 11,
    "key": "raon1_mini",
    "model": "Raon-1 mini preview 28.8B-A4.3B",
    "size_gb": 19.69,
@@ -211,10 +228,10 @@
    "max": 66,
    "pct": 81.32,
    "tok_s": 16.2,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 12
   },
   {
-   "rank": 12,
    "key": "nanbeige_3b",
    "model": "Nanbeige4.2-3B",
    "size_gb": 2.4,
@@ -229,10 +246,10 @@
    "max": 66,
    "pct": 81.3,
    "tok_s": 44.9,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 13
   },
   {
-   "rank": 13,
    "key": "bonsai_27b_q1_0",
    "model": "Bonsai-27B-Q1_0",
    "size_gb": 3.8,
@@ -247,10 +264,10 @@
    "max": 66,
    "pct": 79.79,
    "tok_s": 12.5,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 14
   },
   {
-   "rank": 14,
    "key": "ornith_9b",
    "model": "Ornith-1.0-9B",
    "size_gb": 5.3,
@@ -265,10 +282,10 @@
    "max": 66,
    "pct": 79.3,
    "tok_s": 48.0,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 15
   },
   {
-   "rank": 15,
    "key": "qwen38_27b_q3downxs",
    "model": "Qwen3.8-27B-Q3-DOWN-XS",
    "size_gb": 7.91,
@@ -283,10 +300,10 @@
    "max": 66,
    "pct": 78.29,
    "tok_s": 24.0,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 16
   },
   {
-   "rank": 16,
    "key": "qwen38_9b",
    "model": "Qwen3.8-9B",
    "size_gb": 5.78,
@@ -301,10 +318,10 @@
    "max": 66,
    "pct": 77.79,
    "tok_s": 40.0,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 17
   },
   {
-   "rank": 17,
    "key": "heem_9b",
    "model": "Heem-9B (Uncensored)",
    "size_gb": 5.63,
@@ -319,10 +336,10 @@
    "max": 66,
    "pct": 75.26,
    "tok_s": 40.0,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 18
   },
   {
-   "rank": 18,
    "key": "ornith_15_9b",
    "model": "Ornith-1.5-9B",
    "size_gb": 5.9,
@@ -337,10 +354,10 @@
    "max": 66,
    "pct": 72.74,
    "tok_s": 48.0,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 19
   },
   {
-   "rank": 19,
    "key": "lfm3_1_7b",
    "model": "LFM3-1.7B",
    "size_gb": 1.1,
@@ -355,10 +372,10 @@
    "max": 66,
    "pct": 70.71,
    "tok_s": 135.0,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 20
   },
   {
-   "rank": 20,
    "key": "gemma4_12b",
    "model": "Gemma4-12B",
    "size_gb": 6.7,
@@ -373,10 +390,10 @@
    "max": 66,
    "pct": 70.2,
    "tok_s": 24.0,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 21
   },
   {
-   "rank": 21,
    "key": "lfm25_8b",
    "model": "LFM2.5-8B-A1B",
    "size_gb": 5.0,
@@ -391,10 +408,10 @@
    "max": 66,
    "pct": 67.18,
    "tok_s": 91.1,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 22
   },
   {
-   "rank": 22,
    "key": "qwen35_9b",
    "model": "Qwen3.5-9B",
    "size_gb": 5.3,
@@ -409,10 +426,10 @@
    "max": 66,
    "pct": 63.12,
    "tok_s": 60.0,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 23
   },
   {
-   "rank": 23,
    "key": "qwopus_9b",
    "model": "Qwopus3.5-9B-Coder",
    "size_gb": 4.5,
@@ -427,10 +444,10 @@
    "max": 66,
    "pct": 63.12,
    "tok_s": 30.0,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 24
   },
   {
-   "rank": 24,
    "key": "minicpm5_2b",
    "model": "MiniCPM5-2B",
    "size_gb": 1.56,
@@ -445,10 +462,10 @@
    "max": 66,
    "pct": 59.61,
    "tok_s": 118.0,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 25
   },
   {
-   "rank": 25,
    "key": "superqwen_35b",
    "model": "SuperQwen-35B",
    "size_gb": 21.0,
@@ -463,10 +480,10 @@
    "max": 66,
    "pct": 58.82,
    "tok_s": 10.8,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 26
   },
   {
-   "rank": 26,
    "key": "holo_31_9b_coder",
    "model": "Holo-3.1-9B-Coder",
    "size_gb": 5.3,
@@ -481,10 +498,10 @@
    "max": 66,
    "pct": 58.59,
    "tok_s": 40.0,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 27
   },
   {
-   "rank": 27,
    "key": "qwythos_9b_v1",
    "model": "Qwythos-9B-v1",
    "size_gb": 5.3,
@@ -499,10 +516,10 @@
    "max": 66,
    "pct": 58.58,
    "tok_s": 30.4,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 28
   },
   {
-   "rank": 28,
    "key": "grug_12b",
    "model": "Grug-12B",
    "size_gb": 6.9,
@@ -517,10 +534,10 @@
    "max": 66,
    "pct": 49.5,
    "tok_s": 34.0,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 29
   },
   {
-   "rank": 29,
    "key": "omnicoder_9b",
    "model": "OmniCoder-9B",
    "size_gb": 5.4,
@@ -535,7 +552,8 @@
    "max": 66,
    "pct": 43.44,
    "tok_s": 53.1,
-   "reference_only": false
+   "reference_only": false,
+   "rank": 30
   }
  ]
 }

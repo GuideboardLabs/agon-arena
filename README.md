@@ -4,7 +4,7 @@ An open benchmark for local LLMs on consumer hardware.
 
 Three events, hidden-test grading, one 8GB GPU. Named after the Greek *agon*: contest, struggle, gathering. No datacenter, no 8xH100 cluster, just the card in a gaming PC and the memory it does not have.
 
-**Current scale:** v2 · 66 points · 29 models · AMD RX 5700 XT (8GB VRAM, RDNA 1) · Ryzen 5 1600 · 32GB RAM · llama.cpp with the Vulkan backend
+**Current scale:** v2 · 66 points · 30 models · AMD RX 5700 XT (8GB VRAM, RDNA 1) · Ryzen 5 1600 · 32GB RAM · llama.cpp with the Vulkan backend
 
 ---
 
@@ -27,40 +27,41 @@ Three runs per event, mean reported. All models Q4_K_M or better unless the name
 | # | Model | Size | Agent /24 | Code /25 | Reason /17 | **Total /66** | **%** | tok/s |
 |---|-------|:----:|:---------:|:--------:|:----------:|:-------------:|:-----:|:-----:|
 | 1 | **LFM2.5-24B-A2B** | 14.5G | 22.00 | 23.33 | 16.33 | **61.66** | **93.42%** | 25.8 |
-| 2 | **Nemotron-3.5-Bolt-74B-A9B** | 22.0G | 22.67 | 21.67 | 15.33 | **59.67** | **90.41%** | 6.7 ⟡ |
-| 3 | **Qwen3.6-35B-Q4-ncmoe40** | 21.1G | 21.33 | 21.67 | 16.33 | **59.33** | **89.89%** | 21.7 |
-| 4 | **Ternary-Bonsai-2-27B-PTQ1** ⟡ | 5.5G | 22.00 | 20.00 | 17.00 | **59.00** | **89.39%** | 10.9 |
-| 5 | **Groot-19B-A3B** | 11.7G | 23.00 | 19.33 | 16.00 | **58.33** | **88.38%** | 28.5 |
-| 6 | **Qwen3.8-35B-A3B-Distill** | 21.7G | 21.00 | 19.67 | 17.00 | **57.67** | **87.38%** | 21.0 |
-| 7 | **MiniCPM-V-4.7-35B-A3B** | 19.7G | 21.33 | 19.00 | 15.67 | **56.00** | **84.85%** | 19.2 |
-| 8 | **Ternary-Bonsai-2-27B-PQ2** ⟡ | 7.2G | 21.67 | 17.00 | 16.33 | **55.00** | **83.33%** | 11.8 |
-| 9 | **Underdog-Saluki-27B-IQ2** | 7.9G | 20.33 | 18.33 | 16.00 | **54.66** | **82.82%** | 23.2 |
-| 10 | **Gemma4-26B-A4B** | 16.9G | 23.00 | 14.00 | 16.67 | **53.67** | **81.32%** | 13.5 |
-| 11 | **Raon-1 mini preview 28.8B-A4.3B** ⟡ | 19.7G | 21.00 | 16.67 | 16.00 | **53.67** | **81.32%** | 16.2 |
-| 12 | **Nanbeige4.2-3B** | 2.4G | 23.00 | 15.33 | 15.33 | **53.66** | **81.30%** | 44.9 |
-| 13 | **Bonsai-27B-Q1_0** | 3.8G | 22.33 | 15.33 | 15.00 | **52.66** | **79.79%** | 12.5 |
-| 14 | **Ornith-1.0-9B** | 5.3G | 19.67 | 16.00 | 16.67 | **52.34** | **79.30%** | 48.0 |
-| 15 | **Qwen3.8-27B-Q3-DOWN-XS** | 7.9G | 21.00 | 14.00 | 16.67 | **51.67** | **78.29%** | 24.0 |
-| 16 | **Qwen3.8-9B** | 5.8G | 21.67 | 15.00 | 14.67 | **51.34** | **77.79%** | 40.0 |
-| 17 | **Heem-9B (Uncensored)** | 5.6G | 19.00 | 14.67 | 16.00 | **49.67** | **75.26%** | 40.0 |
-| 18 | **Ornith-1.5-9B** | 5.9G | 19.67 | 11.67 | 16.67 | **48.01** | **72.74%** | 48.0 |
-| 19 | **LFM3-1.7B** | 1.1G | 18.00 | 13.00 | 15.67 | **46.67** | **70.71%** | 135.0 |
-| 20 | **Gemma4-12B** | 6.7G | 18.33 | 12.33 | 15.67 | **46.33** | **70.20%** | 24.0 |
-| 21 | **LFM2.5-8B-A1B** | 5.0G | 16.67 | 13.00 | 14.67 | **44.34** | **67.18%** | 91.1 |
-| 22 | **Qwen3.5-9B** | 5.3G | 12.00 | 13.33 | 16.33 | **41.66** | **63.12%** | 60.0 |
-| 23 | **Qwopus3.5-9B-Coder** | 4.5G | 13.33 | 12.00 | 16.33 | **41.66** | **63.12%** | 30.0 |
-| 24 | **MiniCPM5-2B** | 1.6G | 14.00 | 8.67 | 16.67 | **39.34** | **59.61%** | 118.0 |
-| 25 | **SuperQwen-35B** | 21.0G | 15.00 | 12.83 | 11.33 | **39.16** | **59.33%** | 10.8 |
-| 26 | **Holo-3.1-9B-Coder** | 5.3G | 14.67 | 9.33 | 14.67 | **38.67** | **58.59%** | 40.0 |
-| 27 | **Qwythos-9B-v1** | 5.3G | 14.33 | 9.00 | 15.33 | **38.66** | **58.58%** | 30.4 |
-| 28 | **Grug-12B** | 6.9G | 13.00 | 5.00 | 14.67 | **32.67** | **49.50%** | 34.0 |
-| 29 | **OmniCoder-9B** | 5.4G | 4.33 | 7.67 | 16.67 | **28.67** | **43.44%** | 53.1 |
+| 2 | **Flint-40B-A3B** ⟡ | 25.0G | 23.33 | 20.33 | 17.00 | **60.66** | **91.91%** | 17.1 |
+| 3 | **Nemotron-3.5-Bolt-74B-A9B** | 22.0G | 22.67 | 21.67 | 15.33 | **59.67** | **90.41%** | 6.7 ⟡ |
+| 4 | **Qwen3.6-35B-Q4-ncmoe40** | 21.1G | 21.33 | 21.67 | 16.33 | **59.33** | **89.89%** | 21.7 |
+| 5 | **Ternary-Bonsai-2-27B-PTQ1** ⟡ | 5.5G | 22.00 | 20.00 | 17.00 | **59.00** | **89.39%** | 10.9 |
+| 6 | **Groot-19B-A3B** | 11.7G | 23.00 | 19.33 | 16.00 | **58.33** | **88.38%** | 28.5 |
+| 7 | **Qwen3.8-35B-A3B-Distill** | 21.7G | 21.00 | 19.67 | 17.00 | **57.67** | **87.38%** | 21.0 |
+| 8 | **MiniCPM-V-4.7-35B-A3B** | 19.7G | 21.33 | 19.00 | 15.67 | **56.00** | **84.85%** | 19.2 |
+| 9 | **Ternary-Bonsai-2-27B-PQ2** ⟡ | 7.2G | 21.67 | 17.00 | 16.33 | **55.00** | **83.33%** | 11.8 |
+| 10 | **Underdog-Saluki-27B-IQ2** | 7.9G | 20.33 | 18.33 | 16.00 | **54.66** | **82.82%** | 23.2 |
+| 11 | **Gemma4-26B-A4B** | 16.9G | 23.00 | 14.00 | 16.67 | **53.67** | **81.32%** | 13.5 |
+| 12 | **Raon-1 mini preview 28.8B-A4.3B** ⟡ | 19.7G | 21.00 | 16.67 | 16.00 | **53.67** | **81.32%** | 16.2 |
+| 13 | **Nanbeige4.2-3B** | 2.4G | 23.00 | 15.33 | 15.33 | **53.66** | **81.30%** | 44.9 |
+| 14 | **Bonsai-27B-Q1_0** | 3.8G | 22.33 | 15.33 | 15.00 | **52.66** | **79.79%** | 12.5 |
+| 15 | **Ornith-1.0-9B** | 5.3G | 19.67 | 16.00 | 16.67 | **52.34** | **79.30%** | 48.0 |
+| 16 | **Qwen3.8-27B-Q3-DOWN-XS** | 7.9G | 21.00 | 14.00 | 16.67 | **51.67** | **78.29%** | 24.0 |
+| 17 | **Qwen3.8-9B** | 5.8G | 21.67 | 15.00 | 14.67 | **51.34** | **77.79%** | 40.0 |
+| 18 | **Heem-9B (Uncensored)** | 5.6G | 19.00 | 14.67 | 16.00 | **49.67** | **75.26%** | 40.0 |
+| 19 | **Ornith-1.5-9B** | 5.9G | 19.67 | 11.67 | 16.67 | **48.01** | **72.74%** | 48.0 |
+| 20 | **LFM3-1.7B** | 1.1G | 18.00 | 13.00 | 15.67 | **46.67** | **70.71%** | 135.0 |
+| 21 | **Gemma4-12B** | 6.7G | 18.33 | 12.33 | 15.67 | **46.33** | **70.20%** | 24.0 |
+| 22 | **LFM2.5-8B-A1B** | 5.0G | 16.67 | 13.00 | 14.67 | **44.34** | **67.18%** | 91.1 |
+| 23 | **Qwen3.5-9B** | 5.3G | 12.00 | 13.33 | 16.33 | **41.66** | **63.12%** | 60.0 |
+| 24 | **Qwopus3.5-9B-Coder** | 4.5G | 13.33 | 12.00 | 16.33 | **41.66** | **63.12%** | 30.0 |
+| 25 | **MiniCPM5-2B** | 1.6G | 14.00 | 8.67 | 16.67 | **39.34** | **59.61%** | 118.0 |
+| 26 | **SuperQwen-35B** | 21.0G | 15.00 | 12.83 | 11.33 | **39.16** | **59.33%** | 10.8 |
+| 27 | **Holo-3.1-9B-Coder** | 5.3G | 14.67 | 9.33 | 14.67 | **38.67** | **58.59%** | 40.0 |
+| 28 | **Qwythos-9B-v1** | 5.3G | 14.33 | 9.00 | 15.33 | **38.66** | **58.58%** | 30.4 |
+| 29 | **Grug-12B** | 6.9G | 13.00 | 5.00 | 14.67 | **32.67** | **49.50%** | 34.0 |
+| 30 | **OmniCoder-9B** | 5.4G | 4.33 | 7.67 | 16.67 | **28.67** | **43.44%** | 53.1 |
 
 Ties are labelled rather than broken: Gemma4-26B-A4B and Raon both compute to 81.32%, and Qwen3.5-9B and Qwopus3.5-9B-Coder are identical at 63.12% to two decimals.
 
 **† Nemotron-3.5-Bolt-74B-A9B is reference only.** It produces the second-highest raw score on the board, but sustained decode came in at 6.7 tok/s, under the 10 tok/s admission floor, so it is not ranked as a contender.
 
-**⟡ Non-standard context window.** Unless noted, rows run the standard windows: 4096 for Agent and Reason, 16384 for Code. The marked rows need more room on an 8GB card and are disclosed rather than silently normalised: Nemotron at 8192 for all three events, both Ternary-Bonsai PTQ1 and PQ2 plus the pinned PTQ1 at 8192, Groot at 8192 for Agent and Reason, Raon at 32768 for all three. Larger windows cost throughput on this hardware, so they cut against the model, not for it.
+**⟡ Non-standard context window.** Unless noted, rows run the standard windows: 4096 for Agent and Reason, 16384 for Code. The marked rows need more room on an 8GB card and are disclosed rather than silently normalised: Nemotron at 8192 for all three events, both Ternary-Bonsai PTQ1 and PQ2 plus the pinned PTQ1 at 8192, Groot at 8192 for Agent and Reason, Raon at 32768 for all three, Flint at 16384 for all three. Larger windows cost throughput on this hardware, so they cut against the model, not for it.
 
 Every row carries a complete 3/3/3 set of completed runs. A model with a partial set is excluded from the table rather than ranked on half a result.
 
@@ -69,10 +70,10 @@ Every row carries a complete 3/3/3 set of completed runs. A model with a partial
 ## What the numbers say
 
 - **LFM2.5-24B-A2B holds the board at 93.42%.** 24B total, 2B active, 64 experts routed top-4, and 30 of its 40 layers are gated short convolutions with full attention only every fourth layer. It takes the best Code score here (23.33) and still runs at 25.8 tok/s. Its six truncated task-runs were re-cut at a 32768 window, which is disclosed below.
-- **The best agent score is a three-way tie at 23.00:** Groot-19B-A3B, Gemma4-26B-A4B and Nanbeige4.2-3B. The spread in size between them is 16.9G to 2.4G, and Nanbeige is 3.3x faster than the 26B it ties with.
-- **Ternary-Bonsai-2-27B-PTQ1 is the efficiency answer.** 89.39% at 5.5GB and 10.9 tok/s, second only to LFM2.5-24B on score while fitting comfortably inside the card. A 1.75 bit-per-weight packing that stays coherent is the most surprising result on this bench.
+- **Flint-40B-A3B takes the best agent score at 23.33**, and the next three are tied at 23.00: Groot-19B-A3B, Gemma4-26B-A4B and Nanbeige4.2-3B. Flint gets there on 2.5B active parameters out of 39.8B, at 17 tok/s, with a full 17.00 on Reason as well. The spread in the tied group is 16.9G to 2.4G, and Nanbeige is 3.3x faster than the 26B it ties with.
+- **Ternary-Bonsai-2-27B-PTQ1 is the efficiency answer.** 89.39% at 5.5GB and 10.9 tok/s, third on score behind a 14.5G and a 25G model, while fitting comfortably inside the card. A 1.75 bit-per-weight packing that stays coherent is the most surprising result on this bench.
 - **Code is where models fall over.** The median Code score is 15 out of 25 while the median Reason score is 15.67 out of 17. Reasoning is nearly solved at this scale; writing code that passes unseen tests is not. Every model below 80% loses most of its ground in Code.
-- **Size buys less than people think.** The 29 rows span 1.1G to 22G, and the top and bottom are 50 points apart, but six of the top ten are under 12GB. The 8GB ceiling is real for speed and context, not for capability.
+- **Size buys less than people think.** The 30 rows span 1.1G to 25G, and the top and bottom are 50 points apart, but six of the top ten are under 12GB. The 8GB ceiling is real for speed and context, not for capability.
 
 ### A harness artefact worth knowing about
 
@@ -88,7 +89,7 @@ LFM2.5-24B-A2B lost 12 Code points and 3 Reason points to this and nothing else;
   ```bash
   python3 scripts/export-static-dashboard.py agon-bench.html
   ```
-- **`agon-bench-tasks.html`** is the per-model per-task matrix: 29 models against all 22
+- **`agon-bench-tasks.html`** is the per-model per-task matrix: 30 models against all 22
   tasks, coloured by score against each task's maximum, click any column header to sort.
   Generated alongside CSV and Markdown versions:
   ```bash

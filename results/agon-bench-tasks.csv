@@ -637,3 +637,25 @@ LFM3-1.7B,reason,3,Constraint Satisfaction,3.0,2.667,88.9,2.0,3.0,3,0
 LFM3-1.7B,reason,4,Counterfactual Reasoning,3.0,2.0,66.7,2.0,2.0,3,0
 LFM3-1.7B,reason,5,Analytical Explanation,3.0,3.0,100.0,3.0,3.0,3,0
 LFM3-1.7B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Flint-40B-A3B,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Flint-40B-A3B,agent,2,Orchestration,3.0,3.0,100.0,3.0,3.0,3,0
+Flint-40B-A3B,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Flint-40B-A3B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Flint-40B-A3B,agent,5,Parsing,3.0,3.0,100.0,3.0,3.0,3,0
+Flint-40B-A3B,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Flint-40B-A3B,agent,7,Multi-Step Research Agent,3.0,2.667,88.9,2.0,3.0,3,0
+Flint-40B-A3B,agent,8,Memory-Augmented Agent,3.0,2.667,88.9,2.0,3.0,3,0
+Flint-40B-A3B,code,1,String Cleaner,5.0,4.333,86.7,4.0,5.0,3,0
+Flint-40B-A3B,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Flint-40B-A3B,code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,0
+Flint-40B-A3B,code,4,File Indexer,2.0,2.0,100.0,2.0,2.0,3,0
+Flint-40B-A3B,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+Flint-40B-A3B,code,6,Constrained Diff Tool,3.0,1.333,44.4,1.0,2.0,3,0
+Flint-40B-A3B,code,7,Regex Engine,4.0,4.0,100.0,4.0,4.0,3,0
+Flint-40B-A3B,code,8,Concurrent Web Scraper,2.0,1.667,83.3,1.0,2.0,3,0
+Flint-40B-A3B,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Flint-40B-A3B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Flint-40B-A3B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Flint-40B-A3B,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Flint-40B-A3B,reason,5,Analytical Explanation,3.0,3.0,100.0,3.0,3.0,3,0
+Flint-40B-A3B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0

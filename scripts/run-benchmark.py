@@ -543,7 +543,7 @@ MODEL_CONFIG = {
         "is_moe": 1, "needs_cpu_moe": 1, "needs_reasoning_off": 0,
         "gpu_layers": 999, "gpu_layers_draft": None,
         "server_args": "-ngl 999 -ncmoe 20 -fa on -c 8192 --threads 6 --threads-batch 6 --cpu-mask 0x3f --prio 2 --jinja --temp 1.0 --top-k 20 --top-p 0.95 --parallel 1",
-        "agent_ctx": 8192, "code_ctx": 16384, "reason_ctx": 8192,
+        "agent_ctx": 16384, "code_ctx": 16384, "reason_ctx": 16384,
         "timeout_s": 21600, "tok_s": 28.5, "task_timeout_s": 2400,
         "max_tokens": 32768,
         "notes": "GrootTeam Groot-19B-A3B-261023, 19B total / 3B active, 128 routed + 1 shared expert (8 active), qwen35moe arch, 40 blocks (30 linear attention + 10 full), 1 MTP layer, native multimodal with an mmproj we do not use. Q4_K_M 11,657,618,561 B. Measured here 2026-10-27 at -c 8192, -ngl 999 -ncmoe 20: 326 t/s prefill on a 2448-token prompt, 28.0-32.2 t/s decode once page cache is warm (first request after load reads cold and shows 16-17). VRAM 6.83 GB used, no GTT spill. --spec-type draft-mtp accepted 133/195 (68%) but decode fell to 22.0 t/s, so it is NOT used. Sampling follows the model card (temp 1.0 / top_k 20 / top_p 0.95) with temperature pinned by the event scripts at 0.3 as usual (disclosed). Thinking left ON: the card evaluates in thinking mode. RESULT (2026-10-27, 9 runs): 58.33/66 = agent 23.0/24 (95.83%), code 19.33/25 (77.33%), reason 16.0/17 (94.12%), rank 5 of 28, no tie. First pass ran code+reason with max_tokens 8192 and was truncated: two of three regex-engine answers stopped mid-file at ~27KB and scored 0/4. Both events were rerun uncapped at 32768 and the capped artifacts kept at /mnt/ssd/agon-archive/groot-capped-8192/. Uncapped code moved 18.67 -> 19.33, so the cap was a real but small defect; the 0/4, 3/4, 0/4 swing on regex engine across identical seeds is the model. Constrained diff tool scored 1/3 in all six runs. Agent never came near a cap (longest answer 2.9KB).",
@@ -563,6 +563,20 @@ MODEL_CONFIG = {
         "notes": "Liquid AI LFM3-1.7B text model, official Q4_K_M (1,099,627,808 B = 1.10 GB). NEW tri-hybrid architecture: 2 conv layers, then a repeating conv / full_attention / conv / sliding_attention block stack, hidden 2048, 16 heads at head_dim 128, conv_L_cache 7, 262144 ctx, thinking on by default. Post-trained for agentic harnesses (Hermes Agent, Pi, OpenClaw). Needs ~/llama-lfm3: the arch landed upstream 2026-10-27 in PR 31252, no older build knows it. Sampling follows the card's GENERAL row (temp 0.1, top_k 50, repetition 1.1) rather than its math row; the event scripts still pin temperature 0.3, so only top_k and repeat-penalty reach the server (disclosed). max_tokens 32768 leaves output uncapped in practice: an earlier Groot run showed a cap at 8192 truncating code answers, and this model is fast enough that the cap buys nothing. The card itself says the model is not recommended for agentic coding or complex multi-step reasoning, so a weak code event here is what it predicts of itself. RESULT (2026-10-27, 9 runs): 46.67/66 = agent 18.0/24 (75.0%), code 13.0/25 (52.0%), reason 15.67/17 (92.16%), rank 19 of 29, no tie. Event ranks 20/20/19, so it is uniformly mid-table rather than specialised. It still beats Liquid's own LFM2.5-8B-A1B (67.17%) by 3.5 points at 1.1GB against 5.0GB and 135 t/s against 91, and it matches Gemma4-12B's 70.2% while running 5.6x faster. Code is the ceiling exactly as the card warns (14, 15, 10 of 25); reason is the surprise at 92.16%, within 2 points of Groot-19B at 14x the file size. Loaded in 2 seconds, 1.35GB VRAM including KV.",
         "llama_fork": "lfm3"
     },
+    "flint_39b_a3b": {
+        "name": "Flint-40B-A3B",
+        "gguf": "flint-UD-Q4_K_XL.gguf",
+        "draft": None,
+        "size_gb": 25.05, "quant": "UD-Q4_K_XL", "vram_class": "8gb",
+        "is_moe": 1, "needs_cpu_moe": 1, "needs_reasoning_off": 0,
+        "gpu_layers": 999, "gpu_layers_draft": None,
+        "server_args": "-ngl 999 -ncmoe 39 -fa on -c 16384 -ctk q8_0 -ctv q8_0 --threads 6 --threads-batch 6 --cpu-mask 0x3f --jinja --top-p 0.95 --top-k 20 --min-p 0.05 --parallel 1",
+        "agent_ctx": 16384, "code_ctx": 16384, "reason_ctx": 16384,
+        "timeout_s": 21600, "tok_s": 17.1, "task_timeout_s": 3000,
+        "max_tokens": 32768,
+        "notes": "Recursive SI Flint, 39.8B total / ~2.5B active MoE (49 layers, hidden 2048, 256 routed experts top-6, moe_intermediate_size 512, one shared expert, 262K ctx, 150144 vocab, Apache-2.0). Coding-agent tuned, 'reasoning on demand'. unsloth UD-Q4_K_XL 25.05 GB. Needs a llama.cpp build from a37cc46104 (PR 30928, merged 2026-10-21); the local build is 8ca4060b7 in ~/llama-flint. Measured on the RX 5700 XT with -ncmoe sweep, 520p/256d at ctx 16384: -ncmoe 37 19.02 t/s decode (7.58 GB VRAM, 94% of the card), -ncmoe 40 18.20 t/s (6.22 GB), prefill 160-175 t/s. Runs at 39 for headroom: 7.1 GB and ~18.6 t/s, comfortably over the 10 t/s floor. Sampling: the event scripts hard-code temperature 0.3, so the vendor's temp 1.0 never reaches the server; top_p 0.95 / top_k 20 / min_p 0.05 do. Recorded tok_s is the sustained depth figure: 17.10 t/s measured over 10,671 generated tokens in the code event, against 18.6 on a 256-token probe, so the probe is about 9% optimistic.",
+        "llama_fork": "flint"
+    }
 }
 
 def _resolve_local(cfg):
@@ -646,6 +660,9 @@ LLAMA_SERVER_RAON = os.path.expanduser("~/llama.cpp-raon/build-vulkan/bin/llama-
 # attention mixed per layer. Landed upstream the same day in PR 31252 / 31257, so
 # no older build knows it.
 LLAMA_SERVER_LFM3 = os.path.expanduser("~/llama-lfm3/build-vulkan/bin/llama-server")
+# Flint (Recursive, 2026-10-21): 39.8B MoE, 256 experts top-6, 2.5B active. Upstream
+# support landed in llama.cpp a37cc46104 (PR 30928), after the builds above.
+LLAMA_SERVER_FLINT = os.path.expanduser("~/llama-flint/build-vulkan/bin/llama-server")
 
 # PrismML's PINNED release binary (prism-b10777-e3de715, 2026-10-14), used as shipped with no build.
 # It carries the Vulkan path for GPUs without hardware DP4A that this card needs (#291) plus the
@@ -762,6 +779,8 @@ def start_server(model_key, port=8100):
         server_bin = LLAMA_SERVER_PRISM_PINNED
     elif fork == "lfm3":
         server_bin = LLAMA_SERVER_LFM3
+    elif fork == "flint":
+        server_bin = LLAMA_SERVER_FLINT
     else:
         server_bin = LLAMA_SERVER
     
@@ -983,6 +1002,19 @@ def complete_run_in_db(event, run_id, elapsed, total_score, max_score, tok_s, vr
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     table = EVENT_TABLES[event]
+    # Task rows are the authority on the score: a run resumed after an
+    # interruption only writes summary.json for the tasks it re-ran, so the
+    # summary total is a subset of the run. Recompute from the task table so a
+    # resumed run cannot record e.g. 13/14 when its eight tasks sum to 23/24.
+    task_table = f"{event}_tasks"
+    c.execute(
+        f"SELECT COALESCE(SUM(score),0), COALESCE(SUM(max_score),0), COUNT(*) "
+        f"FROM {task_table} WHERE run_id=? AND status='completed'", (run_id,))
+    t_sum, t_max, t_n = c.fetchone()
+    if t_n and t_max and abs(t_sum - total_score) > 1e-6:
+        log(f"  [DB] run {run_id}: summary said {total_score}/{max_score}, "
+            f"task rows say {t_sum}/{t_max} ({t_n} tasks) - using task rows")
+        total_score, max_score = t_sum, t_max
     c.execute(f"""
         UPDATE {table} SET
             total_elapsed_s=?, total_score=?, max_score=?,
