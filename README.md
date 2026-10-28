@@ -88,6 +88,13 @@ LFM2.5-24B-A2B lost 12 Code points and 3 Reason points to this and nothing else;
   ```bash
   python3 scripts/export-static-dashboard.py agon-bench.html
   ```
+- **`agon-bench-tasks.html`** is the per-model per-task matrix: 29 models against all 22
+  tasks, coloured by score against each task's maximum, click any column header to sort.
+  Generated alongside CSV and Markdown versions:
+  ```bash
+  python3 scripts/export-task-matrix.py
+  # results/agon-bench-tasks.csv, results/agon-bench-tasks.md, agon-bench-tasks.html
+  ```
 - **`agon-dashboard.html`** is the live version and reads the SQLite database through a small server:
   ```bash
   python3 scripts/dashboard-server.py 8765
@@ -165,6 +172,7 @@ agon-arena/
 │   ├── create_db.py                # schema
 │   ├── dashboard-server.py         # live dashboard + JSON API
 │   ├── export-static-dashboard.py  # builds agon-bench.html
+│   ├── export-task-matrix.py       # builds the per-task matrix + CSV
 │   ├── agon-winback-rerun.py       # replay runs cut off by the context window
 │   ├── regrade-strict.py           # re-grade one saved output
 │   └── speed-test.py               # quick decode/prefill probe
@@ -172,9 +180,13 @@ agon-arena/
 │   ├── grading-protocol.md
 │   ├── context-window-truncation.md
 │   └── throughput-measurement.md
-├── results/agon-bench-results.json # published board, machine readable
+├── results/
+│   ├── agon-bench-results.json     # published board, machine readable
+│   ├── agon-bench-tasks.csv        # every model x task cell
+│   └── agon-bench-tasks.md         # the same matrix as tables
 ├── agon-dashboard.html             # live dashboard
 ├── agon-bench.html                 # static export with data baked in
+├── agon-bench-tasks.html           # per-task matrix, sortable
 ├── LICENSE
 └── README.md
 ```

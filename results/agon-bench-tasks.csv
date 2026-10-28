@@ -1,0 +1,639 @@
+model,event,task_id,task,max_score,mean_score,pct,min_run,max_run,runs,reference_only
+OmniCoder-9B,agent,1,Tool Calling,3.0,1.0,33.3,0.0,3.0,3,0
+OmniCoder-9B,agent,2,Orchestration,3.0,0.667,22.2,0.0,2.0,3,0
+OmniCoder-9B,agent,3,Error Handling,4.0,0.0,0.0,0.0,0.0,3,0
+OmniCoder-9B,agent,4,Planning,2.0,0.667,33.3,0.0,2.0,3,0
+OmniCoder-9B,agent,5,Parsing,3.0,0.0,0.0,0.0,0.0,3,0
+OmniCoder-9B,agent,6,Decision-Making,3.0,1.0,33.3,0.0,3.0,3,0
+OmniCoder-9B,agent,7,Multi-Step Research Agent,3.0,1.0,33.3,0.0,3.0,3,0
+OmniCoder-9B,agent,8,Memory-Augmented Agent,3.0,0.0,0.0,0.0,0.0,3,0
+OmniCoder-9B,code,1,String Cleaner,5.0,1.333,26.7,0.0,4.0,3,0
+OmniCoder-9B,code,2,Log Parser,4.0,0.667,16.7,0.0,2.0,3,0
+OmniCoder-9B,code,3,LRU Cache,3.0,1.0,33.3,0.0,3.0,3,0
+OmniCoder-9B,code,4,File Indexer,2.0,0.667,33.3,0.0,2.0,3,0
+OmniCoder-9B,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+OmniCoder-9B,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+OmniCoder-9B,code,7,Regex Engine,4.0,0.333,8.3,0.0,1.0,3,0
+OmniCoder-9B,code,8,Concurrent Web Scraper,2.0,1.667,83.3,1.0,2.0,3,0
+OmniCoder-9B,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+OmniCoder-9B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+OmniCoder-9B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+OmniCoder-9B,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+OmniCoder-9B,reason,5,Analytical Explanation,3.0,2.667,88.9,2.0,3.0,3,0
+OmniCoder-9B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.5-9B,agent,1,Tool Calling,3.0,2.0,66.7,0.0,3.0,3,0
+Qwen3.5-9B,agent,2,Orchestration,3.0,1.667,55.6,0.0,3.0,3,0
+Qwen3.5-9B,agent,3,Error Handling,4.0,2.667,66.7,0.0,4.0,3,0
+Qwen3.5-9B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.5-9B,agent,5,Parsing,3.0,0.0,0.0,0.0,0.0,3,0
+Qwen3.5-9B,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.5-9B,agent,7,Multi-Step Research Agent,3.0,0.0,0.0,0.0,0.0,3,0
+Qwen3.5-9B,agent,8,Memory-Augmented Agent,3.0,0.667,22.2,0.0,2.0,3,0
+Qwen3.5-9B,code,1,String Cleaner,5.0,3.333,66.7,0.0,5.0,3,0
+Qwen3.5-9B,code,2,Log Parser,4.0,2.667,66.7,0.0,4.0,3,0
+Qwen3.5-9B,code,3,LRU Cache,3.0,1.667,55.6,0.0,3.0,3,0
+Qwen3.5-9B,code,4,File Indexer,2.0,1.333,66.7,0.0,2.0,3,0
+Qwen3.5-9B,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+Qwen3.5-9B,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+Qwen3.5-9B,code,7,Regex Engine,4.0,0.333,8.3,0.0,1.0,3,0
+Qwen3.5-9B,code,8,Concurrent Web Scraper,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.5-9B,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.5-9B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.5-9B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.5-9B,reason,4,Counterfactual Reasoning,3.0,2.667,88.9,2.0,3.0,3,0
+Qwen3.5-9B,reason,5,Analytical Explanation,3.0,2.667,88.9,2.0,3.0,3,0
+Qwen3.5-9B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Ornith-1.0-9B,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Ornith-1.0-9B,agent,2,Orchestration,3.0,2.333,77.8,2.0,3.0,3,0
+Ornith-1.0-9B,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Ornith-1.0-9B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Ornith-1.0-9B,agent,5,Parsing,3.0,1.0,33.3,0.0,2.0,3,0
+Ornith-1.0-9B,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Ornith-1.0-9B,agent,7,Multi-Step Research Agent,3.0,2.333,77.8,1.0,3.0,3,0
+Ornith-1.0-9B,agent,8,Memory-Augmented Agent,3.0,2.0,66.7,1.0,3.0,3,0
+Ornith-1.0-9B,code,1,String Cleaner,5.0,4.333,86.7,3.0,5.0,3,0
+Ornith-1.0-9B,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Ornith-1.0-9B,code,3,LRU Cache,3.0,2.0,66.7,0.0,3.0,3,0
+Ornith-1.0-9B,code,4,File Indexer,2.0,2.0,100.0,2.0,2.0,3,0
+Ornith-1.0-9B,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+Ornith-1.0-9B,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+Ornith-1.0-9B,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+Ornith-1.0-9B,code,8,Concurrent Web Scraper,2.0,1.667,83.3,1.0,2.0,3,0
+Ornith-1.0-9B,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Ornith-1.0-9B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Ornith-1.0-9B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Ornith-1.0-9B,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Ornith-1.0-9B,reason,5,Analytical Explanation,3.0,2.667,88.9,2.0,3.0,3,0
+Ornith-1.0-9B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-12B,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-12B,agent,2,Orchestration,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-12B,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Gemma4-12B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Gemma4-12B,agent,5,Parsing,3.0,0.333,11.1,0.0,1.0,3,0
+Gemma4-12B,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-12B,agent,7,Multi-Step Research Agent,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-12B,agent,8,Memory-Augmented Agent,3.0,0.0,0.0,0.0,0.0,3,0
+Gemma4-12B,code,1,String Cleaner,5.0,1.333,26.7,0.0,4.0,3,0
+Gemma4-12B,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Gemma4-12B,code,3,LRU Cache,3.0,2.0,66.7,0.0,3.0,3,0
+Gemma4-12B,code,4,File Indexer,2.0,2.0,100.0,2.0,2.0,3,0
+Gemma4-12B,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+Gemma4-12B,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+Gemma4-12B,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+Gemma4-12B,code,8,Concurrent Web Scraper,2.0,1.0,50.0,1.0,1.0,3,0
+Gemma4-12B,reason,1,Logical Deduction,2.0,1.0,50.0,1.0,1.0,3,0
+Gemma4-12B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-12B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-12B,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-12B,reason,5,Analytical Explanation,3.0,2.667,88.9,2.0,3.0,3,0
+Gemma4-12B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Grug-12B,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Grug-12B,agent,2,Orchestration,3.0,1.0,33.3,0.0,3.0,3,0
+Grug-12B,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Grug-12B,agent,4,Planning,2.0,0.667,33.3,0.0,2.0,3,0
+Grug-12B,agent,5,Parsing,3.0,0.0,0.0,0.0,0.0,3,0
+Grug-12B,agent,6,Decision-Making,3.0,2.667,88.9,2.0,3.0,3,0
+Grug-12B,agent,7,Multi-Step Research Agent,3.0,1.667,55.6,0.0,3.0,3,0
+Grug-12B,agent,8,Memory-Augmented Agent,3.0,0.0,0.0,0.0,0.0,3,0
+Grug-12B,code,1,String Cleaner,5.0,0.0,0.0,0.0,0.0,3,0
+Grug-12B,code,2,Log Parser,4.0,0.0,0.0,0.0,0.0,3,0
+Grug-12B,code,3,LRU Cache,3.0,2.0,66.7,0.0,3.0,3,0
+Grug-12B,code,4,File Indexer,2.0,0.0,0.0,0.0,0.0,3,0
+Grug-12B,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+Grug-12B,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+Grug-12B,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+Grug-12B,code,8,Concurrent Web Scraper,2.0,1.0,50.0,1.0,1.0,3,0
+Grug-12B,reason,1,Logical Deduction,2.0,1.0,50.0,1.0,1.0,3,0
+Grug-12B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Grug-12B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Grug-12B,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Grug-12B,reason,5,Analytical Explanation,3.0,2.0,66.7,2.0,2.0,3,0
+Grug-12B,reason,6,Multi-Hop Synthesis,3.0,2.667,88.9,2.0,3.0,3,0
+Gemma4-26B-A4B,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-26B-A4B,agent,2,Orchestration,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-26B-A4B,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Gemma4-26B-A4B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Gemma4-26B-A4B,agent,5,Parsing,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-26B-A4B,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-26B-A4B,agent,7,Multi-Step Research Agent,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-26B-A4B,agent,8,Memory-Augmented Agent,3.0,2.0,66.7,2.0,2.0,3,0
+Gemma4-26B-A4B,code,1,String Cleaner,5.0,1.333,26.7,0.0,4.0,3,0
+Gemma4-26B-A4B,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Gemma4-26B-A4B,code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-26B-A4B,code,4,File Indexer,2.0,2.0,100.0,2.0,2.0,3,0
+Gemma4-26B-A4B,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+Gemma4-26B-A4B,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+Gemma4-26B-A4B,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+Gemma4-26B-A4B,code,8,Concurrent Web Scraper,2.0,1.667,83.3,1.0,2.0,3,0
+Gemma4-26B-A4B,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Gemma4-26B-A4B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-26B-A4B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-26B-A4B,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Gemma4-26B-A4B,reason,5,Analytical Explanation,3.0,2.667,88.9,2.0,3.0,3,0
+Gemma4-26B-A4B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+LFM2.5-8B-A1B,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+LFM2.5-8B-A1B,agent,2,Orchestration,3.0,2.0,66.7,2.0,2.0,3,0
+LFM2.5-8B-A1B,agent,3,Error Handling,4.0,2.667,66.7,2.0,4.0,3,0
+LFM2.5-8B-A1B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+LFM2.5-8B-A1B,agent,5,Parsing,3.0,0.667,22.2,0.0,1.0,3,0
+LFM2.5-8B-A1B,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+LFM2.5-8B-A1B,agent,7,Multi-Step Research Agent,3.0,1.0,33.3,1.0,1.0,3,0
+LFM2.5-8B-A1B,agent,8,Memory-Augmented Agent,3.0,2.333,77.8,2.0,3.0,3,0
+LFM2.5-8B-A1B,code,1,String Cleaner,5.0,2.333,46.7,0.0,4.0,3,0
+LFM2.5-8B-A1B,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+LFM2.5-8B-A1B,code,3,LRU Cache,3.0,1.667,55.6,1.0,3.0,3,0
+LFM2.5-8B-A1B,code,4,File Indexer,2.0,0.333,16.7,0.0,1.0,3,0
+LFM2.5-8B-A1B,code,5,Task Runner CLI,2.0,0.667,33.3,0.0,1.0,3,0
+LFM2.5-8B-A1B,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+LFM2.5-8B-A1B,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+LFM2.5-8B-A1B,code,8,Concurrent Web Scraper,2.0,2.0,100.0,2.0,2.0,3,0
+LFM2.5-8B-A1B,reason,1,Logical Deduction,2.0,1.667,83.3,1.0,2.0,3,0
+LFM2.5-8B-A1B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+LFM2.5-8B-A1B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+LFM2.5-8B-A1B,reason,4,Counterfactual Reasoning,3.0,2.0,66.7,2.0,2.0,3,0
+LFM2.5-8B-A1B,reason,5,Analytical Explanation,3.0,2.333,77.8,2.0,3.0,3,0
+LFM2.5-8B-A1B,reason,6,Multi-Hop Synthesis,3.0,2.667,88.9,2.0,3.0,3,0
+SuperQwen-35B,agent,1,Tool Calling,3.0,2.667,88.9,2.0,3.0,3,0
+SuperQwen-35B,agent,2,Orchestration,3.0,3.0,100.0,3.0,3.0,3,0
+SuperQwen-35B,agent,3,Error Handling,4.0,2.0,50.0,0.0,4.0,3,0
+SuperQwen-35B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+SuperQwen-35B,agent,5,Parsing,3.0,1.333,44.4,0.0,3.0,3,0
+SuperQwen-35B,agent,6,Decision-Making,3.0,2.0,66.7,1.0,3.0,3,0
+SuperQwen-35B,agent,7,Multi-Step Research Agent,3.0,1.333,44.4,1.0,2.0,3,0
+SuperQwen-35B,agent,8,Memory-Augmented Agent,3.0,0.667,22.2,0.0,2.0,3,0
+SuperQwen-35B,code,1,String Cleaner,5.0,3.333,66.7,0.0,5.0,3,0
+SuperQwen-35B,code,2,Log Parser,4.0,2.667,66.7,2.0,4.0,3,0
+SuperQwen-35B,code,3,LRU Cache,3.0,2.667,88.9,2.0,3.0,3,0
+SuperQwen-35B,code,4,File Indexer,2.0,0.333,16.7,0.0,1.0,3,0
+SuperQwen-35B,code,5,Task Runner CLI,2.0,0.333,16.7,0.0,1.0,3,0
+SuperQwen-35B,code,6,Constrained Diff Tool,3.0,1.667,55.6,1.0,2.0,3,0
+SuperQwen-35B,code,7,Regex Engine,4.0,0.083,2.1,0.0,0.25,3,0
+SuperQwen-35B,code,8,Concurrent Web Scraper,2.0,1.667,83.3,1.0,2.0,3,0
+SuperQwen-35B,reason,1,Logical Deduction,2.0,0.333,16.7,0.0,1.0,3,0
+SuperQwen-35B,reason,2,Math Word Problem,3.0,0.0,0.0,0.0,0.0,3,0
+SuperQwen-35B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+SuperQwen-35B,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+SuperQwen-35B,reason,5,Analytical Explanation,3.0,2.333,77.8,2.0,3.0,3,0
+SuperQwen-35B,reason,6,Multi-Hop Synthesis,3.0,2.667,88.9,2.0,3.0,3,0
+Qwythos-9B-v1,agent,1,Tool Calling,3.0,2.667,88.9,2.0,3.0,3,0
+Qwythos-9B-v1,agent,2,Orchestration,3.0,2.333,77.8,2.0,3.0,3,0
+Qwythos-9B-v1,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Qwythos-9B-v1,agent,4,Planning,2.0,0.667,33.3,0.0,2.0,3,0
+Qwythos-9B-v1,agent,5,Parsing,3.0,0.0,0.0,0.0,0.0,3,0
+Qwythos-9B-v1,agent,6,Decision-Making,3.0,1.667,55.6,0.0,3.0,3,0
+Qwythos-9B-v1,agent,7,Multi-Step Research Agent,3.0,3.0,100.0,3.0,3.0,3,0
+Qwythos-9B-v1,agent,8,Memory-Augmented Agent,3.0,0.0,0.0,0.0,0.0,3,0
+Qwythos-9B-v1,code,1,String Cleaner,5.0,0.0,0.0,0.0,0.0,3,0
+Qwythos-9B-v1,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Qwythos-9B-v1,code,3,LRU Cache,3.0,1.0,33.3,0.0,3.0,3,0
+Qwythos-9B-v1,code,4,File Indexer,2.0,0.0,0.0,0.0,0.0,3,0
+Qwythos-9B-v1,code,5,Task Runner CLI,2.0,0.667,33.3,0.0,1.0,3,0
+Qwythos-9B-v1,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+Qwythos-9B-v1,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+Qwythos-9B-v1,code,8,Concurrent Web Scraper,2.0,1.333,66.7,1.0,2.0,3,0
+Qwythos-9B-v1,reason,1,Logical Deduction,2.0,1.333,66.7,1.0,2.0,3,0
+Qwythos-9B-v1,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Qwythos-9B-v1,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Qwythos-9B-v1,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Qwythos-9B-v1,reason,5,Analytical Explanation,3.0,2.0,66.7,2.0,2.0,3,0
+Qwythos-9B-v1,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Holo-3.1-9B-Coder,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Holo-3.1-9B-Coder,agent,2,Orchestration,3.0,2.333,77.8,2.0,3.0,3,0
+Holo-3.1-9B-Coder,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Holo-3.1-9B-Coder,agent,4,Planning,2.0,0.0,0.0,0.0,0.0,3,0
+Holo-3.1-9B-Coder,agent,5,Parsing,3.0,0.333,11.1,0.0,1.0,3,0
+Holo-3.1-9B-Coder,agent,6,Decision-Making,3.0,2.667,88.9,2.0,3.0,3,0
+Holo-3.1-9B-Coder,agent,7,Multi-Step Research Agent,3.0,2.0,66.7,2.0,2.0,3,0
+Holo-3.1-9B-Coder,agent,8,Memory-Augmented Agent,3.0,0.333,11.1,0.0,1.0,3,0
+Holo-3.1-9B-Coder,code,1,String Cleaner,5.0,2.667,53.3,0.0,4.0,3,0
+Holo-3.1-9B-Coder,code,2,Log Parser,4.0,1.333,33.3,0.0,2.0,3,0
+Holo-3.1-9B-Coder,code,3,LRU Cache,3.0,1.0,33.3,0.0,3.0,3,0
+Holo-3.1-9B-Coder,code,4,File Indexer,2.0,1.0,50.0,0.0,2.0,3,0
+Holo-3.1-9B-Coder,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+Holo-3.1-9B-Coder,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+Holo-3.1-9B-Coder,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+Holo-3.1-9B-Coder,code,8,Concurrent Web Scraper,2.0,1.333,66.7,1.0,2.0,3,0
+Holo-3.1-9B-Coder,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Holo-3.1-9B-Coder,reason,2,Math Word Problem,3.0,2.0,66.7,1.0,3.0,3,0
+Holo-3.1-9B-Coder,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Holo-3.1-9B-Coder,reason,4,Counterfactual Reasoning,3.0,2.667,88.9,2.0,3.0,3,0
+Holo-3.1-9B-Coder,reason,5,Analytical Explanation,3.0,3.0,100.0,3.0,3.0,3,0
+Holo-3.1-9B-Coder,reason,6,Multi-Hop Synthesis,3.0,2.0,66.7,1.0,3.0,3,0
+Qwopus3.5-9B-Coder,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Qwopus3.5-9B-Coder,agent,2,Orchestration,3.0,0.333,11.1,0.0,1.0,3,0
+Qwopus3.5-9B-Coder,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Qwopus3.5-9B-Coder,agent,4,Planning,2.0,0.0,0.0,0.0,0.0,3,0
+Qwopus3.5-9B-Coder,agent,5,Parsing,3.0,2.0,66.7,2.0,2.0,3,0
+Qwopus3.5-9B-Coder,agent,6,Decision-Making,3.0,1.667,55.6,0.0,3.0,3,0
+Qwopus3.5-9B-Coder,agent,7,Multi-Step Research Agent,3.0,1.0,33.3,0.0,3.0,3,0
+Qwopus3.5-9B-Coder,agent,8,Memory-Augmented Agent,3.0,1.333,44.4,1.0,2.0,3,0
+Qwopus3.5-9B-Coder,code,1,String Cleaner,5.0,4.667,93.3,4.0,5.0,3,0
+Qwopus3.5-9B-Coder,code,2,Log Parser,4.0,2.0,50.0,0.0,4.0,3,0
+Qwopus3.5-9B-Coder,code,3,LRU Cache,3.0,1.0,33.3,0.0,3.0,3,0
+Qwopus3.5-9B-Coder,code,4,File Indexer,2.0,1.0,50.0,0.0,2.0,3,0
+Qwopus3.5-9B-Coder,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+Qwopus3.5-9B-Coder,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+Qwopus3.5-9B-Coder,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+Qwopus3.5-9B-Coder,code,8,Concurrent Web Scraper,2.0,1.333,66.7,1.0,2.0,3,0
+Qwopus3.5-9B-Coder,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Qwopus3.5-9B-Coder,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Qwopus3.5-9B-Coder,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Qwopus3.5-9B-Coder,reason,4,Counterfactual Reasoning,3.0,2.667,88.9,2.0,3.0,3,0
+Qwopus3.5-9B-Coder,reason,5,Analytical Explanation,3.0,2.667,88.9,2.0,3.0,3,0
+Qwopus3.5-9B-Coder,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Bonsai-27B-Q1_0,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Bonsai-27B-Q1_0,agent,2,Orchestration,3.0,2.667,88.9,2.0,3.0,3,0
+Bonsai-27B-Q1_0,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Bonsai-27B-Q1_0,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Bonsai-27B-Q1_0,agent,5,Parsing,3.0,2.0,66.7,0.0,3.0,3,0
+Bonsai-27B-Q1_0,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Bonsai-27B-Q1_0,agent,7,Multi-Step Research Agent,3.0,3.0,100.0,3.0,3.0,3,0
+Bonsai-27B-Q1_0,agent,8,Memory-Augmented Agent,3.0,2.667,88.9,2.0,3.0,3,0
+Bonsai-27B-Q1_0,code,1,String Cleaner,5.0,3.333,66.7,0.0,5.0,3,0
+Bonsai-27B-Q1_0,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Bonsai-27B-Q1_0,code,3,LRU Cache,3.0,2.0,66.7,0.0,3.0,3,0
+Bonsai-27B-Q1_0,code,4,File Indexer,2.0,2.0,100.0,2.0,2.0,3,0
+Bonsai-27B-Q1_0,code,5,Task Runner CLI,2.0,0.333,16.7,0.0,1.0,3,0
+Bonsai-27B-Q1_0,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+Bonsai-27B-Q1_0,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+Bonsai-27B-Q1_0,code,8,Concurrent Web Scraper,2.0,1.667,83.3,1.0,2.0,3,0
+Bonsai-27B-Q1_0,reason,1,Logical Deduction,2.0,0.0,0.0,0.0,0.0,3,0
+Bonsai-27B-Q1_0,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Bonsai-27B-Q1_0,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Bonsai-27B-Q1_0,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Bonsai-27B-Q1_0,reason,5,Analytical Explanation,3.0,3.0,100.0,3.0,3.0,3,0
+Bonsai-27B-Q1_0,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Nanbeige4.2-3B,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Nanbeige4.2-3B,agent,2,Orchestration,3.0,2.333,77.8,2.0,3.0,3,0
+Nanbeige4.2-3B,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Nanbeige4.2-3B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Nanbeige4.2-3B,agent,5,Parsing,3.0,3.0,100.0,3.0,3.0,3,0
+Nanbeige4.2-3B,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Nanbeige4.2-3B,agent,7,Multi-Step Research Agent,3.0,3.0,100.0,3.0,3.0,3,0
+Nanbeige4.2-3B,agent,8,Memory-Augmented Agent,3.0,2.667,88.9,2.0,3.0,3,0
+Nanbeige4.2-3B,code,1,String Cleaner,5.0,2.667,53.3,0.0,4.0,3,0
+Nanbeige4.2-3B,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Nanbeige4.2-3B,code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,0
+Nanbeige4.2-3B,code,4,File Indexer,2.0,1.333,66.7,0.0,2.0,3,0
+Nanbeige4.2-3B,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+Nanbeige4.2-3B,code,6,Constrained Diff Tool,3.0,2.0,66.7,1.0,3.0,3,0
+Nanbeige4.2-3B,code,7,Regex Engine,4.0,1.333,33.3,1.0,2.0,3,0
+Nanbeige4.2-3B,code,8,Concurrent Web Scraper,2.0,1.0,50.0,1.0,1.0,3,0
+Nanbeige4.2-3B,reason,1,Logical Deduction,2.0,1.333,66.7,1.0,2.0,3,0
+Nanbeige4.2-3B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Nanbeige4.2-3B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Nanbeige4.2-3B,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Nanbeige4.2-3B,reason,5,Analytical Explanation,3.0,2.0,66.7,2.0,2.0,3,0
+Nanbeige4.2-3B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-9B,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-9B,agent,2,Orchestration,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-9B,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Qwen3.8-9B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.8-9B,agent,5,Parsing,3.0,2.0,66.7,2.0,2.0,3,0
+Qwen3.8-9B,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-9B,agent,7,Multi-Step Research Agent,3.0,2.667,88.9,2.0,3.0,3,0
+Qwen3.8-9B,agent,8,Memory-Augmented Agent,3.0,2.0,66.7,2.0,2.0,3,0
+Qwen3.8-9B,code,1,String Cleaner,5.0,3.667,73.3,3.0,5.0,3,0
+Qwen3.8-9B,code,2,Log Parser,4.0,2.667,66.7,2.0,4.0,3,0
+Qwen3.8-9B,code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-9B,code,4,File Indexer,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.8-9B,code,5,Task Runner CLI,2.0,0.333,16.7,0.0,1.0,3,0
+Qwen3.8-9B,code,6,Constrained Diff Tool,3.0,1.0,33.3,1.0,1.0,3,0
+Qwen3.8-9B,code,7,Regex Engine,4.0,1.667,41.7,1.0,2.0,3,0
+Qwen3.8-9B,code,8,Concurrent Web Scraper,2.0,0.667,33.3,0.0,1.0,3,0
+Qwen3.8-9B,reason,1,Logical Deduction,2.0,1.0,50.0,1.0,1.0,3,0
+Qwen3.8-9B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-9B,reason,3,Constraint Satisfaction,3.0,2.667,88.9,2.0,3.0,3,0
+Qwen3.8-9B,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-9B,reason,5,Analytical Explanation,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-9B,reason,6,Multi-Hop Synthesis,3.0,2.0,66.7,0.0,3.0,3,0
+Heem-9B (Uncensored),agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Heem-9B (Uncensored),agent,2,Orchestration,3.0,2.0,66.7,2.0,2.0,3,0
+Heem-9B (Uncensored),agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Heem-9B (Uncensored),agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Heem-9B (Uncensored),agent,5,Parsing,3.0,1.667,55.6,1.0,2.0,3,0
+Heem-9B (Uncensored),agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Heem-9B (Uncensored),agent,7,Multi-Step Research Agent,3.0,2.333,77.8,1.0,3.0,3,0
+Heem-9B (Uncensored),agent,8,Memory-Augmented Agent,3.0,1.0,33.3,0.0,3.0,3,0
+Heem-9B (Uncensored),code,1,String Cleaner,5.0,3.0,60.0,0.0,5.0,3,0
+Heem-9B (Uncensored),code,2,Log Parser,4.0,2.667,66.7,2.0,4.0,3,0
+Heem-9B (Uncensored),code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,0
+Heem-9B (Uncensored),code,4,File Indexer,2.0,1.333,66.7,0.0,2.0,3,0
+Heem-9B (Uncensored),code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+Heem-9B (Uncensored),code,6,Constrained Diff Tool,3.0,2.333,77.8,2.0,3.0,3,0
+Heem-9B (Uncensored),code,7,Regex Engine,4.0,1.0,25.0,0.0,3.0,3,0
+Heem-9B (Uncensored),code,8,Concurrent Web Scraper,2.0,1.333,66.7,1.0,2.0,3,0
+Heem-9B (Uncensored),reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Heem-9B (Uncensored),reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Heem-9B (Uncensored),reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Heem-9B (Uncensored),reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Heem-9B (Uncensored),reason,5,Analytical Explanation,3.0,2.0,66.7,2.0,2.0,3,0
+Heem-9B (Uncensored),reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,agent,2,Orchestration,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,agent,5,Parsing,3.0,1.333,44.4,0.0,2.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,agent,7,Multi-Step Research Agent,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,agent,8,Memory-Augmented Agent,3.0,1.667,55.6,1.0,3.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,code,1,String Cleaner,5.0,3.333,66.7,0.0,5.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,code,3,LRU Cache,3.0,2.0,66.7,1.0,3.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,code,4,File Indexer,2.0,0.667,33.3,0.0,2.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,code,8,Concurrent Web Scraper,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,reason,5,Analytical Explanation,3.0,2.667,88.9,2.0,3.0,3,0
+Qwen3.8-27B-Q3-DOWN-XS,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,agent,2,Orchestration,3.0,2.0,66.7,2.0,2.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,agent,5,Parsing,3.0,2.333,77.8,1.0,3.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,agent,7,Multi-Step Research Agent,3.0,2.667,88.9,2.0,3.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,agent,8,Memory-Augmented Agent,3.0,2.333,77.8,2.0,3.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,code,1,String Cleaner,5.0,4.667,93.3,4.0,5.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,code,4,File Indexer,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,code,5,Task Runner CLI,2.0,1.0,50.0,1.0,1.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,code,6,Constrained Diff Tool,3.0,2.333,77.8,2.0,3.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,code,7,Regex Engine,4.0,3.0,75.0,2.0,4.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,code,8,Concurrent Web Scraper,2.0,1.667,83.3,1.0,2.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,reason,5,Analytical Explanation,3.0,2.333,77.8,2.0,3.0,3,0
+Qwen3.6-35B-Q4-ncmoe40,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Ornith-1.5-9B,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Ornith-1.5-9B,agent,2,Orchestration,3.0,2.0,66.7,2.0,2.0,3,0
+Ornith-1.5-9B,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Ornith-1.5-9B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Ornith-1.5-9B,agent,5,Parsing,3.0,2.667,88.9,2.0,3.0,3,0
+Ornith-1.5-9B,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Ornith-1.5-9B,agent,7,Multi-Step Research Agent,3.0,3.0,100.0,3.0,3.0,3,0
+Ornith-1.5-9B,agent,8,Memory-Augmented Agent,3.0,0.0,0.0,0.0,0.0,3,0
+Ornith-1.5-9B,code,1,String Cleaner,5.0,1.667,33.3,0.0,5.0,3,0
+Ornith-1.5-9B,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Ornith-1.5-9B,code,3,LRU Cache,3.0,2.0,66.7,0.0,3.0,3,0
+Ornith-1.5-9B,code,4,File Indexer,2.0,1.0,50.0,0.0,2.0,3,0
+Ornith-1.5-9B,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+Ornith-1.5-9B,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+Ornith-1.5-9B,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+Ornith-1.5-9B,code,8,Concurrent Web Scraper,2.0,1.0,50.0,1.0,1.0,3,0
+Ornith-1.5-9B,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Ornith-1.5-9B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Ornith-1.5-9B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Ornith-1.5-9B,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Ornith-1.5-9B,reason,5,Analytical Explanation,3.0,2.667,88.9,2.0,3.0,3,0
+Ornith-1.5-9B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+MiniCPM5-2B,agent,1,Tool Calling,3.0,2.0,66.7,1.0,3.0,3,0
+MiniCPM5-2B,agent,2,Orchestration,3.0,2.333,77.8,1.0,3.0,3,0
+MiniCPM5-2B,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+MiniCPM5-2B,agent,4,Planning,2.0,1.0,50.0,1.0,1.0,3,0
+MiniCPM5-2B,agent,5,Parsing,3.0,1.0,33.3,1.0,1.0,3,0
+MiniCPM5-2B,agent,6,Decision-Making,3.0,1.333,44.4,1.0,2.0,3,0
+MiniCPM5-2B,agent,7,Multi-Step Research Agent,3.0,1.333,44.4,1.0,2.0,3,0
+MiniCPM5-2B,agent,8,Memory-Augmented Agent,3.0,1.0,33.3,1.0,1.0,3,0
+MiniCPM5-2B,code,1,String Cleaner,5.0,1.0,20.0,1.0,1.0,3,0
+MiniCPM5-2B,code,2,Log Parser,4.0,0.667,16.7,0.0,1.0,3,0
+MiniCPM5-2B,code,3,LRU Cache,3.0,2.667,88.9,2.0,3.0,3,0
+MiniCPM5-2B,code,4,File Indexer,2.0,0.667,33.3,0.0,2.0,3,0
+MiniCPM5-2B,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+MiniCPM5-2B,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+MiniCPM5-2B,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+MiniCPM5-2B,code,8,Concurrent Web Scraper,2.0,1.667,83.3,1.0,2.0,3,0
+MiniCPM5-2B,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+MiniCPM5-2B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+MiniCPM5-2B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+MiniCPM5-2B,reason,4,Counterfactual Reasoning,3.0,2.667,88.9,2.0,3.0,3,0
+MiniCPM5-2B,reason,5,Analytical Explanation,3.0,3.0,100.0,3.0,3.0,3,0
+MiniCPM5-2B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-35B-A3B-Distill,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-35B-A3B-Distill,agent,2,Orchestration,3.0,2.333,77.8,2.0,3.0,3,0
+Qwen3.8-35B-A3B-Distill,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Qwen3.8-35B-A3B-Distill,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.8-35B-A3B-Distill,agent,5,Parsing,3.0,2.0,66.7,0.0,3.0,3,0
+Qwen3.8-35B-A3B-Distill,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-35B-A3B-Distill,agent,7,Multi-Step Research Agent,3.0,2.667,88.9,2.0,3.0,3,0
+Qwen3.8-35B-A3B-Distill,agent,8,Memory-Augmented Agent,3.0,2.0,66.7,2.0,2.0,3,0
+Qwen3.8-35B-A3B-Distill,code,1,String Cleaner,5.0,3.333,66.7,2.0,4.0,3,0
+Qwen3.8-35B-A3B-Distill,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Qwen3.8-35B-A3B-Distill,code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-35B-A3B-Distill,code,4,File Indexer,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.8-35B-A3B-Distill,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+Qwen3.8-35B-A3B-Distill,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,0
+Qwen3.8-35B-A3B-Distill,code,7,Regex Engine,4.0,3.333,83.3,3.0,4.0,3,0
+Qwen3.8-35B-A3B-Distill,code,8,Concurrent Web Scraper,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.8-35B-A3B-Distill,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Qwen3.8-35B-A3B-Distill,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-35B-A3B-Distill,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-35B-A3B-Distill,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-35B-A3B-Distill,reason,5,Analytical Explanation,3.0,3.0,100.0,3.0,3.0,3,0
+Qwen3.8-35B-A3B-Distill,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Underdog-Saluki-27B-IQ2,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Underdog-Saluki-27B-IQ2,agent,2,Orchestration,3.0,2.0,66.7,2.0,2.0,3,0
+Underdog-Saluki-27B-IQ2,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Underdog-Saluki-27B-IQ2,agent,4,Planning,2.0,0.667,33.3,0.0,2.0,3,0
+Underdog-Saluki-27B-IQ2,agent,5,Parsing,3.0,2.667,88.9,2.0,3.0,3,0
+Underdog-Saluki-27B-IQ2,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Underdog-Saluki-27B-IQ2,agent,7,Multi-Step Research Agent,3.0,3.0,100.0,3.0,3.0,3,0
+Underdog-Saluki-27B-IQ2,agent,8,Memory-Augmented Agent,3.0,2.0,66.7,2.0,2.0,3,0
+Underdog-Saluki-27B-IQ2,code,1,String Cleaner,5.0,4.667,93.3,4.0,5.0,3,0
+Underdog-Saluki-27B-IQ2,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Underdog-Saluki-27B-IQ2,code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,0
+Underdog-Saluki-27B-IQ2,code,4,File Indexer,2.0,1.667,83.3,1.0,2.0,3,0
+Underdog-Saluki-27B-IQ2,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+Underdog-Saluki-27B-IQ2,code,6,Constrained Diff Tool,3.0,1.667,55.6,1.0,3.0,3,0
+Underdog-Saluki-27B-IQ2,code,7,Regex Engine,4.0,1.667,41.7,0.0,4.0,3,0
+Underdog-Saluki-27B-IQ2,code,8,Concurrent Web Scraper,2.0,1.667,83.3,1.0,2.0,3,0
+Underdog-Saluki-27B-IQ2,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Underdog-Saluki-27B-IQ2,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Underdog-Saluki-27B-IQ2,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Underdog-Saluki-27B-IQ2,reason,4,Counterfactual Reasoning,3.0,2.667,88.9,2.0,3.0,3,0
+Underdog-Saluki-27B-IQ2,reason,5,Analytical Explanation,3.0,2.333,77.8,2.0,3.0,3,0
+Underdog-Saluki-27B-IQ2,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+MiniCPM-V-4.7-35B-A3B,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+MiniCPM-V-4.7-35B-A3B,agent,2,Orchestration,3.0,2.0,66.7,2.0,2.0,3,0
+MiniCPM-V-4.7-35B-A3B,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+MiniCPM-V-4.7-35B-A3B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+MiniCPM-V-4.7-35B-A3B,agent,5,Parsing,3.0,2.333,77.8,2.0,3.0,3,0
+MiniCPM-V-4.7-35B-A3B,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+MiniCPM-V-4.7-35B-A3B,agent,7,Multi-Step Research Agent,3.0,2.333,77.8,1.0,3.0,3,0
+MiniCPM-V-4.7-35B-A3B,agent,8,Memory-Augmented Agent,3.0,2.667,88.9,2.0,3.0,3,0
+MiniCPM-V-4.7-35B-A3B,code,1,String Cleaner,5.0,4.667,93.3,4.0,5.0,3,0
+MiniCPM-V-4.7-35B-A3B,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+MiniCPM-V-4.7-35B-A3B,code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,0
+MiniCPM-V-4.7-35B-A3B,code,4,File Indexer,2.0,2.0,100.0,2.0,2.0,3,0
+MiniCPM-V-4.7-35B-A3B,code,5,Task Runner CLI,2.0,0.0,0.0,0.0,0.0,3,0
+MiniCPM-V-4.7-35B-A3B,code,6,Constrained Diff Tool,3.0,2.333,77.8,2.0,3.0,3,0
+MiniCPM-V-4.7-35B-A3B,code,7,Regex Engine,4.0,1.333,33.3,0.0,4.0,3,0
+MiniCPM-V-4.7-35B-A3B,code,8,Concurrent Web Scraper,2.0,1.667,83.3,1.0,2.0,3,0
+MiniCPM-V-4.7-35B-A3B,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+MiniCPM-V-4.7-35B-A3B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+MiniCPM-V-4.7-35B-A3B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+MiniCPM-V-4.7-35B-A3B,reason,4,Counterfactual Reasoning,3.0,2.0,66.7,2.0,2.0,3,0
+MiniCPM-V-4.7-35B-A3B,reason,5,Analytical Explanation,3.0,2.667,88.9,2.0,3.0,3,0
+MiniCPM-V-4.7-35B-A3B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+LFM2.5-24B-A2B,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+LFM2.5-24B-A2B,agent,2,Orchestration,3.0,2.667,88.9,2.0,3.0,3,0
+LFM2.5-24B-A2B,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+LFM2.5-24B-A2B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+LFM2.5-24B-A2B,agent,5,Parsing,3.0,2.667,88.9,2.0,3.0,3,0
+LFM2.5-24B-A2B,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+LFM2.5-24B-A2B,agent,7,Multi-Step Research Agent,3.0,2.667,88.9,2.0,3.0,3,0
+LFM2.5-24B-A2B,agent,8,Memory-Augmented Agent,3.0,2.0,66.7,2.0,2.0,3,0
+LFM2.5-24B-A2B,code,1,String Cleaner,5.0,5.0,100.0,5.0,5.0,3,0
+LFM2.5-24B-A2B,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+LFM2.5-24B-A2B,code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,0
+LFM2.5-24B-A2B,code,4,File Indexer,2.0,2.0,100.0,2.0,2.0,3,0
+LFM2.5-24B-A2B,code,5,Task Runner CLI,2.0,0.667,33.3,0.0,2.0,3,0
+LFM2.5-24B-A2B,code,6,Constrained Diff Tool,3.0,3.0,100.0,3.0,3.0,3,0
+LFM2.5-24B-A2B,code,7,Regex Engine,4.0,3.667,91.7,3.0,4.0,3,0
+LFM2.5-24B-A2B,code,8,Concurrent Web Scraper,2.0,2.0,100.0,2.0,2.0,3,0
+LFM2.5-24B-A2B,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+LFM2.5-24B-A2B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+LFM2.5-24B-A2B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+LFM2.5-24B-A2B,reason,4,Counterfactual Reasoning,3.0,2.333,77.8,2.0,3.0,3,0
+LFM2.5-24B-A2B,reason,5,Analytical Explanation,3.0,3.0,100.0,3.0,3.0,3,0
+LFM2.5-24B-A2B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Nemotron-3.5-Bolt-74B-A9B,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,agent,2,Orchestration,3.0,2.0,66.7,2.0,2.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,agent,5,Parsing,3.0,3.0,100.0,3.0,3.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,agent,7,Multi-Step Research Agent,3.0,3.0,100.0,3.0,3.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,agent,8,Memory-Augmented Agent,3.0,2.667,88.9,2.0,3.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,code,1,String Cleaner,5.0,4.667,93.3,4.0,5.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,code,4,File Indexer,2.0,2.0,100.0,2.0,2.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,code,5,Task Runner CLI,2.0,0.667,33.3,0.0,2.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,code,6,Constrained Diff Tool,3.0,2.0,66.7,2.0,2.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,code,7,Regex Engine,4.0,3.333,83.3,2.0,4.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,code,8,Concurrent Web Scraper,2.0,2.0,100.0,2.0,2.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,reason,1,Logical Deduction,2.0,1.0,50.0,1.0,1.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,reason,4,Counterfactual Reasoning,3.0,2.667,88.9,2.0,3.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,reason,5,Analytical Explanation,3.0,2.667,88.9,2.0,3.0,3,1
+Nemotron-3.5-Bolt-74B-A9B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,1
+Ternary-Bonsai-2-27B-PQ2_0,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,agent,2,Orchestration,3.0,2.333,77.8,2.0,3.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,agent,5,Parsing,3.0,3.0,100.0,3.0,3.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,agent,7,Multi-Step Research Agent,3.0,3.0,100.0,3.0,3.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,agent,8,Memory-Augmented Agent,3.0,1.333,44.4,0.0,2.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,code,1,String Cleaner,5.0,4.667,93.3,4.0,5.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,code,4,File Indexer,2.0,1.333,66.7,0.0,2.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,code,5,Task Runner CLI,2.0,1.333,66.7,0.0,2.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,code,6,Constrained Diff Tool,3.0,1.0,33.3,1.0,1.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,code,8,Concurrent Web Scraper,2.0,1.667,83.3,1.0,2.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,reason,5,Analytical Explanation,3.0,2.333,77.8,2.0,3.0,3,0
+Ternary-Bonsai-2-27B-PQ2_0,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",agent,2,Orchestration,3.0,2.667,88.9,2.0,3.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",agent,5,Parsing,3.0,2.0,66.7,0.0,3.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",agent,7,Multi-Step Research Agent,3.0,3.0,100.0,3.0,3.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",agent,8,Memory-Augmented Agent,3.0,2.333,77.8,2.0,3.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",code,1,String Cleaner,5.0,4.0,80.0,4.0,4.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",code,4,File Indexer,2.0,2.0,100.0,2.0,2.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",code,5,Task Runner CLI,2.0,0.667,33.3,0.0,2.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",code,6,Constrained Diff Tool,3.0,1.333,44.4,1.0,2.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",code,7,Regex Engine,4.0,3.333,83.3,3.0,4.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",code,8,Concurrent Web Scraper,2.0,1.667,83.3,1.0,2.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",reason,5,Analytical Explanation,3.0,3.0,100.0,3.0,3.0,3,0
+"Ternary-Bonsai-2-27B-PTQ1_0 (pinned, ctx 8192)",reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,agent,2,Orchestration,3.0,2.333,77.8,2.0,3.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,agent,5,Parsing,3.0,3.0,100.0,3.0,3.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,agent,7,Multi-Step Research Agent,3.0,2.667,88.9,2.0,3.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,agent,8,Memory-Augmented Agent,3.0,1.0,33.3,0.0,3.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,code,1,String Cleaner,5.0,4.333,86.7,4.0,5.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,code,3,LRU Cache,3.0,2.0,66.7,0.0,3.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,code,4,File Indexer,2.0,1.667,83.3,1.0,2.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,code,5,Task Runner CLI,2.0,2.0,100.0,2.0,2.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,code,6,Constrained Diff Tool,3.0,1.0,33.3,1.0,1.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,code,8,Concurrent Web Scraper,2.0,1.667,83.3,1.0,2.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,reason,3,Constraint Satisfaction,3.0,2.667,88.9,2.0,3.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,reason,4,Counterfactual Reasoning,3.0,3.0,100.0,3.0,3.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,reason,5,Analytical Explanation,3.0,2.333,77.8,2.0,3.0,3,0
+Raon-1 mini preview 28.8B-A4.3B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+Groot-19B-A3B-261023,agent,1,Tool Calling,3.0,3.0,100.0,3.0,3.0,3,0
+Groot-19B-A3B-261023,agent,2,Orchestration,3.0,3.0,100.0,3.0,3.0,3,0
+Groot-19B-A3B-261023,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+Groot-19B-A3B-261023,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+Groot-19B-A3B-261023,agent,5,Parsing,3.0,3.0,100.0,3.0,3.0,3,0
+Groot-19B-A3B-261023,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+Groot-19B-A3B-261023,agent,7,Multi-Step Research Agent,3.0,3.0,100.0,3.0,3.0,3,0
+Groot-19B-A3B-261023,agent,8,Memory-Augmented Agent,3.0,2.0,66.7,2.0,2.0,3,0
+Groot-19B-A3B-261023,code,1,String Cleaner,5.0,5.0,100.0,5.0,5.0,3,0
+Groot-19B-A3B-261023,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+Groot-19B-A3B-261023,code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,0
+Groot-19B-A3B-261023,code,4,File Indexer,2.0,2.0,100.0,2.0,2.0,3,0
+Groot-19B-A3B-261023,code,5,Task Runner CLI,2.0,1.333,66.7,0.0,2.0,3,0
+Groot-19B-A3B-261023,code,6,Constrained Diff Tool,3.0,1.0,33.3,1.0,1.0,3,0
+Groot-19B-A3B-261023,code,7,Regex Engine,4.0,1.0,25.0,0.0,3.0,3,0
+Groot-19B-A3B-261023,code,8,Concurrent Web Scraper,2.0,2.0,100.0,2.0,2.0,3,0
+Groot-19B-A3B-261023,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+Groot-19B-A3B-261023,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+Groot-19B-A3B-261023,reason,3,Constraint Satisfaction,3.0,3.0,100.0,3.0,3.0,3,0
+Groot-19B-A3B-261023,reason,4,Counterfactual Reasoning,3.0,2.333,77.8,2.0,3.0,3,0
+Groot-19B-A3B-261023,reason,5,Analytical Explanation,3.0,2.667,88.9,2.0,3.0,3,0
+Groot-19B-A3B-261023,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
+LFM3-1.7B,agent,1,Tool Calling,3.0,2.667,88.9,2.0,3.0,3,0
+LFM3-1.7B,agent,2,Orchestration,3.0,2.0,66.7,2.0,2.0,3,0
+LFM3-1.7B,agent,3,Error Handling,4.0,4.0,100.0,4.0,4.0,3,0
+LFM3-1.7B,agent,4,Planning,2.0,2.0,100.0,2.0,2.0,3,0
+LFM3-1.7B,agent,5,Parsing,3.0,1.333,44.4,1.0,2.0,3,0
+LFM3-1.7B,agent,6,Decision-Making,3.0,3.0,100.0,3.0,3.0,3,0
+LFM3-1.7B,agent,7,Multi-Step Research Agent,3.0,1.0,33.3,0.0,2.0,3,0
+LFM3-1.7B,agent,8,Memory-Augmented Agent,3.0,2.0,66.7,2.0,2.0,3,0
+LFM3-1.7B,code,1,String Cleaner,5.0,1.333,26.7,0.0,4.0,3,0
+LFM3-1.7B,code,2,Log Parser,4.0,4.0,100.0,4.0,4.0,3,0
+LFM3-1.7B,code,3,LRU Cache,3.0,3.0,100.0,3.0,3.0,3,0
+LFM3-1.7B,code,4,File Indexer,2.0,1.333,66.7,0.0,2.0,3,0
+LFM3-1.7B,code,5,Task Runner CLI,2.0,0.333,16.7,0.0,1.0,3,0
+LFM3-1.7B,code,6,Constrained Diff Tool,3.0,2.0,66.7,1.0,3.0,3,0
+LFM3-1.7B,code,7,Regex Engine,4.0,0.0,0.0,0.0,0.0,3,0
+LFM3-1.7B,code,8,Concurrent Web Scraper,2.0,1.0,50.0,1.0,1.0,3,0
+LFM3-1.7B,reason,1,Logical Deduction,2.0,2.0,100.0,2.0,2.0,3,0
+LFM3-1.7B,reason,2,Math Word Problem,3.0,3.0,100.0,3.0,3.0,3,0
+LFM3-1.7B,reason,3,Constraint Satisfaction,3.0,2.667,88.9,2.0,3.0,3,0
+LFM3-1.7B,reason,4,Counterfactual Reasoning,3.0,2.0,66.7,2.0,2.0,3,0
+LFM3-1.7B,reason,5,Analytical Explanation,3.0,3.0,100.0,3.0,3.0,3,0
+LFM3-1.7B,reason,6,Multi-Hop Synthesis,3.0,3.0,100.0,3.0,3.0,3,0
