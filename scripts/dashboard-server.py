@@ -4,10 +4,11 @@ Agon-Bench Dashboard Server v2 — serves model data from per-event tables.
 Replaces the original that was overwritten with a PNG.
 """
 import json, os, sqlite3, sys
+from pathlib import Path
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse
 
-DB_PATH = os.path.expanduser("~/Documents/agon-arena/agon-bench.db")
+DB_PATH = os.environ.get("AGON_DB", str(Path(__file__).resolve().parent.parent / "agon-bench.db"))
 
 # ── Model metadata (hardcoded from MODEL_CONFIG + model_profiles) ──
 MODEL_META = {
@@ -252,9 +253,10 @@ def get_model_data():
         cur.execute("SELECT COUNT(*) FROM reason_runs WHERE model_id=? AND status='completed'", (mid,))
         n_reason = cur.fetchone()[0]
         
-        # Auto-populate: require 3 full runs of all 3 events (unless flagged,
-        # in which case keep it visible so the user can see the flag)
-        if not (n_agent >= 3 and n_code >= 3 and n_reason >= 3) and not flagged:
+        # Auto-populate: require 3 completed runs of all 3 events. A flagged
+        # entry is only shown if it is also complete; a partial set is not a
+        # result and must never appear on the board as one.
+        if not (n_agent >= 3 and n_code >= 3 and n_reason >= 3):
             continue
         
         meta = MODEL_META.get(key, {})
@@ -322,7 +324,10 @@ def get_model_data():
         code_avg = sum(code_scores) / len(code_scores) if code_scores else 0
         reason_avg = sum(reason_scores) / len(reason_scores) if reason_scores else 0
         tok_s = sum(tok_s_list) / len(tok_s_list) if tok_s_list else 0
-        total = agent_avg + code_avg + reason_avg
+        # Round the components first, then sum, so the published row adds up
+        # exactly the way it is printed (README, JSON and dashboard agree).
+        agent_avg, code_avg, reason_avg = round(agent_avg, 2), round(code_avg, 2), round(reason_avg, 2)
+        total = round(agent_avg + code_avg + reason_avg, 2)
         max_score = 66
         
         result.append({
@@ -333,11 +338,11 @@ def get_model_data():
             "size_gb": size_gb or meta.get("size_gb", 0),
             "quant": quant or meta.get("quant", ""),
             "tok_s": round(tok_s, 1),
-            "total": round(total, 1),
+            "total": round(total, 2),
             "max": max_score,
-            "agent": round(agent_avg, 1),
-            "code": round(code_avg, 1),
-            "reason": round(reason_avg, 1),
+            "agent": round(agent_avg, 2),
+            "code": round(code_avg, 2),
+            "reason": round(reason_avg, 2),
             "tasks": task_scores,
             "taskMax": TASK_MAX,
             "taskNames": TASK_NAMES,

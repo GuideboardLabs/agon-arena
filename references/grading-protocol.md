@@ -10,7 +10,7 @@ Reading 162 response files (27 runs × 6 tasks) manually is impractical. The sub
 delegate_task(
     goal="Grade all [Event] tasks for [Model] across all 3 runs.",
     context="""[Full rubric with per-task criteria, point breakdowns, and what to look for]
-Results at ~/Documents/agon-results/[model]/[event]/run{1,2,3}/
+Results at results/[model]/[event]/run{1,2,3}/ (relative to the repo root)
 Each run has task1-task6/ with prompt.txt and response.txt.
 """,
     toolsets=["terminal", "file"]

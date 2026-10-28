@@ -57,3 +57,7 @@ sprint-results/
 .idea/
 *.swp
 *.swo
+
+# Local model additions from a panel or another tool
+submitted-models.json
+winback/

@@ -3,8 +3,9 @@
 Agon-Bench v3 Database Schema — stable model IDs, per-event tables, per-task real-time tracking.
 """
 import sqlite3, os
+from pathlib import Path
 
-DB_PATH = os.path.expanduser("~/Documents/agon-arena/agon-bench.db")
+DB_PATH = os.environ.get("AGON_DB", str(Path(__file__).resolve().parent.parent / "agon-bench.db"))
 
 SCHEMA_SQL = """
 -- Models: stable IDs via INSERT OR IGNORE + UPDATE pattern

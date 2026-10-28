@@ -25,11 +25,13 @@ import os
 import subprocess
 import sys
 import time
+from pathlib import Path
 
-REPO = "/home/sc/Documents/agon-arena"
-SCRATCH = os.path.expanduser("~/.hermes/cache/scratch/winback")
-BIN = "/home/sc/llama-mcpv47/build-vulkan/bin/llama-server"
-GGUF = "/mnt/blue/LLMbackups/LFM2.5-24B-A2B-Q4_K_M.gguf"
+REPO = os.environ.get("AGON_HOME", str(Path(__file__).resolve().parent.parent))
+SCRATCH = os.environ.get("WINBACK_SCRATCH", os.path.join(REPO, "winback"))
+BIN = os.environ.get("LLAMA_SERVER", "llama-server")
+MODELS_DIR = os.environ.get("AGON_MODELS_DIR", os.path.expanduser("~/models"))
+GGUF = os.path.join(MODELS_DIR, "LFM2.5-24B-A2B-Q4_K_M.gguf")
 CTX = 32768
 ARGS = ("-ngl 999 -fa on -ncmoe 25 -c 32768 --threads 6 --threads-batch 6 "
         "--cpu-mask 0x3f --prio 2 --jinja --temp 0.7 --min-p 0.05 --parallel 1")

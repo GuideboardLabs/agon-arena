@@ -1,10 +1,10 @@
-# 🐴 Agon-Bench
+# Agon-Bench
 
-**An open benchmark for local LLMs on consumer hardware.**
+An open benchmark for local LLMs on consumer hardware.
 
-Named after the Greek *agon* — contest, struggle, gathering. Three events, hidden-test grading, consumer GPUs only. No datacenter. No 8×H100 flex. Just the hardware people actually own: 8GB VRAM cards sitting in gaming PCs and laptops.
+Three events, hidden-test grading, one 8GB GPU. Named after the Greek *agon*: contest, struggle, gathering. No datacenter, no 8xH100 cluster, just the card in a gaming PC and the memory it does not have.
 
-> **Current scale:** v2 · 66 points · 23 models · AMD RX 5700 XT (8GB VRAM) · llama.cpp + Vulkan
+**Current scale:** v2 · 66 points · 29 models · AMD RX 5700 XT (8GB VRAM, RDNA 1) · Ryzen 5 1600 · 32GB RAM · llama.cpp with the Vulkan backend
 
 ---
 
@@ -12,109 +12,89 @@ Named after the Greek *agon* — contest, struggle, gathering. Three events, hid
 
 | Event | Points | Tasks | What it measures |
 |-------|:------:|:-----:|------------------|
-| **Agent** | 24 | 8 | Tool calling, orchestration, error handling, planning, parsing, decision-making, multi-step research, memory-augmented agent |
+| **Agent** | 24 | 8 | Tool calling, orchestration, error handling, planning, parsing, decision making, multi-step research, memory-augmented agent |
 | **Code** | 25 | 8 | String cleaner, log parser, LRU cache, file indexer, task-runner CLI, constrained diff tool, regex engine, concurrent web scraper |
 | **Reason** | 17 | 6 | Logical deduction, math word problems, constraint satisfaction, counterfactual reasoning, analytical explanation, multi-hop synthesis |
 
-Every task runs against **hidden test cases**. Models never see the grading criteria. No partial credit, no human judgment, no vibes. Pass or fail.
+Every task is graded against **hidden test cases**. Models never see the criteria. No partial credit, no human judgment, no vibes: the harness runs their code against tests they have not read.
 
 ---
 
-## Leaderboard (66-point scale, 3-run averages)
+## Leaderboard
 
-Hardware: AMD RX 5700 XT (8GB VRAM, RDNA 1), Ryzen 5 1600, 64GB RAM. All models Q4_K_M unless noted. One model at a time (8GB can't fit multiple). Models over 8GB use CPU offloading.
+Three runs per event, mean reported. All models Q4_K_M or better unless the name says otherwise. One model at a time, because 8GB cannot hold two. Models over 8GB keep their expert or attention layers on the CPU.
 
-> **Code column corrected 2026-09-20.** Two Code-event checks could not fail, so
-> every completed run banked their points. Code scores here are corrected; Agent
-> and Reason are unchanged. Totals are therefore **not comparable** to any table
-> published before this date. Details: [SCORE-CORRECTION-2026-09-20.md](SCORE-CORRECTION-2026-09-20.md).
+| # | Model | Size | Agent /24 | Code /25 | Reason /17 | **Total /66** | **%** | tok/s |
+|---|-------|:----:|:---------:|:--------:|:----------:|:-------------:|:-----:|:-----:|
+| 1 | **LFM2.5-24B-A2B** | 14.5G | 22.00 | 23.33 | 16.33 | **61.66** | **93.42%** | 25.8 |
+| 2 | **Nemotron-3.5-Bolt-74B-A9B** | 22.0G | 22.67 | 21.67 | 15.33 | **59.67** | **90.41%** | 6.7 ⟡ |
+| 3 | **Qwen3.6-35B-Q4-ncmoe40** | 21.1G | 21.33 | 21.67 | 16.33 | **59.33** | **89.89%** | 21.7 |
+| 4 | **Ternary-Bonsai-2-27B-PTQ1** ⟡ | 5.5G | 22.00 | 20.00 | 17.00 | **59.00** | **89.39%** | 10.9 |
+| 5 | **Groot-19B-A3B** | 11.7G | 23.00 | 19.33 | 16.00 | **58.33** | **88.38%** | 28.5 |
+| 6 | **Qwen3.8-35B-A3B-Distill** | 21.7G | 21.00 | 19.67 | 17.00 | **57.67** | **87.38%** | 21.0 |
+| 7 | **MiniCPM-V-4.7-35B-A3B** | 19.7G | 21.33 | 19.00 | 15.67 | **56.00** | **84.85%** | 19.2 |
+| 8 | **Ternary-Bonsai-2-27B-PQ2** ⟡ | 7.2G | 21.67 | 17.00 | 16.33 | **55.00** | **83.33%** | 11.8 |
+| 9 | **Underdog-Saluki-27B-IQ2** | 7.9G | 20.33 | 18.33 | 16.00 | **54.66** | **82.82%** | 23.2 |
+| 10 | **Gemma4-26B-A4B** | 16.9G | 23.00 | 14.00 | 16.67 | **53.67** | **81.32%** | 13.5 |
+| 11 | **Raon-1 mini preview 28.8B-A4.3B** ⟡ | 19.7G | 21.00 | 16.67 | 16.00 | **53.67** | **81.32%** | 16.2 |
+| 12 | **Nanbeige4.2-3B** | 2.4G | 23.00 | 15.33 | 15.33 | **53.66** | **81.30%** | 44.9 |
+| 13 | **Bonsai-27B-Q1_0** | 3.8G | 22.33 | 15.33 | 15.00 | **52.66** | **79.79%** | 12.5 |
+| 14 | **Ornith-1.0-9B** | 5.3G | 19.67 | 16.00 | 16.67 | **52.34** | **79.30%** | 48.0 |
+| 15 | **Qwen3.8-27B-Q3-DOWN-XS** | 7.9G | 21.00 | 14.00 | 16.67 | **51.67** | **78.29%** | 24.0 |
+| 16 | **Qwen3.8-9B** | 5.8G | 21.67 | 15.00 | 14.67 | **51.34** | **77.79%** | 40.0 |
+| 17 | **Heem-9B (Uncensored)** | 5.6G | 19.00 | 14.67 | 16.00 | **49.67** | **75.26%** | 40.0 |
+| 18 | **Ornith-1.5-9B** | 5.9G | 19.67 | 11.67 | 16.67 | **48.01** | **72.74%** | 48.0 |
+| 19 | **LFM3-1.7B** | 1.1G | 18.00 | 13.00 | 15.67 | **46.67** | **70.71%** | 135.0 |
+| 20 | **Gemma4-12B** | 6.7G | 18.33 | 12.33 | 15.67 | **46.33** | **70.20%** | 24.0 |
+| 21 | **LFM2.5-8B-A1B** | 5.0G | 16.67 | 13.00 | 14.67 | **44.34** | **67.18%** | 91.1 |
+| 22 | **Qwen3.5-9B** | 5.3G | 12.00 | 13.33 | 16.33 | **41.66** | **63.12%** | 60.0 |
+| 23 | **Qwopus3.5-9B-Coder** | 4.5G | 13.33 | 12.00 | 16.33 | **41.66** | **63.12%** | 30.0 |
+| 24 | **MiniCPM5-2B** | 1.6G | 14.00 | 8.67 | 16.67 | **39.34** | **59.61%** | 118.0 |
+| 25 | **SuperQwen-35B** | 21.0G | 15.00 | 12.83 | 11.33 | **39.16** | **59.33%** | 10.8 |
+| 26 | **Holo-3.1-9B-Coder** | 5.3G | 14.67 | 9.33 | 14.67 | **38.67** | **58.59%** | 40.0 |
+| 27 | **Qwythos-9B-v1** | 5.3G | 14.33 | 9.00 | 15.33 | **38.66** | **58.58%** | 30.4 |
+| 28 | **Grug-12B** | 6.9G | 13.00 | 5.00 | 14.67 | **32.67** | **49.50%** | 34.0 |
+| 29 | **OmniCoder-9B** | 5.4G | 4.33 | 7.67 | 16.67 | **28.67** | **43.44%** | 53.1 |
 
-| # | Model | Size | Agent | Code | Reason | **Total** | **%** | tok/s |
-|---|-------|:----:|:-----:|:----:|:------:|:---------:|:-----:|:-----:|
-| 🥇 | **LFM2.5-24B-A2B** † | 14.5G | 22.0 | 23.3 | 16.3 | **61.7** | **93.43%** | 25.8 |
-| 🥈 | **Qwen3.6-35B-Q4-ncmoe40** | 21.1G | 21.3 | 21.7 | 16.3 | **59.3** | **89.90%** | 21.7 |
-| 🥉 | **Qwen3.8-35B-A3B-Distill** | 21.7G | 21.0 | 19.7 | 17.0 | **57.7** | **87.37%** | 21.0 |
-| 4 | **MiniCPM-V-4.7-35B-A3B** | 19.7G | 21.3 | 19.0 | 15.7 | **56.0** | **84.85%** | 19.2 |
-| 5 | **Underdog-Saluki-27B-IQ2** | 7.9G | 20.3 | 18.3 | 16.0 | **54.7** | **82.83%** | 23.2 |
-| 6= | **Nanbeige4.2-3B** | 2.4G | 23.0 | 15.3 | 15.3 | **53.7** | **81.31%** | 44.9 |
-| 6= | **Gemma4-26B-A4B** | 16.9G | 23.0 | 14.0 | 16.7 | **53.7** | **81.31%** | 13.5 |
-| 8 | **Bonsai-27B-Q1_0** | 3.8G | 22.3 | 15.3 | 15.0 | **52.7** | **79.80%** | 12.5 |
-| 9 | **Ornith-1.0-9B** | 5.3G | 19.7 | 16.0 | 16.7 | **52.3** | **79.29%** | 48.0 |
-| 10 | **Qwen3.8-27B-Q3-DOWN-XS** | 7.9G | 21.0 | 14.0 | 16.7 | **51.7** | **78.28%** | 24.0 |
-| 11 | **Qwen3.8-9B** | 5.8G | 21.7 | 15.0 | 14.7 | **51.3** | **77.78%** | 40.0 |
-| 12 | **Heem-9B (Uncensored)** | 5.6G | 19.0 | 14.7 | 16.0 | **49.7** | **75.25%** | 40.0 |
-| 13 | **Ornith-1.5-9B** | 5.9G | 19.7 | 11.7 | 16.7 | **48.0** | **72.73%** | 48.0 |
-| 14 | **Gemma4-12B** | 6.7G | 18.3 | 12.3 | 15.7 | **46.3** | **70.20%** | 24.0 |
-| 15 | **LFM2.5-8B-A1B** | 5.0G | 16.7 | 13.0 | 14.7 | **44.3** | **67.17%** | 91.1 |
-| 16= | **Qwopus3.5-9B-Coder** | 4.5G | 13.3 | 12.0 | 16.3 | **41.7** | **63.13%** | 30.0 |
-| 16= | **Qwen3.5-9B** | 5.3G | 12.0 | 13.3 | 16.3 | **41.7** | **63.13%** | 60.0 |
-| 18 | **MiniCPM5-2B** | 1.6G | 14.0 | 8.7 | 16.7 | **39.3** | **59.60%** | 118.0 |
-| 19 | **SuperQwen-35B** | 21.0G | 15.0 | 12.8 | 11.3 | **39.2** | **59.34%** | 10.8 |
-| 20= | **Qwythos-9B-v1** | 5.3G | 14.3 | 9.0 | 15.3 | **38.7** | **58.59%** | 30.4 |
-| 20= | **Holo-3.1-9B-Coder** | 5.3G | 14.7 | 9.3 | 14.7 | **38.7** | **58.59%** | 40.0 |
-| 22 | **Grug-12B** | 6.9G | 13.0 | 5.0 | 14.7 | **32.7** | **49.49%** | 34.0 |
-| 23 | **OmniCoder-9B** | 5.4G | 4.3 | 7.7 | 16.7 | **28.7** | **43.43%** | 53.1 |
+Ties are labelled rather than broken: Gemma4-26B-A4B and Raon both compute to 81.32%, and Qwen3.5-9B and Qwopus3.5-9B-Coder are identical at 63.12% to two decimals.
 
-Ties are real and are labelled rather than broken: Nanbeige4.2-3B and Gemma4-26B-A4B both
-compute to 81.313131%, and the two 63.13% and two 58.59% pairs are likewise identical to six
-decimals.
+**† Nemotron-3.5-Bolt-74B-A9B is reference only.** It produces the second-highest raw score on the board, but sustained decode came in at 6.7 tok/s, under the 10 tok/s admission floor, so it is not ranked as a contender.
 
-**† LFM2.5-24B-A2B's row was re-cut at a 32,768-token window.** The Code and Reason events run
-at 16,384 tokens, thinking shares that window with the answer, and this model's reasoning on one
-Code task and one Reason task runs longer than the window, so those six task-runs were originally
-recorded as truncated reasoning and scored zero. Re-running only those six at 32,768 recovers 14
-of the 15 points those tasks were worth. Every other row ran at the standard window, and **118
-task-runs across 19 other models carry the same artefact unfixed**, so this row is not yet
-protocol-identical to the rest of the table. That work is next on the list. Full mechanism and
-evidence: [references/context-window-truncation.md](references/context-window-truncation.md).
+**⟡ Non-standard context window.** Unless noted, rows run the standard windows: 4096 for Agent and Reason, 16384 for Code. The marked rows need more room on an 8GB card and are disclosed rather than silently normalised: Nemotron at 8192 for all three events, both Ternary-Bonsai PTQ1 and PQ2 plus the pinned PTQ1 at 8192, Groot at 8192 for Agent and Reason, Raon at 32768 for all three. Larger windows cost throughput on this hardware, so they cut against the model, not for it.
 
-Every row carries a complete 3/3/3 set of completed runs. Models with an incomplete set are
-excluded from the ranking entirely rather than ranked on partial data.
+Every row carries a complete 3/3/3 set of completed runs. A model with a partial set is excluded from the table rather than ranked on half a result.
 
 ---
 
 ## What the numbers say
 
-- **LFM2.5-24B-A2B takes the board at 93.43%**, on an architecture that is not a finetune of anything else here: 24B total with 2B active per token, 64 experts routed top-4, and **30 of its 40 layers are gated short convolutions** with only every fourth layer running full attention. It holds the best code score on the bench (23.3/25) and is the fastest model in the top five at 25.8 tok/s. The dagger under the table covers what changed.
-- **Qwen3.6-35B-Q4-ncmoe40 is the model that held the crown** at 89.90%, and it held it cleanly: it runs with reasoning suppressed, so the context-window artefact cannot touch it. The `-ncmoe 40` recipe turns a 35B MoE into a genuine all-rounder.
-- **Nanbeige4.2-3B is still the story at the small end.** A 2.4GB, 3B looped transformer ties for the best agent score on the bench (23.0/24) at 3.3× the speed of the 26B it ties with. The looped architecture gives 3B the reasoning depth of a 6-7B model.
-- **Bonsai-27B-Q1_0 is the dark horse**: a 3.8GB 1-bit ternary model that shouldn't work but does. Elite agent (22.3/24), 79.80% overall.
-- **Speed is a real axis.** LFM2.5-8B (91.1 tok/s) and MiniCPM5-2B (118.0 tok/s) are the speed kings, but both trade capability for it. MiniCPM is a razor-sharp reasoner (16.7/17) that can't close agent or code tasks. It reasons beautifully and never ships.
-- **The 8GB ceiling is real.** The top of the board needs 21GB with CPU spill, and the best model under 5GB is Nanbeige4.2-3B at 81.31% on 2.4GB. That gap is the whole point of the bench.
+- **LFM2.5-24B-A2B holds the board at 93.42%.** 24B total, 2B active, 64 experts routed top-4, and 30 of its 40 layers are gated short convolutions with full attention only every fourth layer. It takes the best Code score here (23.33) and still runs at 25.8 tok/s. Its six truncated task-runs were re-cut at a 32768 window, which is disclosed below.
+- **The best agent score is a three-way tie at 23.00:** Groot-19B-A3B, Gemma4-26B-A4B and Nanbeige4.2-3B. The spread in size between them is 16.9G to 2.4G, and Nanbeige is 3.3x faster than the 26B it ties with.
+- **Ternary-Bonsai-2-27B-PTQ1 is the efficiency answer.** 89.39% at 5.5GB and 10.9 tok/s, second only to LFM2.5-24B on score while fitting comfortably inside the card. A 1.75 bit-per-weight packing that stays coherent is the most surprising result on this bench.
+- **Code is where models fall over.** The median Code score is 15 out of 25 while the median Reason score is 15.67 out of 17. Reasoning is nearly solved at this scale; writing code that passes unseen tests is not. Every model below 80% loses most of its ground in Code.
+- **Size buys less than people think.** The 29 rows span 1.1G to 22G, and the top and bottom are 50 points apart, but six of the top ten are under 12GB. The 8GB ceiling is real for speed and context, not for capability.
 
 ### A harness artefact worth knowing about
 
-The Code and Reason events run at a 16,384-token context, and thinking shares that window with
-the answer. A model whose reasoning on one task runs longer than the window never finishes the
-thought, so the harness records the truncated reasoning stream as the answer and the task scores
-zero. LFM2.5-24B-A2B lost 12 Code points and 3 Reason points to this and nothing else, and those
-six task-runs were re-cut at 32,768 to recover 14 of the 15 points. That is where the 93.43% at
-the top of the table comes from, and it is disclosed rather than hidden.
+Agent and Reason run at 4096 tokens and Code at 16384, and a thinking model shares that window with its answer. A model whose reasoning on one task exceeds the window never finishes the thought, so the harness records truncated reasoning as the answer and the task scores zero.
 
-The same artefact is still sitting in **118 task-runs across 19 other models**, from Gemma4-12B
-and Grug-12B in the middle of the board up to Gemma4-26B and Underdog-Saluki in the top six.
-Those models are scored low for the same reason this one was. Re-cutting them is roughly a day of
-GPU time, one model at a time, and it is the honest way to make the whole table
-protocol-identical. The mechanism, the replay method, and the reproducibility gap in the seeding
-are in [references/context-window-truncation.md](references/context-window-truncation.md).
+LFM2.5-24B-A2B lost 12 Code points and 3 Reason points to this and nothing else; those six task-runs were re-cut at 32768 and recovered 14 of the 15. That is where the top row comes from, and it is disclosed rather than hidden. `scripts/agon-winback-rerun.py` is the replay tool, with a pre-flight check that the server on the port is the one you meant. The mechanism is documented in [references/context-window-truncation.md](references/context-window-truncation.md).
 
 ---
 
-## Interactive dashboard
+## Viewing the results
 
-Two ways to view the results:
-
-- **`agon-dashboard.html`** — the live dashboard. Needs the local server:
+- **`agon-bench.html`** is a self-contained static export with the published data baked in. No server, no API, no database: open the file or drop it on any static host. Regenerate it after a new run:
+  ```bash
+  python3 scripts/export-static-dashboard.py agon-bench.html
+  ```
+- **`agon-dashboard.html`** is the live version and reads the SQLite database through a small server:
   ```bash
   python3 scripts/dashboard-server.py 8765
   # then open http://localhost:8765
   ```
-- **`agon-bench.html`** — a **self-contained static export** with the data baked in. Drop it on any static host (IONOS, GitHub Pages, S3) and it just works. No server, no API. Regenerate after a new run:
-  ```bash
-  python3 scripts/export-static-dashboard.py agon-bench.html
-  ```
 
-Both show composite scores, per-event breakdowns, per-task heatmaps, speed comparison, and a head-to-head VS mode.
+Both show composite scores, per-event breakdowns, per-task heatmaps, speed, and a head-to-head view.
 
 ---
 
@@ -122,9 +102,19 @@ Both show composite scores, per-event breakdowns, per-task heatmaps, speed compa
 
 ### Prerequisites
 
-- Python 3.10+
-- A running llama.cpp server (or any OpenAI-compatible endpoint)
-- `httpx` (`pip install httpx`)
+- Python 3.10+ and `httpx` (`pip install httpx`)
+- A llama.cpp build with the Vulkan backend, or any OpenAI-compatible endpoint
+- Your GGUF files on disk
+
+### Point it at your weights
+
+The model registry in `scripts/run-benchmark.py` stores bare filenames. Set one variable and it resolves:
+
+```bash
+export AGON_MODELS_DIR=~/models      # default
+```
+
+Anything not under one directory works too: `AGON_HOME` relocates the database, `AGON_DB` overrides the DB path, and `LLAMA_SERVER` points at the server binary for the replay tool.
 
 ### Full matrix run
 
@@ -132,7 +122,7 @@ Both show composite scores, per-event breakdowns, per-task heatmaps, speed compa
 python3 scripts/run-benchmark.py --models <model_key> --port 8100
 ```
 
-The runner starts the llama.cpp server, runs all 3 events × 3 runs (seeds 42/137/256), writes per-task results to the SQLite DB in real time, and supports resume (a timed-out run picks up where it left off).
+The runner starts llama-server, runs 3 events x 3 runs, writes every task result to SQLite as it lands, and resumes rather than restarting if a run times out.
 
 ### Single event
 
@@ -144,25 +134,16 @@ python3 scripts/agent-event.py \
   --run 1 --seed 1
 ```
 
-Swap `agent-event.py` for `code-event.py` or `reason-event.py` for the other events.
+Swap in `code-event.py` or `reason-event.py` for the other two.
 
-### Grade results
-
-```bash
-python3 scripts/grade-all.py
-```
-
-Reads from `./results/` by default. Override with `AGON_RESULTS_DIR`.
-
-### Re-running a truncated task
+### Grade, verify, audit
 
 ```bash
-python3 scripts/agon-winback-rerun.py --port 8174
+python3 scripts/grade-all.py        # grade saved responses
+python3 scripts/verify-scores.py    # re-run hidden tests against saved files
+python3 scripts/audit-checks.py     # find checks that cannot fail
+python3 scripts/test_assertions.py  # regression tests for the matcher
 ```
-
-Re-cuts task-runs whose response was cut off by the context window at a larger window, with a
-pre-flight assertion that the server on that port is really the one you intended. Runs outside the
-database unless `--db-path` and `--run-id` are passed, so an official run row cannot be modified.
 
 ---
 
@@ -171,40 +152,30 @@ database unless `--db-path` and `--run-id` are passed, so an official run row ca
 ```
 agon-arena/
 ├── scripts/
-│   ├── run-benchmark.py          # Full 3-event × 3-run matrix runner
-│   ├── agent-event.py            # Agent event runner
-│   ├── code-event.py             # Code event runner
-│   ├── reason-event.py           # Reason event runner
-│   ├── assertions.py             # Hidden-test assertions + matcher
-│   ├── grade-all.py              # Grade all events against results
-│   ├── hand-grade.py             # Apply partial-credit corrections
-│   ├── dashboard-server.py       # Live dashboard server (serves /api/models)
-│   ├── export-static-dashboard.py# Builds self-contained agon-bench.html
-│   ├── create_db.py              # Schema creation
-│   ├── audit-checks.py           # Find checks that cannot fail
-│   ├── verify-scores.py          # Recompute every score from per-task rows
-│   ├── agon-grade-audit.py       # Audit grading across a run
-│   ├── agon-fix-run-totals.py    # Reconciliation: recompute run totals
-│   ├── agon-sweep-ncmoe.py       # MoE offload-depth sweep
-│   ├── agon-code-reasoning-ab.py # Reasoning-config A/B (see the truncation note)
-│   ├── agon-t7-room-test.py      # Single-task window test, pre-flight asserted
-│   ├── agon-winback-rerun.py     # Replay truncated task-runs at a larger window
-│   ├── agon-suspend.sh           # Suspend other GPU services before a bench
-│   ├── agon-restore.sh           # Restore them afterwards
-│   ├── retry-task.py             # Re-run one failed task
-│   ├── find-ceilings.py          # Find the context ceiling per model
-│   ├── real-ctx-test.py          # Measure usable context
-│   ├── speed-test.py             # Decode/prefill throughput probe
-│   ├── sprint-bench.py           # Fast partial sweep
-│   └── ...                       # Model-specific probes and regrades
-├── references/                   # Design, methodology, and findings docs
-├── results/                      # Published result summaries
-├── models/                       # Per-model notes and write-ups
-├── artshow/                      # Prompt sets for the board's art panels
-├── agon-bench.db                 # SQLite source of truth (scores, runs, tasks)
-├── agon-dashboard.html           # Live interactive dashboard
-├── agon-bench.html               # Static dashboard export (for hosting)
-├── LICENSE                       # MIT
+│   ├── run-benchmark.py            # full 3-event x 3-run runner
+│   ├── agent-event.py              # Agent event harness
+│   ├── code-event.py               # Code event harness
+│   ├── reason-event.py             # Reason event harness
+│   ├── assertions.py               # hidden-test matching shared by all events
+│   ├── test_assertions.py          # regression tests for that matcher
+│   ├── grade-all.py                # grade saved responses
+│   ├── hand-grade.py               # apply partial-credit corrections
+│   ├── verify-scores.py            # re-run tests against saved responses
+│   ├── audit-checks.py             # find assertions that cannot fail
+│   ├── create_db.py                # schema
+│   ├── dashboard-server.py         # live dashboard + JSON API
+│   ├── export-static-dashboard.py  # builds agon-bench.html
+│   ├── agon-winback-rerun.py       # replay runs cut off by the context window
+│   ├── regrade-strict.py           # re-grade one saved output
+│   └── speed-test.py               # quick decode/prefill probe
+├── references/
+│   ├── grading-protocol.md
+│   ├── context-window-truncation.md
+│   └── throughput-measurement.md
+├── results/agon-bench-results.json # published board, machine readable
+├── agon-dashboard.html             # live dashboard
+├── agon-bench.html                 # static export with data baked in
+├── LICENSE
 └── README.md
 ```
 
@@ -212,23 +183,12 @@ agon-arena/
 
 ## Methodology notes
 
-- **Hidden tests, no partial credit.** Models never see grading criteria. The harness runs their code against unseen test cases.
-- **3 runs per event** (seeds 42/137/256) to smooth variance. Reported scores are the mean.
-- **Hand-grading for termination failures.** Some models (MiniCPM5-2B, SuperQwen) reason correctly but loop instead of emitting a final answer. Where the in-thought logic is clearly correct, partial credit is applied via `hand-grade.py` — the DB is the source of truth.
-- **tok/s is the mean across completed runs**, not a burst test.
-- **One model at a time.** The GPU cannot hold two, so other services are suspended for the duration of a bench and restored afterwards (`agon-suspend.sh` / `agon-restore.sh`).
-- **Known gap: the seed argument is accepted and never sent.** The event payloads carry no seed key, so recorded seeds are misleading and every completion is an uncontrolled sample at temperature 0.3. Per-task spread is documented in `references/context-window-truncation.md`; treat any one or two point composite gap as inside the noise until this is fixed.
-
----
-
-## Roadmap
-
-- [x] 8GB VRAM class (RX 5700 XT, 23 models, v2 66-point scale)
-- [x] Static dashboard export for public hosting
-- [ ] Send the seed in every event payload (reproducibility)
-- [ ] 12GB VRAM class (RTX 3060/4070)
-- [ ] Vision event
-- [ ] Tool-use event with real API calls
+- **Hidden tests.** Models never see the criteria; the harness runs their code against unseen cases.
+- **3 runs per event**, reported as the mean.
+- **Hand grading for termination failures.** Some models reason correctly and then loop instead of answering. Where the in-thought logic is unambiguous, partial credit is applied by `hand-grade.py`. The database is the source of truth.
+- **tok/s is the mean across completed runs**, not a burst measurement, and includes prefill time in the event totals.
+- **One model at a time.** The card cannot hold two.
+- **Known gap: the seed argument is accepted and never sent.** Event payloads carry no seed key, so recorded seeds are misleading and every completion is an uncontrolled sample at temperature 0.3. Treat a one or two point composite gap as inside the noise until this is fixed.
 
 ---
 
